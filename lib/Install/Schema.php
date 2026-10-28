@@ -1,0 +1,179 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Viewsion\SeoMonitor\Install;
+
+use rex;
+use rex_sql;
+use rex_sql_column as Col;
+use rex_sql_index as Idx;
+use rex_sql_table;
+
+/**
+ * Tabellen des AddOns. ensure() ist idempotent und wird von install.php und update.php aufgerufen.
+ */
+final class Schema
+{
+    /** @var list<string> */
+    private const TABLES = [
+        'vsn_seo_account',
+        'vsn_seo_domain',
+        'vsn_seo_query',
+        'vsn_seo_url',
+        'vsn_seo_sa',
+        'vsn_seo_sa_day',
+        'vsn_seo_sa_week',
+        'vsn_seo_core_update',
+    ];
+
+    public static function ensure(): void
+    {
+        // Zugänge (Search Console, Matomo, …); credentials sind verschlüsselt
+        rex_sql_table::get(rex::getTable('vsn_seo_account'))
+            ->ensurePrimaryIdColumn()
+            ->ensureColumn(new Col('type', 'varchar(20)'))
+            ->ensureColumn(new Col('name', 'varchar(191)'))
+            ->ensureColumn(new Col('info', 'varchar(255)', false, ''))
+            ->ensureColumn(new Col('credentials', 'text'))
+            ->ensureGlobalColumns()
+            ->ensureIndex(new Idx('type', ['type']))
+            ->ensure();
+
+        rex_sql_table::get(rex::getTable('vsn_seo_domain'))
+            ->ensurePrimaryIdColumn()
+            ->ensureColumn(new Col('name', 'varchar(191)'))
+            ->ensureColumn(new Col('host', 'varchar(191)'))
+            ->ensureColumn(new Col('yrewrite_id', 'int(10) unsigned', true))
+            ->ensureColumn(new Col('gsc_account_id', 'int(10) unsigned', true))
+            ->ensureColumn(new Col('gsc_property', 'varchar(255)', false, ''))
+            ->ensureColumn(new Col('matomo_account_id', 'int(10) unsigned', true))
+            ->ensureColumn(new Col('matomo_site_id', 'int(10) unsigned', true))
+            ->ensureColumn(new Col('sitemaps', 'text', true))
+            ->ensureColumn(new Col('alert_emails', 'text', true))
+            ->ensureColumn(new Col('import_from', 'date', true))
+            ->ensureColumn(new Col('forward_until', 'date', true))
+            ->ensureColumn(new Col('backfill_cursor', 'date', true))
+            ->ensureColumn(new Col('status', 'tinyint(1)', false, '1'))
+            ->ensureColumn(new Col('last_import', 'datetime', true))
+            ->ensureColumn(new Col('last_error', 'text', true))
+            ->ensureColumn(new Col('kpi', 'text', true))
+            ->ensureGlobalColumns()
+            ->ensureIndex(new Idx('host', ['host'], Idx::UNIQUE))
+            ->ensure();
+
+        // Wörterbücher: Suchbegriffe und URLs werden per ID referenziert
+        rex_sql_table::get(rex::getTable('vsn_seo_query'))
+            ->ensurePrimaryIdColumn()
+            ->ensureColumn(new Col('hash', 'binary(16)'))
+            ->ensureColumn(new Col('query', 'varchar(500)'))
+            ->ensureIndex(new Idx('hash', ['hash'], Idx::UNIQUE))
+            ->ensure();
+
+        rex_sql_table::get(rex::getTable('vsn_seo_url'))
+            ->ensurePrimaryIdColumn()
+            ->ensureColumn(new Col('hash', 'binary(16)'))
+            ->ensureColumn(new Col('url', 'text'))
+            ->ensureIndex(new Idx('hash', ['hash'], Idx::UNIQUE))
+            ->ensure();
+
+        // Search-Analytics-Detaildaten (date × query × page × device × country)
+        // position_sum = Position × Impressionen, damit sich Durchschnitte über beliebige Zeiträume bilden lassen
+        rex_sql_table::get(rex::getTable('vsn_seo_sa'))
+            ->ensureColumn(new Col('domain_id', 'smallint(5) unsigned'))
+            ->ensureColumn(new Col('date', 'date'))
+            ->ensureColumn(new Col('query_id', 'int(10) unsigned'))
+            ->ensureColumn(new Col('url_id', 'int(10) unsigned'))
+            ->ensureColumn(new Col('device', 'tinyint(3) unsigned'))
+            ->ensureColumn(new Col('country', 'char(3)'))
+            ->ensureColumn(new Col('clicks', 'int(10) unsigned'))
+            ->ensureColumn(new Col('impressions', 'int(10) unsigned'))
+            ->ensureColumn(new Col('position_sum', 'float'))
+            ->setPrimaryKey(['domain_id', 'date', 'query_id', 'url_id', 'device', 'country'])
+            ->ensureIndex(new Idx('domain_url', ['domain_id', 'url_id', 'date']))
+            ->ensureIndex(new Idx('domain_query', ['domain_id', 'query_id', 'date']))
+            ->ensure();
+
+        // Tagessummen: clicks/impressions/position_sum aus der Abfrage ohne query/page (vollständig),
+        // detail_* und queries/urls aus den Detaildaten
+        rex_sql_table::get(rex::getTable('vsn_seo_sa_day'))
+            ->ensureColumn(new Col('domain_id', 'smallint(5) unsigned'))
+            ->ensureColumn(new Col('date', 'date'))
+            ->ensureColumn(new Col('clicks', 'int(10) unsigned', false, '0'))
+            ->ensureColumn(new Col('impressions', 'int(10) unsigned', false, '0'))
+            ->ensureColumn(new Col('position_sum', 'double', false, '0'))
+            ->ensureColumn(new Col('detail_rows', 'int(10) unsigned', false, '0'))
+            ->ensureColumn(new Col('detail_clicks', 'int(10) unsigned', false, '0'))
+            ->ensureColumn(new Col('detail_impressions', 'int(10) unsigned', false, '0'))
+            ->ensureColumn(new Col('queries', 'int(10) unsigned', false, '0'))
+            ->ensureColumn(new Col('urls', 'int(10) unsigned', false, '0'))
+            ->ensureColumn(new Col('imported_at', 'datetime', true))
+            ->setPrimaryKey(['domain_id', 'date'])
+            ->ensure();
+
+        // Wochensummen (Montag), queries/urls = verschiedene Suchbegriffe/URLs mit Impressionen in der Woche
+        rex_sql_table::get(rex::getTable('vsn_seo_sa_week'))
+            ->ensureColumn(new Col('domain_id', 'smallint(5) unsigned'))
+            ->ensureColumn(new Col('week', 'date'))
+            ->ensureColumn(new Col('days', 'tinyint(3) unsigned', false, '0'))
+            ->ensureColumn(new Col('clicks', 'int(10) unsigned', false, '0'))
+            ->ensureColumn(new Col('impressions', 'int(10) unsigned', false, '0'))
+            ->ensureColumn(new Col('position_sum', 'double', false, '0'))
+            ->ensureColumn(new Col('queries', 'int(10) unsigned', false, '0'))
+            ->ensureColumn(new Col('urls', 'int(10) unsigned', false, '0'))
+            ->setPrimaryKey(['domain_id', 'week'])
+            ->ensure();
+
+        rex_sql_table::get(rex::getTable('vsn_seo_core_update'))
+            ->ensurePrimaryIdColumn()
+            ->ensureColumn(new Col('date', 'date'))
+            ->ensureColumn(new Col('date_end', 'date', true))
+            ->ensureColumn(new Col('name', 'varchar(191)'))
+            ->ensureIndex(new Idx('date', ['date']))
+            ->ensure();
+    }
+
+    /**
+     * Bekannte Google-Updates (Beginn des Rollouts). Nur beim ersten Installieren, danach im Backend pflegbar.
+     */
+    public static function seedCoreUpdates(): void
+    {
+        $table = rex::getTable('vsn_seo_core_update');
+        $sql = rex_sql::factory();
+        if ((int) $sql->getArray('SELECT COUNT(*) AS c FROM ' . $table)[0]['c'] > 0) {
+            return;
+        }
+        $updates = [
+            ['2022-05-25', '2022-06-09', 'May 2022 Core Update'],
+            ['2022-08-25', '2022-09-09', 'Helpful Content Update'],
+            ['2022-09-12', '2022-09-26', 'September 2022 Core Update'],
+            ['2022-10-19', '2022-10-21', 'October 2022 Spam Update'],
+            ['2022-12-05', '2023-01-12', 'December 2022 Helpful Content Update'],
+            ['2022-12-14', '2023-01-12', 'December 2022 Link Spam Update'],
+            ['2023-03-15', '2023-03-28', 'March 2023 Core Update'],
+            ['2023-08-22', '2023-09-07', 'August 2023 Core Update'],
+            ['2023-09-14', '2023-09-28', 'September 2023 Helpful Content Update'],
+            ['2023-10-05', '2023-10-19', 'October 2023 Core Update'],
+            ['2023-11-02', '2023-11-28', 'November 2023 Core Update'],
+            ['2024-03-05', '2024-04-19', 'March 2024 Core Update'],
+            ['2024-06-20', '2024-06-27', 'June 2024 Spam Update'],
+            ['2024-08-15', '2024-09-03', 'August 2024 Core Update'],
+            ['2024-11-11', '2024-12-05', 'November 2024 Core Update'],
+            ['2024-12-12', '2024-12-18', 'December 2024 Core Update'],
+            ['2024-12-19', '2024-12-26', 'December 2024 Spam Update'],
+            ['2025-03-13', '2025-03-27', 'March 2025 Core Update'],
+            ['2025-06-30', '2025-07-17', 'June 2025 Core Update'],
+            ['2025-08-26', '2025-09-22', 'August 2025 Spam Update'],
+        ];
+        foreach ($updates as [$date, $end, $name]) {
+            $sql->setTable($table)->setValues(['date' => $date, 'date_end' => $end, 'name' => $name])->insert();
+        }
+    }
+
+    public static function drop(): void
+    {
+        foreach (self::TABLES as $table) {
+            rex_sql_table::get(rex::getTable($table))->drop();
+        }
+    }
+}

@@ -1,0 +1,57 @@
+package: vsn_seo
+version: '0.1.0'
+author: VIEWSION
+supportpage: https://github.com/viewsion/vsn_seo
+
+page:
+    title: translate:vsn_seo_title
+    perm: vsn_seo[]
+    icon: rex-icon fa-line-chart
+    pjax: false
+    subpages:
+        overview:
+            title: translate:vsn_seo_overview
+        domain:
+            title: translate:vsn_seo_domain
+            subpages:
+                history:
+                    title: translate:vsn_seo_history
+        settings:
+            title: translate:vsn_seo_settings
+            perm: vsn_seo[settings]
+            subpages:
+                domains:
+                    title: translate:vsn_seo_domains
+                accounts:
+                    title: translate:vsn_seo_accounts
+                general:
+                    title: translate:vsn_seo_general
+                core_updates:
+                    title: translate:vsn_seo_core_updates
+
+console_commands:
+    vsn_seo:import: Viewsion\SeoMonitor\Command\ImportCommand
+    vsn_seo:backfill: Viewsion\SeoMonitor\Command\BackfillCommand
+    vsn_seo:aggregate: Viewsion\SeoMonitor\Command\AggregateCommand
+
+default_config:
+    data_state: final
+    reload_days: 5
+    backfill_months: 16
+    run_budget: 45
+    row_limit: 25000
+    retention_months: 25
+
+requires:
+    redaxo: '^5.16.0'
+    php:
+        version: '>=8.1'
+        extensions: [openssl, sodium, json]
+
+installer_ignore:
+    - .DS_Store
+    - .git
+    - .github
+    - .gitignore
+    - CLAUDE.md
+    - phpstan.neon

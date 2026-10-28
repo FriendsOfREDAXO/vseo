@@ -1,0 +1,134 @@
+vsn_seo_title = SEO Monitor
+vsn_seo_overview = Overview
+vsn_seo_overview_title = All domains – last 28 days
+vsn_seo_overview_empty = No domains configured yet.
+vsn_seo_domain = Domain
+vsn_seo_domains = Domains
+vsn_seo_history = History
+vsn_seo_settings = Settings
+vsn_seo_accounts = Accounts
+vsn_seo_general = Import
+vsn_seo_core_updates = Google updates
+vsn_seo_core_update = Google update
+
+vsn_seo_perm_settings = SEO Monitor: settings
+vsn_seo_perm_all_domains = SEO Monitor: all domains
+vsn_seo_perm_domain = SEO Monitor: domain {0}
+
+vsn_seo_source_gsc = Google Search Console
+vsn_seo_cronjob_import = SEO Monitor: import
+vsn_seo_cronjob_budget = Time budget per run (seconds)
+vsn_seo_cronjob_budget_notice = Empty = value from the settings. The next run continues where this one stopped.
+
+vsn_seo_name = Name
+vsn_seo_type = Type
+vsn_seo_active = Status
+vsn_seo_date = Start
+vsn_seo_date_end = End
+vsn_seo_week = Week
+vsn_seo_more = More
+vsn_seo_deleted = Deleted.
+vsn_seo_external = external
+vsn_seo_origin = Origin
+vsn_seo_no_data = No data yet
+vsn_seo_settings_saved = Settings saved.
+
+vsn_seo_account = Account
+vsn_seo_account_gsc = Search Console (service account)
+vsn_seo_account_matomo = Matomo
+vsn_seo_account_info = Account / URL
+vsn_seo_account_none = No accounts yet.
+vsn_seo_account_add_gsc = Add Search Console account
+vsn_seo_account_add_matomo = Add Matomo account
+vsn_seo_account_saved = Account saved.
+vsn_seo_account_deleted = Account deleted.
+vsn_seo_account_test = Test connection
+vsn_seo_account_test_ok = Connection OK, {0} properties/sites found.
+vsn_seo_account_test_failed = Connection failed:
+vsn_seo_account_gsc_json = Service account JSON key
+vsn_seo_account_gsc_json_notice = Paste the downloaded JSON file or upload it. The key is stored encrypted and never shown again.
+vsn_seo_account_gsc_file = … or upload the file
+vsn_seo_account_gsc_stored = Stored service account: <code>{0}</code>. Only fill in to replace the key.
+vsn_seo_account_matomo_url = Matomo URL
+vsn_seo_account_matomo_token = Token (token_auth)
+vsn_seo_account_matomo_token_notice = A token with view access is sufficient. It is stored encrypted.
+vsn_seo_account_secret_keep = stored – leave empty to keep it
+
+vsn_seo_error_no_service_account = This is not a valid service account key (type "service_account", client_email and private_key required).
+vsn_seo_error_private_key = The private key in the JSON cannot be read.
+vsn_seo_error_matomo_url = Please enter a valid Matomo URL (https://…).
+vsn_seo_error_matomo_token = Please enter a token.
+vsn_seo_error_host = Please enter a host.
+vsn_seo_error_host_exists = This domain already exists.
+vsn_seo_error_date = Please enter a date.
+vsn_seo_error_name = Please enter a name.
+
+vsn_seo_domain_add = Add domain
+vsn_seo_domain_none = No domains yet.
+vsn_seo_domain_saved = Domain saved.
+vsn_seo_domain_deleted = Domain and its data deleted.
+vsn_seo_domain_delete_confirm = Delete this domain including all imported data?
+vsn_seo_domain_reset = Reload data
+vsn_seo_domain_reset_confirm = Discard all imported data of this domain and import again?
+vsn_seo_domain_reset_done = Data discarded. The next import reloads everything.
+vsn_seo_domain_adopted = {0} domain(s) created.
+vsn_seo_domain_active = Monitor this domain
+vsn_seo_host = Host
+vsn_seo_host_notice = e.g. www.example.com. Does not need to exist in YRewrite (external shops etc.).
+vsn_seo_property = Property
+vsn_seo_property_notice = Domain property (sc-domain:example.com) or URL prefix (https://www.example.com/). Suggestions come from the Search Console accounts.
+vsn_seo_import_from = Load data from
+vsn_seo_import_from_notice = Empty = {0} months back (Google keeps at most 16 months).
+vsn_seo_matomo_site_id = Matomo site ID
+vsn_seo_sitemaps = Sitemaps
+vsn_seo_sitemaps_notice = One URL or path per line. Empty = taken from robots.txt.
+vsn_seo_alert_emails = Alert recipients
+vsn_seo_alert_emails_notice = One e-mail address per line.
+vsn_seo_import_state = Import state
+vsn_seo_last_import = Last import
+vsn_seo_state_no_gsc = no property
+vsn_seo_state_waiting = waiting for first import
+vsn_seo_state_backfill_running = backfill running: {0} (until {1})
+vsn_seo_state_backfill_done = complete since {0}
+
+vsn_seo_suggestions = Suggestions
+vsn_seo_suggestions_notice = Domains from YRewrite and Search Console properties that are not set up yet.
+vsn_seo_suggestions_adopt = Create selected
+
+vsn_seo_cfg_data_state = Data state
+vsn_seo_cfg_data_state_final = final
+vsn_seo_cfg_data_state_all = including fresh data (all)
+vsn_seo_cfg_reload_days = Days to reload
+vsn_seo_cfg_reload_days_notice = Google reports with a 2–3 day delay. Each run reloads and overwrites this many days.
+vsn_seo_cfg_backfill_months = Backfill (months)
+vsn_seo_cfg_backfill_months_notice = How far back the initial import goes (max. 16).
+vsn_seo_cfg_run_budget = Time budget per run (seconds)
+vsn_seo_cfg_run_budget_notice = A cronjob run stops after this, the next one continues. 0 = unlimited.
+vsn_seo_cfg_row_limit = Rows per request
+vsn_seo_cfg_row_limit_notice = rowLimit of the Search Analytics API (max. 25000).
+vsn_seo_cfg_retention_months = Keep detail data (months)
+vsn_seo_cfg_retention_months_notice = Detail data (query × URL) older than this is deleted. Daily and weekly sums are kept.
+vsn_seo_cron = Cronjob and console
+vsn_seo_cron_notice = Create a job of type "SEO Monitor: import" in the Cronjob addon – hourly during the backfill, daily afterwards. Or use the console:
+
+vsn_seo_kpi_queries = Ranking queries
+vsn_seo_kpi_urls = Ranking URLs
+vsn_seo_kpi_clicks = Clicks
+vsn_seo_kpi_impressions = Impressions
+vsn_seo_kpi_position = Avg. position
+vsn_seo_period_until = {0} – {1} compared to the 28 days before
+vsn_seo_period_compare = {0} – {1} compared to {2} – {3}
+vsn_seo_light_ok = Data up to date
+vsn_seo_light_stale = No recent data
+vsn_seo_history_weekly = Weekly history
+vsn_seo_history_table = Weekly values
+vsn_seo_history_too_short = Not enough complete weeks imported yet.
+vsn_seo_week_incomplete = Incomplete week
+vsn_seo_range_3 = 3 months
+vsn_seo_range_6 = 6 months
+vsn_seo_range_12 = 12 months
+vsn_seo_range_all = All
+vsn_seo_show_core_updates = Show Google updates
+vsn_seo_chart_rankings = Ranking queries and URLs
+vsn_seo_chart_traffic = Clicks and impressions
+vsn_seo_chart_position = Average position

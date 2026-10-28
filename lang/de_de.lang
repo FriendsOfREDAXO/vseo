@@ -1,0 +1,134 @@
+vsn_seo_title = SEO Monitor
+vsn_seo_overview = Übersicht
+vsn_seo_overview_title = Alle Domains – letzte 28 Tage
+vsn_seo_overview_empty = Es sind noch keine Domains eingerichtet.
+vsn_seo_domain = Domain
+vsn_seo_domains = Domains
+vsn_seo_history = Verlauf
+vsn_seo_settings = Einstellungen
+vsn_seo_accounts = Zugänge
+vsn_seo_general = Import
+vsn_seo_core_updates = Google-Updates
+vsn_seo_core_update = Google-Update
+
+vsn_seo_perm_settings = SEO Monitor: Einstellungen
+vsn_seo_perm_all_domains = SEO Monitor: alle Domains
+vsn_seo_perm_domain = SEO Monitor: Domain {0}
+
+vsn_seo_source_gsc = Google Search Console
+vsn_seo_cronjob_import = SEO Monitor: Import
+vsn_seo_cronjob_budget = Zeitbudget je Lauf (Sekunden)
+vsn_seo_cronjob_budget_notice = Leer = Wert aus den Einstellungen. Der nächste Lauf setzt dort fort, wo dieser aufgehört hat.
+
+vsn_seo_name = Name
+vsn_seo_type = Art
+vsn_seo_active = Status
+vsn_seo_date = Beginn
+vsn_seo_date_end = Ende
+vsn_seo_week = Woche
+vsn_seo_more = Weitere Angaben
+vsn_seo_deleted = Gelöscht.
+vsn_seo_external = extern
+vsn_seo_origin = Herkunft
+vsn_seo_no_data = Noch keine Daten
+vsn_seo_settings_saved = Einstellungen gespeichert.
+
+vsn_seo_account = Zugang
+vsn_seo_account_gsc = Search Console (Dienstkonto)
+vsn_seo_account_matomo = Matomo
+vsn_seo_account_info = Konto / URL
+vsn_seo_account_none = Noch keine Zugänge angelegt.
+vsn_seo_account_add_gsc = Search-Console-Zugang hinzufügen
+vsn_seo_account_add_matomo = Matomo-Zugang hinzufügen
+vsn_seo_account_saved = Zugang gespeichert.
+vsn_seo_account_deleted = Zugang gelöscht.
+vsn_seo_account_test = Verbindung testen
+vsn_seo_account_test_ok = Verbindung erfolgreich, {0} Properties/Websites gefunden.
+vsn_seo_account_test_failed = Verbindung fehlgeschlagen:
+vsn_seo_account_gsc_json = JSON-Schlüssel des Dienstkontos
+vsn_seo_account_gsc_json_notice = Inhalt der heruntergeladenen JSON-Datei einfügen oder die Datei hochladen. Der Schlüssel wird verschlüsselt gespeichert und nie wieder angezeigt.
+vsn_seo_account_gsc_file = … oder Datei hochladen
+vsn_seo_account_gsc_stored = Gespeichert ist das Dienstkonto <code>{0}</code>. Nur ausfüllen, um den Schlüssel zu ersetzen.
+vsn_seo_account_matomo_url = Matomo-URL
+vsn_seo_account_matomo_token = Token (token_auth)
+vsn_seo_account_matomo_token_notice = Ein Token mit Lesezugriff genügt. Es wird verschlüsselt gespeichert.
+vsn_seo_account_secret_keep = gespeichert – leer lassen, um es zu behalten
+
+vsn_seo_error_no_service_account = Das ist kein gültiger Dienstkonto-Schlüssel (type "service_account", client_email und private_key erforderlich).
+vsn_seo_error_private_key = Der private Schlüssel im JSON lässt sich nicht lesen.
+vsn_seo_error_matomo_url = Bitte eine gültige Matomo-URL (https://…) angeben.
+vsn_seo_error_matomo_token = Bitte ein Token angeben.
+vsn_seo_error_host = Bitte einen Host angeben.
+vsn_seo_error_host_exists = Diese Domain ist bereits angelegt.
+vsn_seo_error_date = Bitte ein Datum angeben.
+vsn_seo_error_name = Bitte einen Namen angeben.
+
+vsn_seo_domain_add = Domain hinzufügen
+vsn_seo_domain_none = Noch keine Domains angelegt.
+vsn_seo_domain_saved = Domain gespeichert.
+vsn_seo_domain_deleted = Domain und ihre Daten gelöscht.
+vsn_seo_domain_delete_confirm = Domain mit allen importierten Daten löschen?
+vsn_seo_domain_reset = Daten neu laden
+vsn_seo_domain_reset_confirm = Alle importierten Daten dieser Domain verwerfen und neu importieren?
+vsn_seo_domain_reset_done = Daten verworfen. Der nächste Import lädt alles neu.
+vsn_seo_domain_adopted = {0} Domain(s) angelegt.
+vsn_seo_domain_active = Domain überwachen
+vsn_seo_host = Host
+vsn_seo_host_notice = z. B. www.example.com. Muss nicht in YRewrite stehen (externe Shops etc.).
+vsn_seo_property = Property
+vsn_seo_property_notice = Domain-Property (sc-domain:example.com) oder URL-Präfix (https://www.example.com/). Vorschläge kommen aus den Search-Console-Zugängen.
+vsn_seo_import_from = Daten laden ab
+vsn_seo_import_from_notice = Leer = {0} Monate zurück (Google speichert höchstens 16 Monate).
+vsn_seo_matomo_site_id = Matomo-Website-ID
+vsn_seo_sitemaps = Sitemaps
+vsn_seo_sitemaps_notice = Eine URL oder ein Pfad je Zeile. Leer = Angaben aus der robots.txt.
+vsn_seo_alert_emails = Empfänger für Warnungen
+vsn_seo_alert_emails_notice = Eine E-Mail-Adresse je Zeile.
+vsn_seo_import_state = Importstand
+vsn_seo_last_import = Letzter Import
+vsn_seo_state_no_gsc = keine Property
+vsn_seo_state_waiting = wartet auf ersten Import
+vsn_seo_state_backfill_running = Backfill läuft: {0} (bis {1})
+vsn_seo_state_backfill_done = vollständig ab {0}
+
+vsn_seo_suggestions = Vorschläge
+vsn_seo_suggestions_notice = Domains aus YRewrite und Properties aus der Search Console, die noch nicht angelegt sind.
+vsn_seo_suggestions_adopt = Ausgewählte anlegen
+
+vsn_seo_cfg_data_state = Datenstand
+vsn_seo_cfg_data_state_final = endgültig (final)
+vsn_seo_cfg_data_state_all = inkl. frischer Daten (all)
+vsn_seo_cfg_reload_days = Tage neu laden
+vsn_seo_cfg_reload_days_notice = Google liefert mit 2–3 Tagen Verzug. Jeder Lauf lädt diese Anzahl Tage neu und überschreibt sie.
+vsn_seo_cfg_backfill_months = Backfill (Monate)
+vsn_seo_cfg_backfill_months_notice = Wie weit beim ersten Einrichten zurück geladen wird (max. 16).
+vsn_seo_cfg_run_budget = Zeitbudget je Lauf (Sekunden)
+vsn_seo_cfg_run_budget_notice = Danach hört ein Cronjob-Lauf auf, der nächste setzt fort. 0 = unbegrenzt.
+vsn_seo_cfg_row_limit = Zeilen je Abfrage
+vsn_seo_cfg_row_limit_notice = rowLimit der Search Analytics API (max. 25000).
+vsn_seo_cfg_retention_months = Detaildaten aufbewahren (Monate)
+vsn_seo_cfg_retention_months_notice = Danach werden Detaildaten (Suchbegriff × URL) gelöscht. Tages- und Wochensummen bleiben erhalten.
+vsn_seo_cron = Cronjob und Konsole
+vsn_seo_cron_notice = Im AddOn „Cronjob“ einen Job vom Typ „SEO Monitor: Import“ anlegen – während des Backfills stündlich, danach täglich genügt. Alternativ per Konsole:
+
+vsn_seo_kpi_queries = Rankende Suchbegriffe
+vsn_seo_kpi_urls = Rankende URLs
+vsn_seo_kpi_clicks = Klicks
+vsn_seo_kpi_impressions = Impressionen
+vsn_seo_kpi_position = Ø Position
+vsn_seo_period_until = {0} – {1} gegenüber den 28 Tagen davor
+vsn_seo_period_compare = {0} – {1} gegenüber {2} – {3}
+vsn_seo_light_ok = Daten aktuell
+vsn_seo_light_stale = Keine aktuellen Daten
+vsn_seo_history_weekly = Verlauf je Woche
+vsn_seo_history_table = Wochenwerte
+vsn_seo_history_too_short = Für einen Verlauf sind noch zu wenige vollständige Wochen importiert.
+vsn_seo_week_incomplete = Unvollständige Woche
+vsn_seo_range_3 = 3 Monate
+vsn_seo_range_6 = 6 Monate
+vsn_seo_range_12 = 12 Monate
+vsn_seo_range_all = Alles
+vsn_seo_show_core_updates = Google-Updates einblenden
+vsn_seo_chart_rankings = Rankende Suchbegriffe und URLs
+vsn_seo_chart_traffic = Klicks und Impressionen
+vsn_seo_chart_position = Durchschnittliche Position
