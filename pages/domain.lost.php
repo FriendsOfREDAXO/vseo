@@ -30,7 +30,11 @@ if ('post' === rex_request_method() && 'check' === rex_post('func', 'string')) {
     if (!$csrf->isValid()) {
         echo rex_view::error(rex_i18n::msg('csrf_token_invalid'));
     } else {
-        $count = (new Crawler())->checkNow($domain, array_slice(array_column($lost, 'id'), 0, 50), new Budget(25));
+        // ungeprüfte zuerst, dann die am längsten nicht geprüften
+        $known = Compare::crawlStatus($domain->id, array_column($lost, 'id'));
+        $queue = array_column($lost, 'id');
+        usort($queue, static fn (int $a, int $b) => (string) ($known[$a]['checked_at'] ?? '') <=> (string) ($known[$b]['checked_at'] ?? ''));
+        $count = (new Crawler())->checkNow($domain, array_slice($queue, 0, 50), new Budget(Page::WEB_BUDGET));
         echo null === $count ? rex_view::warning($this->i18n('crawl_busy')) : rex_view::success($this->i18n('lost_checked', $count));
     }
 }

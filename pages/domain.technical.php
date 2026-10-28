@@ -27,7 +27,7 @@ if ('post' === rex_request_method() && 'crawl' === rex_post('func', 'string')) {
         echo rex_view::error(rex_i18n::msg('csrf_token_invalid'));
     } else {
         $crawler = new Crawler();
-        $crawler->run(new Budget(40), $domain->id, null, true);
+        $crawler->run(new Budget(Page::WEB_BUDGET), $domain->id, null, true);
         // Meldungen des Crawlers sind technische Texte (englisch), daher als Info
         echo rex_view::info(rex_escape(implode(' · ', $crawler->messages())));
         $domain = DomainRepository::get($domain->id) ?? $domain;

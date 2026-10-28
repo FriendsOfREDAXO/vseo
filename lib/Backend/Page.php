@@ -15,6 +15,9 @@ use Viewsion\SeoMonitor\Util\Format;
 
 final class Page
 {
+    /** Zeitbudget für Prüfungen aus dem Backend: unter den üblichen 30 Sekunden für Web-Anfragen */
+    public const WEB_BUDGET = 20;
+
     /** Gewählte Domain aus der Anfrage oder der Sitzung, nur wenn der Nutzer sie sehen darf */
     public static function currentDomain(): ?Domain
     {
