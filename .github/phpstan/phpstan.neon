@@ -1,0 +1,21 @@
+# PHPStan für die CI. Erwartet neben dem AddOn (vsn_seo/) die Checkouts
+# redaxo/ (redaxo/redaxo) und yrewrite/ (FriendsOfREDAXO/yrewrite), siehe .github/workflows/ci.yml.
+parameters:
+    level: 6
+    phpVersion: 80100
+    paths:
+        - ../../
+    excludePaths:
+        - ../../assets/
+        - ../../.github/
+    scanDirectories:
+        - ../../../redaxo/redaxo/src/core/lib
+        - ../../../redaxo/redaxo/src/core/functions
+        - ../../../redaxo/redaxo/src/core/vendor/symfony/console
+        - ../../../redaxo/redaxo/src/addons/cronjob/lib
+        - ../../../redaxo/redaxo/src/addons/phpmailer/lib
+        - ../../../redaxo/redaxo/src/addons/phpmailer/vendor
+        - ../../../yrewrite/lib
+    bootstrapFiles:
+        - dashboard-stub.php
+    treatPhpDocTypesAsCertain: false

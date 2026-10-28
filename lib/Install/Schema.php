@@ -35,6 +35,8 @@ final class Schema
         'vsn_seo_mt_404',
         'vsn_seo_inspect',
         'vsn_seo_inspect_day',
+        'vsn_seo_rank_keyword',
+        'vsn_seo_rank',
     ];
 
     public static function ensure(): void
@@ -288,6 +290,28 @@ final class Schema
             ->ensureColumn(new Col('error', 'varchar(255)', true))
             ->setPrimaryKey(['domain_id', 'url_id'])
             ->ensureIndex(new Idx('inspected', ['domain_id', 'inspected_at']))
+            ->ensure();
+
+        // Rank-Tracking (nur Datenstruktur, siehe Source\Rank\RankTrackerInterface)
+        rex_sql_table::get(rex::getTable('vsn_seo_rank_keyword'))
+            ->ensurePrimaryIdColumn()
+            ->ensureColumn(new Col('domain_id', 'smallint(5) unsigned'))
+            ->ensureColumn(new Col('query_id', 'int(10) unsigned'))
+            ->ensureColumn(new Col('country', 'char(2)', false, 'de'))
+            ->ensureColumn(new Col('device', 'varchar(10)', false, 'desktop'))
+            ->ensureColumn(new Col('competitors', 'text', true))
+            ->ensureColumn(new Col('status', 'tinyint(1)', false, '1'))
+            ->ensureIndex(new Idx('keyword', ['domain_id', 'query_id', 'country', 'device'], Idx::UNIQUE))
+            ->ensure();
+
+        rex_sql_table::get(rex::getTable('vsn_seo_rank'))
+            ->ensureColumn(new Col('keyword_id', 'int(10) unsigned'))
+            ->ensureColumn(new Col('date', 'date'))
+            ->ensureColumn(new Col('host', 'varchar(191)'))
+            ->ensureColumn(new Col('position', 'smallint(5) unsigned', true))
+            ->ensureColumn(new Col('url_id', 'int(10) unsigned', true))
+            ->ensureColumn(new Col('type', 'varchar(30)', false, 'organic'))
+            ->setPrimaryKey(['keyword_id', 'date', 'host'])
             ->ensure();
 
         rex_sql_table::get(rex::getTable('vsn_seo_inspect_day'))

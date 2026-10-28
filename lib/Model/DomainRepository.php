@@ -89,6 +89,8 @@ final class DomainRepository
             'vsn_seo_mt_day', 'vsn_seo_mt_engine', 'vsn_seo_mt_entry', 'vsn_seo_mt_404', 'vsn_seo_inspect', 'vsn_seo_inspect_day'] as $table) {
             $sql->setQuery('DELETE FROM ' . rex::getTable($table) . ' WHERE domain_id = ?', [$id]);
         }
+        $sql->setQuery('DELETE r FROM ' . rex::getTable('vsn_seo_rank') . ' r JOIN ' . rex::getTable('vsn_seo_rank_keyword') . ' k ON k.id = r.keyword_id WHERE k.domain_id = ?', [$id]);
+        $sql->setQuery('DELETE FROM ' . rex::getTable('vsn_seo_rank_keyword') . ' WHERE domain_id = ?', [$id]);
         $sql->setQuery('DELETE FROM ' . self::table() . ' WHERE id = ?', [$id]);
         self::$cache = null;
     }

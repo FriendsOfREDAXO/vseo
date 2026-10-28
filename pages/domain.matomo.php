@@ -35,8 +35,9 @@ $weeks = $sql->getArray(
 );
 $weeks = array_values(array_filter($weeks, static fn ($w) => 7 === (int) $w['days']));
 $x = array_map(static fn ($w) => strtotime($w['week'] . ' 12:00:00'), $weeks);
+$xLabel = $this->i18n('week');
 $chart = static fn (string $id, array $series, array $options = []) => '<div class="vsn-seo-chart" id="' . $id . '" data-chart="'
-    . rex_escape((string) json_encode(['x' => $x, 'series' => $series, 'updates' => []] + $options)) . '"></div>';
+    . rex_escape((string) json_encode(['x' => $x, 'xLabel' => $xLabel, 'series' => $series, 'updates' => []] + $options)) . '"></div>';
 
 $totals = $sql->getArray(
     'SELECT SUM(IF(date BETWEEN ? AND ?, search_visits, 0)) AS s1, SUM(IF(date BETWEEN ? AND ?, search_visits, 0)) AS s0,

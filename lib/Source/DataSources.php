@@ -27,4 +27,24 @@ final class DataSources
         }
         return $result;
     }
+
+    /**
+     * Rank-Tracker anderer AddOns (VSN_SEO_RANK_TRACKERS). Das AddOn selbst bringt keinen mit.
+     *
+     * @return array<string, Rank\RankTrackerInterface>
+     */
+    public static function rankTrackers(): array
+    {
+        $result = [];
+        foreach (rex_extension::registerPoint(new rex_extension_point('VSN_SEO_RANK_TRACKERS', self::noTrackers())) as $tracker) {
+            $result[$tracker->key()] = $tracker;
+        }
+        return $result;
+    }
+
+    /** @return list<Rank\RankTrackerInterface> */
+    private static function noTrackers(): array
+    {
+        return [];
+    }
 }

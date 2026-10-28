@@ -1,5 +1,5 @@
 package: vsn_seo
-version: '0.3.0'
+version: '1.0.0-beta1'
 author: VIEWSION
 supportpage: https://github.com/viewsion/vsn_seo
 
@@ -82,3 +82,4 @@ installer_ignore:
     - .gitignore
     - CLAUDE.md
     - phpstan.neon
+    - node_modules

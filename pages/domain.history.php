@@ -38,8 +38,9 @@ $updates = array_map(
     static fn ($u) => ['x' => strtotime($u['date'] . ' 12:00:00'), 'name' => $u['name']],
     Series::coreUpdates($complete[0]['week'] ?? null),
 );
+$xLabel = $this->i18n('week');
 $chart = static fn (string $id, array $series, array $options = []) => '<div class="vsn-seo-chart" id="' . $id . '" data-chart="'
-    . rex_escape((string) json_encode(['x' => $x, 'series' => $series, 'updates' => $updates] + $options)) . '"></div>';
+    . rex_escape((string) json_encode(['x' => $x, 'xLabel' => $xLabel, 'series' => $series, 'updates' => $updates] + $options)) . '"></div>';
 
 $toolbar = '<div class="vsn-seo-toolbar"><div class="btn-group">';
 foreach ([3 => $this->i18n('range_3'), 6 => $this->i18n('range_6'), 12 => $this->i18n('range_12'), 0 => $this->i18n('range_all')] as $value => $label) {

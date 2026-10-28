@@ -67,7 +67,8 @@
         var grid = {stroke: cssVar(el, '--vsn-seo-grid'), width: 1};
         var hasY2 = cfg.series.some(function (s) { return s.scale === 'y2'; });
         var scales = {x: {time: true}, y: {dir: cfg.invert ? -1 : 1}};
-        var series = [{value: function (u, v) { return v === null ? '–' : fmtDate(v); }}];
+        // Beschriftung der x-Achse in der Legende kommt übersetzt aus PHP (sonst zeigt uPlot "Time")
+        var series = [{label: cfg.xLabel || '', value: function (u, v) { return v === null ? '–' : fmtDate(v); }}];
         var data = [cfg.x];
 
         cfg.series.forEach(function (s) {

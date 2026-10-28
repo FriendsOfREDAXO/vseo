@@ -35,13 +35,14 @@ if (rex_addon::get('dashboard')->isAvailable() && class_exists(\FriendsOfRedaxo\
     \FriendsOfRedaxo\Dashboard\Dashboard::addItem(
         \Viewsion\SeoMonitor\Dashboard\OverviewItem::factory('vsn-seo-overview', rex_i18n::msg('vsn_seo_title'))->setColumns(2),
     );
-    rex_view::addCssFile($this->getAssetsUrl('vsn_seo.css'));
+    rex_view::addCssFile($this->getAssetsUrl('vsn_seo.css') . '?v=' . (int) @filemtime($this->getAssetsPath('vsn_seo.css')));
 }
 
 if ('vsn_seo' === rex_be_controller::getCurrentPagePart(1)) {
     $asset = function (string $file): string {
         $url = $this->getAssetsUrl($file);
-        $path = $this->getPath('assets/' . $file);
+        // Zeitstempel der ausgelieferten Kopie (assets/addons/vsn_seo), nicht der Quelle: sonst landet eine veraltete Kopie unter neuer URL im Cache
+        $path = $this->getAssetsPath($file);
         return is_file($path) ? $url . '?v=' . filemtime($path) : $url;
     };
     rex_view::addCssFile($asset('vendor/uplot/uPlot.min.css'));

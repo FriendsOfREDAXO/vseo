@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.0-beta1 – unveröffentlicht
+
+- Vollständige Anleitung (Deutsch, englische Kurzfassung)
+- Rank-Tracking: Schnittstelle `RankTrackerInterface`, Ergebnisobjekt `RankResult`, Tabellen und Extension Point `VSN_SEO_RANK_TRACKERS` (ohne eigene Implementierung)
+- GitHub-Action: `php -l` für PHP 8.1–8.4 und PHPStan (Level 6) gegen den REDAXO-Core
+- Diagrammlegende übersetzt
+
 ## 0.3.0 – unveröffentlicht
 
 - Warnungen mit einstellbaren Regeln (Suchbegriffe, URLs, Klicks, 404 aus Suchmaschinen, neue Fehlerseiten, robots.txt/Sitemap, indexierter Anteil, Weiterleitungsketten, veraltete Daten), Verlauf mit „gesehen“, Ampel in der Übersicht
