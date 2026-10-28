@@ -14,7 +14,7 @@ $fields = [
     'retention_months' => [3, 120],
 ];
 
-if ('POST' === rex_request_method()) {
+if ('post' === rex_request_method()) {
     if (!$csrf->isValid()) {
         echo rex_view::error(rex_i18n::msg('csrf_token_invalid'));
     } else {

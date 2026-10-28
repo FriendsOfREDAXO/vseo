@@ -77,7 +77,7 @@ if ($weeks) {
     $rows = '';
     $prev = null;
     foreach ($weeks as $w) {
-        $cells = '<td>' . Format::date($w['week']) . ($w['days'] < 7 ? ' <span class="label label-default" title="' . rex_escape($this->i18n('week_incomplete')) . '">' . $w['days'] . '/7</span>' : '') . '</td>';
+        $cells = '<td>' . Format::date($w['week']) . ($w['days'] < 7 ? ' <span class="label label-default" title="' . $this->i18n('week_incomplete') . '">' . $w['days'] . '/7</span>' : '') . '</td>';
         foreach (['queries', 'urls', 'clicks', 'impressions'] as $key) {
             $cells .= '<td class="text-right">' . Format::int($w[$key]) . ($prev && $w['days'] >= 7 && $prev['days'] >= 7 ? ' ' . Format::delta($w[$key], $prev[$key]) : '') . '</td>';
         }

@@ -29,7 +29,7 @@ $cleanHost = static function (string $host): string {
     return rtrim($host, '/');
 };
 
-if ('POST' === rex_request_method()) {
+if ('post' === rex_request_method()) {
     if (!$csrf->isValid()) {
         echo rex_view::error(rex_i18n::msg('csrf_token_invalid'));
         $func = '';

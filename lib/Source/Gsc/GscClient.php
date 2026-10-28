@@ -7,13 +7,12 @@ namespace Viewsion\SeoMonitor\Source\Gsc;
 use rex_config;
 use RuntimeException;
 use Viewsion\SeoMonitor\Model\Account;
-use Viewsion\SeoMonitor\Util\Crypto;
 use Viewsion\SeoMonitor\Util\Http;
 use Viewsion\SeoMonitor\Util\HttpResponse;
 
 /**
- * Search Console API mit Dienstkonto. Das JWT wird mit openssl_sign (RS256) signiert,
- * es ist keine Google-Bibliothek nötig.
+ * Search Console API mit Dienstkonto. Das JWT wird mit openssl_sign (RS256) signiert
+ * und direkt als Bearer-Token verwendet, es ist keine Google-Bibliothek nötig.
  */
 final class GscClient
 {
@@ -23,6 +22,8 @@ final class GscClient
 
     /** @var array<string, mixed> */
     private array $credentials;
+    private ?string $jwt = null;
+    private int $jwtExpires = 0;
 
     public function __construct(private readonly Account $account)
     {
@@ -121,21 +122,19 @@ final class GscClient
         return $response;
     }
 
+    /**
+     * Selbst signiertes JWT als Bearer-Token („JWT access“ für Dienstkonten).
+     * Ohne Umweg über den Token-Endpunkt; es lebt nur im Speicher und wird
+     * fünf Minuten vor Ablauf neu signiert.
+     */
     private function accessToken(): string
     {
-        $key = 'gsc_token_' . $this->account->id;
-        $cached = rex_config::get('vsn_seo', $key);
-        if (is_array($cached) && ($cached['expires'] ?? 0) > time() + 60) {
-            try {
-                return Crypto::decrypt((string) $cached['token']);
-            } catch (RuntimeException) {
-                // Schlüssel geändert → neu holen
-            }
+        if (null !== $this->jwt && $this->jwtExpires > time() + 300) {
+            return $this->jwt;
         }
 
         $email = (string) ($this->credentials['client_email'] ?? '');
         $privateKey = (string) ($this->credentials['private_key'] ?? '');
-        $tokenUri = (string) ($this->credentials['token_uri'] ?? self::TOKEN_URI);
         if ('' === $email || '' === $privateKey) {
             throw new RuntimeException('Search Console: no service account credentials');
         }
@@ -145,11 +144,11 @@ final class GscClient
             self::base64url((string) json_encode(['alg' => 'RS256', 'typ' => 'JWT'])),
             self::base64url((string) json_encode([
                 'iss' => $email,
+                'sub' => $email,
                 'scope' => self::SCOPE,
-                'aud' => $tokenUri,
                 'iat' => $now,
                 'exp' => $now + 3600,
-            ])),
+            ], JSON_UNESCAPED_SLASHES)),
         ];
         $signature = '';
         if (!openssl_sign(implode('.', $segments), $signature, $privateKey, OPENSSL_ALGO_SHA256)) {
@@ -157,24 +156,14 @@ final class GscClient
         }
         $segments[] = self::base64url($signature);
 
-        $response = Http::postForm($tokenUri, [
-            'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
-            'assertion' => implode('.', $segments),
-        ]);
-        $data = $response->json();
-        if (!$response->isOk() || !isset($data['access_token'])) {
-            throw new RuntimeException('Search Console token: ' . ($data['error_description'] ?? $data['error'] ?? ('HTTP ' . $response->status)));
-        }
-        rex_config::set('vsn_seo', $key, [
-            'token' => Crypto::encrypt((string) $data['access_token']),
-            'expires' => $now + (int) ($data['expires_in'] ?? 3600),
-        ]);
-        return (string) $data['access_token'];
+        $this->jwt = implode('.', $segments);
+        $this->jwtExpires = $now + 3600;
+        return $this->jwt;
     }
 
     private function forgetToken(): void
     {
-        rex_config::remove('vsn_seo', 'gsc_token_' . $this->account->id);
+        $this->jwt = null;
     }
 
     private static function base64url(string $data): string

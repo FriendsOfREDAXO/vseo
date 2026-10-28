@@ -56,7 +56,8 @@ final class Http
     public static function postForm(string $url, array $data, array $headers = [], int $timeout = self::DEFAULT_TIMEOUT): HttpResponse
     {
         $headers['Content-Type'] = 'application/x-www-form-urlencoded';
-        return self::request('POST', $url, $headers, http_build_query($data), $timeout);
+        // Trennzeichen explizit: REDAXO setzt arg_separator.output auf &amp;
+        return self::request('POST', $url, $headers, http_build_query($data, '', '&'), $timeout);
     }
 
     /** Token und ähnliches nicht ins Log schreiben */

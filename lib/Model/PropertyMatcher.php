@@ -107,17 +107,39 @@ final class PropertyMatcher
             $known[self::bare($yd['host'])] = true;
         }
 
-        // Properties ohne YRewrite-Domain
+        // Properties ohne YRewrite-Domain: je Domain (ohne www) die beste Property
         foreach ($sitesByAccount as $accountId => $sites) {
+            $groups = [];
             foreach ($sites as $site) {
                 $host = self::hostFromProperty($site['siteUrl']);
-                if ('' === $host || isset($known[self::bare($host)])) {
-                    continue;
+                if ('' !== $host && !isset($known[self::bare($host)])) {
+                    $groups[self::bare($host)][] = $site['siteUrl'];
                 }
-                $suggestions[] = ['host' => $host, 'yrewrite_id' => null, 'account_id' => $accountId, 'property' => $site['siteUrl']];
-                $known[self::bare($host)] = true;
+            }
+            foreach ($groups as $bare => $urls) {
+                usort($urls, static fn ($a, $b) => self::score($b) <=> self::score($a));
+                // Host der Website: aus der besten URL-Property, sonst die Domain selbst
+                $host = $bare;
+                foreach ($urls as $url) {
+                    if (!str_starts_with($url, 'sc-domain:')) {
+                        $host = self::hostFromProperty($url);
+                        break;
+                    }
+                }
+                $suggestions[] = ['host' => $host, 'yrewrite_id' => null, 'account_id' => $accountId, 'property' => $urls[0]];
+                $known[$bare] = true;
             }
         }
         return ['suggestions' => $suggestions, 'errors' => $errors];
+    }
+
+    /** Rang einer Property: Domain-Property, dann https, dann http; ohne www vor www */
+    private static function score(string $url): int
+    {
+        if (str_starts_with($url, 'sc-domain:')) {
+            return 10;
+        }
+        $score = str_starts_with($url, 'https://') ? 4 : 2;
+        return str_starts_with(self::hostFromProperty($url), 'www.') ? $score : $score + 1;
     }
 }

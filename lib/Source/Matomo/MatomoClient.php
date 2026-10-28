@@ -41,7 +41,7 @@ final class MatomoClient
      */
     public function call(string $method, array $params = []): array
     {
-        $query = http_build_query(['module' => 'API', 'method' => $method, 'format' => 'JSON'] + $params);
+        $query = http_build_query(['module' => 'API', 'method' => $method, 'format' => 'JSON'] + $params, '', '&');
         $response = Http::postForm($this->url . 'index.php?' . $query, ['token_auth' => $this->token], [], 60);
         $data = json_decode($response->body, true);
         if (!$response->isOk() || !is_array($data)) {

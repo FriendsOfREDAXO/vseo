@@ -23,7 +23,7 @@ if ($account) {
 }
 
 // Speichern, Löschen, Testen nur per POST mit CSRF-Token
-if ('POST' === rex_request_method()) {
+if ('post' === rex_request_method()) {
     if (!$csrf->isValid()) {
         echo rex_view::error(rex_i18n::msg('csrf_token_invalid'));
     } elseif ('delete' === $func && $account) {
@@ -81,15 +81,16 @@ if ('POST' === rex_request_method()) {
                 $name = $info;
             }
         } catch (RuntimeException $e) {
-            $error = str_starts_with($e->getMessage(), 'vsn_seo_') ? rex_i18n::msg($e->getMessage()) : $e->getMessage();
+            // rex_i18n::msg() liefert bereits maskierten Text
+            $error = str_starts_with($e->getMessage(), 'vsn_seo_') ? rex_i18n::msg($e->getMessage()) : rex_escape($e->getMessage());
         }
         if ($error) {
-            echo rex_view::error(rex_escape($error));
+            echo rex_view::error($error);
             $func = $account ? 'edit' : 'add';
         } else {
             $id = AccountRepository::save($account?->id, $type, $name, $info, $credentials);
-            // Token und Property-Liste des Zugangs verwerfen, sie gehören zu den alten Zugangsdaten
-            foreach (['gsc_token_', 'gsc_sites_', 'matomo_sites_'] as $prefix) {
+            // Zwischengespeicherte Property-Liste des Zugangs verwerfen, sie gehören zu den alten Zugangsdaten
+            foreach (['gsc_sites_', 'matomo_sites_'] as $prefix) {
                 rex_config::remove('vsn_seo', $prefix . $id);
             }
             echo rex_view::success($this->i18n('account_saved'));
@@ -121,7 +122,7 @@ if ('add' === $func || 'edit' === $func) {
         $body .= '<div class="form-group"><label for="vsn-seo-url">' . $this->i18n('account_matomo_url') . '</label>'
             . '<input class="form-control" id="vsn-seo-url" name="url" type="url" placeholder="https://matomo.example.com/" value="' . rex_escape(rex_post('url', 'string', $url)) . '"></div>';
         $body .= '<div class="form-group"><label for="vsn-seo-token">' . $this->i18n('account_matomo_token') . '</label>'
-            . '<input class="form-control" id="vsn-seo-token" name="token" type="password" autocomplete="new-password" placeholder="' . ($account ? rex_escape($this->i18n('account_secret_keep')) : '') . '">'
+            . '<input class="form-control" id="vsn-seo-token" name="token" type="password" autocomplete="new-password" placeholder="' . ($account ? $this->i18n('account_secret_keep') : '') . '">'
             . '<p class="help-block">' . $this->i18n('account_matomo_token_notice') . '</p></div>';
     }
     $buttons = '<button class="btn btn-save" type="submit">' . rex_i18n::msg('form_save') . '</button> '
@@ -141,7 +142,7 @@ foreach (AccountRepository::all() as $acc) {
     $post = static fn (string $f, string $label, string $class, string $confirm = '') => '<form method="post" action="' . $baseUrl . '" class="vsn-seo-inline">'
         . $csrf->getHiddenField() . '<input type="hidden" name="func" value="' . $f . '"><input type="hidden" name="id" value="' . $acc->id . '">'
         . '<button class="btn btn-xs ' . $class . '" type="submit"' . ($confirm ? ' data-confirm="' . rex_escape($confirm) . '"' : '') . '>' . $label . '</button></form>';
-    $rows .= '<tr><td>' . rex_escape($this->i18n($acc->type === Account::TYPE_GSC ? 'account_gsc' : 'account_matomo')) . '</td>'
+    $rows .= '<tr><td>' . $this->i18n($acc->type === Account::TYPE_GSC ? 'account_gsc' : 'account_matomo') . '</td>'
         . '<td>' . rex_escape($acc->name) . '</td><td><code>' . rex_escape($acc->info) . '</code></td>'
         . '<td class="rex-table-action">'
         . '<a class="btn btn-xs btn-default" href="' . $baseUrl . '&func=edit&id=' . $acc->id . '">' . rex_i18n::msg('edit') . '</a> '

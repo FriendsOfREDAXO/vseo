@@ -36,8 +36,8 @@ foreach ($domains as $domain) {
         . ($domain->name !== $domain->host ? ' <small>' . rex_escape($domain->host) . '</small>' : '') . '</header>'
         . $fragment->parse('vsn_seo/kpi.php')
         . '<div class="vsn-seo-sparks">'
-        . '<div class="is-core" title="' . rex_escape($this->i18n('kpi_queries')) . '">' . Series::sparkline(array_column($weeks, 'queries')) . '<small>' . $this->i18n('kpi_queries') . '</small></div>'
-        . '<div title="' . rex_escape($this->i18n('kpi_clicks')) . '">' . Series::sparkline(array_column($weeks, 'clicks')) . '<small>' . $this->i18n('kpi_clicks') . '</small></div>'
+        . '<div class="is-core" title="' . $this->i18n('kpi_queries') . '">' . Series::sparkline(array_column($weeks, 'queries')) . '<small>' . $this->i18n('kpi_queries') . '</small></div>'
+        . '<div title="' . $this->i18n('kpi_clicks') . '">' . Series::sparkline(array_column($weeks, 'clicks')) . '<small>' . $this->i18n('kpi_clicks') . '</small></div>'
         . '</div>'
         . '<footer>' . (isset($kpi['end']) ? $this->i18n('period_until', Format::date($kpi['cur']['from'] ?? null), Format::date($kpi['end'])) : $this->i18n('no_data')) . '</footer>'
         . '</a>';
