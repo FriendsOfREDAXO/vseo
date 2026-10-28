@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Viewsion\SeoMonitor\Alert\AlertRepository;
 use Viewsion\SeoMonitor\Backend\Page;
 use Viewsion\SeoMonitor\Model\DomainRepository;
 use Viewsion\SeoMonitor\Stats\Series;
@@ -16,15 +17,23 @@ if (!$domains) {
     return;
 }
 
+$alertSeverity = AlertRepository::unseenSeverity();
 $tiles = '';
 foreach ($domains as $domain) {
     $weeks = Series::completeOnly(Series::weeks($domain->id, 6));
     $kpi = $domain->kpi;
 
-    // Ampel bis zu den Warnregeln (Meilenstein 3): Fehler beim Import / veraltete Daten / ok
+    // Ampel: ungesehene Warnungen (kritisch = rot), Importfehler, veraltete Daten
     $stale = !isset($kpi['end']) || $kpi['end'] < date('Y-m-d', strtotime('-7 days'));
-    $light = $domain->lastError ? 'is-red' : ($stale ? 'is-yellow' : 'is-green');
-    $lightTitle = $domain->lastError ?: ($stale ? $this->i18n('light_stale') : $this->i18n('light_ok'));
+    $severity = $alertSeverity[$domain->id] ?? 0;
+    if (AlertRepository::CRITICAL === $severity || $domain->lastError) {
+        $light = 'is-red';
+    } elseif ($severity > 0 || $stale) {
+        $light = 'is-yellow';
+    } else {
+        $light = 'is-green';
+    }
+    $lightTitle = $severity ? $this->i18n('light_alerts') : ($domain->lastError ?: ($stale ? $this->i18n('light_stale') : $this->i18n('light_ok')));
 
     $fragment = new rex_fragment();
     $fragment->setVar('kpi', $kpi, false);

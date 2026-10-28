@@ -157,7 +157,8 @@ final class Crawler
         $base = $domain->baseUrl();
 
         // robots.txt
-        $res = $this->fetcher->get($base . 'robots.txt');
+        // Google folgt Weiterleitungen der robots.txt (z. B. auf www/https)
+        [$res] = $this->fetcher->follow($base . 'robots.txt');
         $robotsOk = 200 === $res->status;
         $this->robots = RobotsTxt::parse($robotsOk ? $res->body : '');
         $state['robots'] = [
@@ -270,9 +271,12 @@ final class Crawler
             return true;
         }
         $seen[$url] = true;
-        $res = $this->fetcher->get($url);
+        [$res, $chain] = $this->fetcher->follow($url);
         $parsed = 200 === $res->status ? SitemapReader::read($res->body, $maxUrls) : ['index' => false, 'locs' => [], 'error' => null];
         $error = 200 !== $res->status ? ($res->status ? 'HTTP ' . $res->status : (string) $res->error) : $parsed['error'];
+        if ($error && $chain) {
+            $error = implode(' · ', $chain) . ' · ' . $error;
+        }
 
         $sql = rex_sql::factory();
         $sql->setQuery(

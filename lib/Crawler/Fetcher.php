@@ -75,6 +75,22 @@ final class Fetcher
         }
     }
 
+    /**
+     * Abruf mit Weiterleitungen (für robots.txt und Sitemaps, denen auch Google folgt).
+     *
+     * @return array{FetchResult, list<string>} Ergebnis am Ziel und die Kette der Weiterleitungen
+     */
+    public function follow(string $url, int $maxHops = 5): array
+    {
+        $result = $this->get($url);
+        $chain = [];
+        while ($result->isRedirect() && count($chain) < $maxHops) {
+            $chain[] = $result->status . ' → ' . $result->location;
+            $result = $this->get((string) $result->location);
+        }
+        return [$result, $chain];
+    }
+
     /** Relative Angaben (Location, canonical, Sitemap-Pfade) gegen die Basis-URL auflösen */
     public static function resolve(string $base, string $ref): string
     {

@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.3.0 – unveröffentlicht
+
+- Warnungen mit einstellbaren Regeln (Suchbegriffe, URLs, Klicks, 404 aus Suchmaschinen, neue Fehlerseiten, robots.txt/Sitemap, indexierter Anteil, Weiterleitungsketten, veraltete Daten), Verlauf mit „gesehen“, Ampel in der Übersicht
+- Mails über rex_mailer: sofort je Regel, wöchentliche Zusammenfassung je Empfänger, Testmail
+- Extension Point `VSN_SEO_ALERT` für Warnungen anderer AddOns
+- Matomo-Import: Besuche aus Suchmaschinen, Suchmaschinen, Einstiegsseiten aus der Suche mit Umsatz (Matomo 5), 404-Seiten nach einstellbarem Muster; Domain-Seite „Matomo“
+- URL-Inspection-Stichprobe (verlorene, neue und Top-URLs): Indexstatus, Google-canonical, letzter Crawl
+- robots.txt und Sitemaps folgen Weiterleitungen
+- Widget für das AddOn „dashboard“
+- Cronjob-Typ und Konsolenbefehl `vsn_seo:alerts`
+
 ## 0.2.0 – unveröffentlicht
 
 - Gewinner/Verlierer: zwei frei wählbare Zeiträume je Suchbegriff oder URL, Filter nach Gerät, Land und Text, CSV-Export

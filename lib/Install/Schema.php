@@ -28,6 +28,13 @@ final class Schema
         'vsn_seo_crawl',
         'vsn_seo_issue',
         'vsn_seo_sitemap',
+        'vsn_seo_alert',
+        'vsn_seo_mt_day',
+        'vsn_seo_mt_engine',
+        'vsn_seo_mt_entry',
+        'vsn_seo_mt_404',
+        'vsn_seo_inspect',
+        'vsn_seo_inspect_day',
     ];
 
     public static function ensure(): void
@@ -62,6 +69,7 @@ final class Schema
             ->ensureColumn(new Col('last_error', 'text', true))
             ->ensureColumn(new Col('kpi', 'text', true))
             ->ensureColumn(new Col('crawl', 'text', true))
+            ->ensureColumn(new Col('matomo', 'text', true))
             ->ensureGlobalColumns()
             ->ensureIndex(new Idx('host', ['host'], Idx::UNIQUE))
             ->ensure();
@@ -200,6 +208,95 @@ final class Schema
             ->ensureColumn(new Col('gsc_submitted', 'int(10) unsigned', true))
             ->ensureColumn(new Col('gsc_indexed', 'int(10) unsigned', true))
             ->ensureIndex(new Idx('sitemap', ['domain_id', 'hash'], Idx::UNIQUE))
+            ->ensure();
+
+        // Warnungen; ref verhindert, dass dieselbe Warnung (Regel + Woche/Anlass) mehrfach entsteht
+        rex_sql_table::get(rex::getTable('vsn_seo_alert'))
+            ->ensurePrimaryIdColumn()
+            ->ensureColumn(new Col('domain_id', 'smallint(5) unsigned'))
+            ->ensureColumn(new Col('rule', 'varchar(40)'))
+            ->ensureColumn(new Col('ref', 'varchar(100)', false, ''))
+            ->ensureColumn(new Col('severity', 'tinyint(1) unsigned', false, '2'))
+            ->ensureColumn(new Col('message', 'varchar(500)', false, ''))
+            ->ensureColumn(new Col('params', 'text', true))
+            ->ensureColumn(new Col('value', 'double', true))
+            ->ensureColumn(new Col('baseline', 'double', true))
+            ->ensureColumn(new Col('created_at', 'datetime'))
+            ->ensureColumn(new Col('mailed_at', 'datetime', true))
+            ->ensureColumn(new Col('seen_at', 'datetime', true))
+            ->ensureColumn(new Col('seen_by', 'varchar(191)', true))
+            ->ensureIndex(new Idx('alert', ['domain_id', 'rule', 'ref'], Idx::UNIQUE))
+            ->ensureIndex(new Idx('open', ['seen_at', 'severity']))
+            ->ensure();
+
+        // Matomo: Tageswerte, Suchmaschinen, Einstiegsseiten aus der Suche, 404-Seiten
+        rex_sql_table::get(rex::getTable('vsn_seo_mt_day'))
+            ->ensureColumn(new Col('domain_id', 'smallint(5) unsigned'))
+            ->ensureColumn(new Col('date', 'date'))
+            ->ensureColumn(new Col('visits', 'int(10) unsigned', false, '0'))
+            ->ensureColumn(new Col('search_visits', 'int(10) unsigned', false, '0'))
+            ->ensureColumn(new Col('search_conversions', 'int(10) unsigned', false, '0'))
+            ->ensureColumn(new Col('search_revenue', 'decimal(14,2)', false, '0.00'))
+            ->ensureColumn(new Col('hits_404', 'int(10) unsigned', false, '0'))
+            ->ensureColumn(new Col('hits_404_search', 'int(10) unsigned', false, '0'))
+            ->ensureColumn(new Col('imported_at', 'datetime', true))
+            ->setPrimaryKey(['domain_id', 'date'])
+            ->ensure();
+
+        rex_sql_table::get(rex::getTable('vsn_seo_mt_engine'))
+            ->ensureColumn(new Col('domain_id', 'smallint(5) unsigned'))
+            ->ensureColumn(new Col('date', 'date'))
+            ->ensureColumn(new Col('engine', 'varchar(64)'))
+            ->ensureColumn(new Col('visits', 'int(10) unsigned', false, '0'))
+            ->setPrimaryKey(['domain_id', 'date', 'engine'])
+            ->ensure();
+
+        rex_sql_table::get(rex::getTable('vsn_seo_mt_entry'))
+            ->ensureColumn(new Col('domain_id', 'smallint(5) unsigned'))
+            ->ensureColumn(new Col('date', 'date'))
+            ->ensureColumn(new Col('url_id', 'int(10) unsigned'))
+            ->ensureColumn(new Col('entrances', 'int(10) unsigned', false, '0'))
+            ->ensureColumn(new Col('bounces', 'int(10) unsigned', false, '0'))
+            ->ensureColumn(new Col('conversions', 'int(10) unsigned', false, '0'))
+            ->ensureColumn(new Col('revenue', 'decimal(14,2)', false, '0.00'))
+            ->setPrimaryKey(['domain_id', 'date', 'url_id'])
+            ->ensure();
+
+        rex_sql_table::get(rex::getTable('vsn_seo_mt_404'))
+            ->ensureColumn(new Col('domain_id', 'smallint(5) unsigned'))
+            ->ensureColumn(new Col('date', 'date'))
+            ->ensureColumn(new Col('url_id', 'int(10) unsigned'))
+            ->ensureColumn(new Col('hits', 'int(10) unsigned', false, '0'))
+            ->ensureColumn(new Col('hits_search', 'int(10) unsigned', false, '0'))
+            ->setPrimaryKey(['domain_id', 'date', 'url_id'])
+            ->ensure();
+
+        // URL Inspection: letzter Stand je URL der Stichprobe und Tageswerte für den Verlauf
+        rex_sql_table::get(rex::getTable('vsn_seo_inspect'))
+            ->ensureColumn(new Col('domain_id', 'smallint(5) unsigned'))
+            ->ensureColumn(new Col('url_id', 'int(10) unsigned'))
+            ->ensureColumn(new Col('reason', 'varchar(20)', false, ''))
+            ->ensureColumn(new Col('inspected_at', 'datetime'))
+            ->ensureColumn(new Col('verdict', 'varchar(20)', false, ''))
+            ->ensureColumn(new Col('coverage', 'varchar(191)', false, ''))
+            ->ensureColumn(new Col('indexing_state', 'varchar(40)', false, ''))
+            ->ensureColumn(new Col('robots_state', 'varchar(40)', false, ''))
+            ->ensureColumn(new Col('fetch_state', 'varchar(40)', false, ''))
+            ->ensureColumn(new Col('google_canonical', 'text', true))
+            ->ensureColumn(new Col('user_canonical', 'text', true))
+            ->ensureColumn(new Col('last_crawl', 'datetime', true))
+            ->ensureColumn(new Col('error', 'varchar(255)', true))
+            ->setPrimaryKey(['domain_id', 'url_id'])
+            ->ensureIndex(new Idx('inspected', ['domain_id', 'inspected_at']))
+            ->ensure();
+
+        rex_sql_table::get(rex::getTable('vsn_seo_inspect_day'))
+            ->ensureColumn(new Col('domain_id', 'smallint(5) unsigned'))
+            ->ensureColumn(new Col('date', 'date'))
+            ->ensureColumn(new Col('inspected', 'int(10) unsigned', false, '0'))
+            ->ensureColumn(new Col('sample', 'int(10) unsigned', false, '0'))
+            ->ensureColumn(new Col('indexed', 'int(10) unsigned', false, '0'))
+            ->setPrimaryKey(['domain_id', 'date'])
             ->ensure();
     }
 

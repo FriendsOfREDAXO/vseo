@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Viewsion\SeoMonitor\Model;
 
+use rex_addon;
 use rex_user;
 
 /**
@@ -33,6 +34,8 @@ final class Domain
     public array $kpi = [];
     /** @var array<string, mixed> Stand des Crawlers (robots.txt, letzte Läufe) */
     public array $crawl = [];
+    /** @var array<string, mixed> Stand des Matomo-Imports */
+    public array $matomo = [];
 
     /** @param array<string, mixed> $row */
     public static function fromRow(array $row): self
@@ -58,6 +61,8 @@ final class Domain
         $d->kpi = is_array($kpi) ? $kpi : [];
         $crawl = !empty($row['crawl']) ? json_decode((string) $row['crawl'], true) : null;
         $d->crawl = is_array($crawl) ? $crawl : [];
+        $matomo = !empty($row['matomo']) ? json_decode((string) $row['matomo'], true) : null;
+        $d->matomo = is_array($matomo) ? $matomo : [];
         return $d;
     }
 
@@ -85,6 +90,28 @@ final class Domain
         $bare = (string) preg_replace('/^www\./', '', strtolower($this->host));
         $host = (string) preg_replace('/^www\./', '', $host);
         return '' !== $host && ($host === $bare || str_ends_with($host, '.' . $bare));
+    }
+
+    public function hasMatomo(): bool
+    {
+        return null !== $this->matomoAccountId && null !== $this->matomoSiteId;
+    }
+
+    /**
+     * Empfänger für Warnungen: eigene Liste der Domain, sonst die allgemeine aus den Einstellungen
+     *
+     * @return list<string>
+     */
+    public function alertRecipients(): array
+    {
+        $list = '' !== trim($this->alertEmails) ? $this->alertEmails : (string) rex_addon::get('vsn_seo')->getConfig('alert_emails', '');
+        $result = [];
+        foreach (preg_split('/[\s,;]+/', $list) ?: [] as $mail) {
+            if (false !== filter_var($mail, FILTER_VALIDATE_EMAIL)) {
+                $result[] = $mail;
+            }
+        }
+        return array_values(array_unique($result));
     }
 
     public function backfillDone(): bool

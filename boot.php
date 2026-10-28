@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Viewsion\SeoMonitor\Cronjob\AlertCronjob;
 use Viewsion\SeoMonitor\Cronjob\CrawlCronjob;
 use Viewsion\SeoMonitor\Cronjob\ImportCronjob;
 use Viewsion\SeoMonitor\Model\DomainRepository;
@@ -11,6 +12,7 @@ use Viewsion\SeoMonitor\Model\DomainRepository;
 if (rex_addon::get('cronjob')->isAvailable()) {
     rex_cronjob_manager::registerType(ImportCronjob::class);
     rex_cronjob_manager::registerType(CrawlCronjob::class);
+    rex_cronjob_manager::registerType(AlertCronjob::class);
 }
 
 if (!rex::isBackend()) {
@@ -26,6 +28,14 @@ try {
     }
 } catch (rex_sql_exception) {
     // Tabellen fehlen noch (vor der Installation)
+}
+
+// Widget für das AddOn „dashboard“, nur wenn es installiert ist
+if (rex_addon::get('dashboard')->isAvailable() && class_exists(\FriendsOfRedaxo\Dashboard\Dashboard::class) && rex::getUser()?->hasPerm('vsn_seo[]')) {
+    \FriendsOfRedaxo\Dashboard\Dashboard::addItem(
+        \Viewsion\SeoMonitor\Dashboard\OverviewItem::factory('vsn-seo-overview', rex_i18n::msg('vsn_seo_title'))->setColumns(2),
+    );
+    rex_view::addCssFile($this->getAssetsUrl('vsn_seo.css'));
 }
 
 if ('vsn_seo' === rex_be_controller::getCurrentPagePart(1)) {

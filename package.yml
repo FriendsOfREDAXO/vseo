@@ -1,5 +1,5 @@
 package: vsn_seo
-version: '0.2.0'
+version: '0.3.0'
 author: VIEWSION
 supportpage: https://github.com/viewsion/vsn_seo
 
@@ -11,6 +11,8 @@ page:
     subpages:
         overview:
             title: translate:vsn_seo_overview
+        alerts:
+            title: translate:vsn_seo_alerts
         domain:
             title: translate:vsn_seo_domain
             subpages:
@@ -22,6 +24,8 @@ page:
                     title: translate:vsn_seo_lost
                 technical:
                     title: translate:vsn_seo_technical
+                matomo:
+                    title: Matomo
         settings:
             title: translate:vsn_seo_settings
             perm: vsn_seo[settings]
@@ -32,6 +36,8 @@ page:
                     title: translate:vsn_seo_accounts
                 general:
                     title: translate:vsn_seo_general
+                alerts:
+                    title: translate:vsn_seo_alert_rules
                 core_updates:
                     title: translate:vsn_seo_core_updates
 
@@ -40,6 +46,7 @@ console_commands:
     vsn_seo:backfill: Viewsion\SeoMonitor\Command\BackfillCommand
     vsn_seo:aggregate: Viewsion\SeoMonitor\Command\AggregateCommand
     vsn_seo:crawl: Viewsion\SeoMonitor\Command\CrawlCommand
+    vsn_seo:alerts: Viewsion\SeoMonitor\Command\AlertsCommand
 
 default_config:
     data_state: final
@@ -54,6 +61,13 @@ default_config:
     crawl_timeout: 15
     crawl_max_sitemap_urls: 50000
     crawl_gsc_days: 90
+    inspect_per_day: 50
+    inspect_interval_days: 14
+    matomo_backfill_days: 90
+    matomo_404_source: title
+    matomo_404_pattern: '404'
+    digest_weekday: 1
+    alert_emails: ''
 
 requires:
     redaxo: '^5.16.0'

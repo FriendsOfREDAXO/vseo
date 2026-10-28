@@ -6,7 +6,9 @@ namespace Viewsion\SeoMonitor\Source;
 
 use rex_extension;
 use rex_extension_point;
+use Viewsion\SeoMonitor\Source\Gsc\InspectionSource;
 use Viewsion\SeoMonitor\Source\Gsc\SearchAnalyticsSource;
+use Viewsion\SeoMonitor\Source\Matomo\MatomoSource;
 
 final class DataSources
 {
@@ -18,7 +20,7 @@ final class DataSources
     public static function all(): array
     {
         /** @var list<DataSourceInterface> $defaults */
-        $defaults = [new SearchAnalyticsSource()];
+        $defaults = [new SearchAnalyticsSource(), new MatomoSource(), new InspectionSource()];
         $result = [];
         foreach (rex_extension::registerPoint(new rex_extension_point('VSN_SEO_DATA_SOURCES', $defaults)) as $source) {
             $result[$source->key()] = $source;

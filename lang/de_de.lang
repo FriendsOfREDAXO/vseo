@@ -253,3 +253,127 @@ vsn_seo_cfg_crawl_gsc_days = URLs mit Impressionen der letzten … Tage
 vsn_seo_cfg_crawl_gsc_days_notice = Diese URLs aus der Search Console prüft der Crawler zusätzlich zur Sitemap – so fallen verlorene URLs mit 404 auf.
 
 vsn_seo_crawl_busy = Der Crawler läuft gerade. Bitte in ein paar Minuten erneut versuchen.
+
+vsn_seo_alerts = Warnungen
+vsn_seo_alert = Warnung
+vsn_seo_alert_rules = Warnregeln
+vsn_seo_cronjob_alerts = SEO Monitor: Warnungen
+vsn_seo_source_matomo = Matomo
+vsn_seo_source_inspect = URL Inspection
+vsn_seo_all_domains = Alle Domains
+vsn_seo_domain_edit = Domain bearbeiten
+vsn_seo_error = Fehler
+vsn_seo_today = heute
+vsn_seo_mail = E-Mail
+vsn_seo_light_alerts = Ungesehene Warnungen
+
+vsn_seo_alerts_created = Erstellt
+vsn_seo_alerts_show_seen = Auch gesehene zeigen
+vsn_seo_alerts_mark = Gesehen
+vsn_seo_alerts_mark_all = Alle als gesehen markieren
+vsn_seo_alerts_marked = {0} Warnung(en) als gesehen markiert.
+vsn_seo_alerts_seen_by = gesehen von {0}, {1}
+vsn_seo_alerts_mailed = per Mail gemeldet
+vsn_seo_alerts_none = Keine ungesehenen Warnungen.
+vsn_seo_alerts_none_all = Noch keine Warnungen.
+vsn_seo_alerts_no_phpmailer = Für den Mailversand muss das AddOn „PHPMailer“ installiert und eingerichtet sein. Warnungen erscheinen trotzdem im Backend.
+vsn_seo_alerts_no_recipients = Bitte zuerst mindestens eine gültige E-Mail-Adresse eintragen.
+
+vsn_seo_rule = Regel
+vsn_seo_rule_threshold = Schwelle
+vsn_seo_rule_mail = Sofort mailen
+vsn_seo_severity = Schwere
+vsn_seo_rule_queries_drop = Rankende Suchbegriffe gesunken
+vsn_seo_rule_queries_drop_notice = Letzte vollständige Woche gegenüber dem Durchschnitt der vier Wochen davor, Schwelle in %.
+vsn_seo_rule_urls_drop = Rankende URLs gesunken
+vsn_seo_rule_urls_drop_notice = Wie oben, für die Zahl der URLs mit Impressionen. Schwelle in %.
+vsn_seo_rule_clicks_drop = Klicks gesunken
+vsn_seo_rule_clicks_drop_notice = Wochenvergleich wie oben, Schwelle in %.
+vsn_seo_rule_not_found_rise = 404 aus Suchmaschinen gestiegen
+vsn_seo_rule_not_found_rise_notice = Matomo: 404-Aufrufe aus Suchmaschinen der letzten 7 Tage gegenüber dem Wochenschnitt davor. Schwelle als Faktor.
+vsn_seo_rule_http_errors_new = Neue Fehlerseiten
+vsn_seo_rule_http_errors_new_notice = Crawler: neue 4xx/5xx-URLs in den letzten 7 Tagen. Schwelle = Anzahl.
+vsn_seo_rule_sitemap_error = robots.txt/Sitemap-Fehler
+vsn_seo_rule_sitemap_error_notice = robots.txt oder Sitemap nicht erreichbar bzw. Fehler in der Search Console.
+vsn_seo_rule_index_share_drop = Indexierter Anteil gesunken
+vsn_seo_rule_index_share_drop_notice = URL-Inspection-Stichprobe gegenüber der Vorwoche. Schwelle in Prozentpunkten.
+vsn_seo_rule_redirect_chain_new = Neue Weiterleitungsketten
+vsn_seo_rule_redirect_chain_new_notice = Crawler: neue Ketten in den letzten 7 Tagen. Schwelle = Anzahl.
+vsn_seo_rule_data_stale = Keine aktuellen Daten
+vsn_seo_rule_data_stale_notice = Neueste Search-Console-Daten älter als … Tage oder Importfehler.
+
+vsn_seo_alert_queries_drop = Woche ab {0}: {1} rankende Suchbegriffe statt Ø {2} ({3} %).
+vsn_seo_alert_urls_drop = Woche ab {0}: {1} rankende URLs statt Ø {2} ({3} %).
+vsn_seo_alert_clicks_drop = Woche ab {0}: {1} Klicks statt Ø {2} ({3} %).
+vsn_seo_alert_not_found_rise = {0} 404-Aufrufe aus Suchmaschinen in 7 Tagen, sonst Ø {1} je Woche.
+vsn_seo_alert_http_errors_new = {0} neue Fehlerseiten (4xx/5xx) in den letzten 7 Tagen.
+vsn_seo_alert_redirect_chain_new = {0} neue Weiterleitungsketten in den letzten 7 Tagen.
+vsn_seo_alert_index_share_drop = Indexierter Anteil der Stichprobe {0} % statt {1} % vor einer Woche.
+vsn_seo_alert_data_stale = Neueste Search-Console-Daten vom {0}.
+
+vsn_seo_alert_emails_global_notice = Eine Adresse je Zeile. Gilt für alle Domains ohne eigene Empfänger.
+vsn_seo_digest_weekday = Wöchentliche Zusammenfassung
+vsn_seo_digest_weekday_notice = Wird beim ersten Lauf des Cronjobs „SEO Monitor: Warnungen“ ab diesem Tag gesendet, einmal je Woche.
+vsn_seo_digest_off = nicht senden
+vsn_seo_mail_test = Testmail senden
+vsn_seo_mail_subject_test = SEO Monitor: Testmail
+vsn_seo_mail_test_body = Der Mailversand des SEO Monitors funktioniert.
+vsn_seo_mail_test_sent = Testmail an {0} gesendet.
+vsn_seo_mail_test_failed = Die Testmail konnte nicht gesendet werden. Details im System-Log.
+vsn_seo_mail_subject_alert = SEO Monitor: {0} – {1} Warnung(en)
+vsn_seo_mail_subject_digest = SEO Monitor: Wochenbericht {0}
+vsn_seo_mail_intro = Neue Warnungen für {0}:
+vsn_seo_mail_digest_intro = Die Kennzahlen der letzten vollständigen Woche und die Warnungen der letzten 7 Tage.
+vsn_seo_mail_no_alerts = Keine neuen Warnungen.
+vsn_seo_mail_prev_week = Vorwoche
+vsn_seo_mail_open = Im Backend öffnen
+
+vsn_seo_inspect_title = Indexstatus (Stichprobe)
+vsn_seo_inspect_period = geprüft in den letzten {0} Tagen
+vsn_seo_inspect_share = Indexiert
+vsn_seo_inspect_sample = Geprüfte URLs
+vsn_seo_inspect_not_indexed = Nicht indexiert
+vsn_seo_inspect_canonical_other = Google wählt anderes canonical
+vsn_seo_inspect_state = Status bei Google
+vsn_seo_inspect_reason = Anlass
+vsn_seo_inspect_reason_loss = Verlust
+vsn_seo_inspect_reason_new = neu in Sitemap
+vsn_seo_inspect_reason_top = Top-URL
+vsn_seo_inspect_last_crawl = Letzter Crawl
+vsn_seo_inspect_checked = Geprüft
+vsn_seo_inspect_all_indexed = Alle geprüften URLs sind indexiert.
+vsn_seo_inspect_none = Noch keine URLs geprüft. Die Stichprobe läuft mit dem Import.
+vsn_seo_inspect_off = Die URL-Inspection-Stichprobe ist ausgeschaltet oder die Domain hat keine Property.
+
+vsn_seo_cfg_inspect_per_day = URL Inspection: URLs je Tag und Domain
+vsn_seo_cfg_inspect_per_day_notice = Stichprobe aus verlorenen, neuen und Top-URLs. Google erlaubt ca. 2.000 je Tag und Property. 0 = aus.
+vsn_seo_cfg_inspect_interval_days = URL Inspection: erneut prüfen nach (Tagen)
+vsn_seo_cfg_inspect_interval_days_notice = Zeitraum, über den der indexierte Anteil berechnet wird.
+vsn_seo_cfg_matomo_backfill_days = Rückwirkend laden (Tage)
+vsn_seo_cfg_matomo_backfill_days_notice = Beim ersten Einrichten werden so viele Tage aus Matomo nachgeladen.
+vsn_seo_cfg_matomo_404_source = 404-Seiten erkennen über
+vsn_seo_cfg_matomo_404_source_title = Seitentitel
+vsn_seo_cfg_matomo_404_source_url = Seiten-URL
+vsn_seo_cfg_matomo_404_pattern = Muster für 404-Seiten
+vsn_seo_cfg_matomo_404_pattern_notice = Regulärer Ausdruck, wie ihn Matomo für filter_pattern erwartet, z. B. „404“ für den Titel „404/URL = …“ oder „^/404/“ für URLs wie /404/URL=…
+
+vsn_seo_matomo_not_linked = Diese Domain ist mit keiner Matomo-Website verknüpft.
+vsn_seo_mt_state = Daten bis {0}, Matomo-Website #{1}.
+vsn_seo_mt_visits = Besuche gesamt
+vsn_seo_mt_search_visits = Besuche aus Suchmaschinen
+vsn_seo_mt_conversions = Bestellungen/Ziele
+vsn_seo_mt_revenue = Umsatz
+vsn_seo_mt_404 = 404-Aufrufe
+vsn_seo_mt_404_search = 404 aus Suchmaschinen
+vsn_seo_mt_chart_visits = Besuche je Woche
+vsn_seo_mt_chart_404 = 404-Aufrufe je Woche
+vsn_seo_mt_engines = Suchmaschinen
+vsn_seo_mt_engine = Suchmaschine
+vsn_seo_mt_entries = Einstiegsseiten aus der Suche
+vsn_seo_mt_entrances = Einstiege
+vsn_seo_mt_entries_none = Keine Einstiegsseiten für diesen Zeitraum. Matomo muss Segmente (referrerType==search) archivieren.
+vsn_seo_mt_404_top = Häufigste 404-URLs
+vsn_seo_mt_404_none = Keine 404-Seiten mit dem Muster „{0}“ gefunden.
+vsn_seo_mt_from_search = aus Suche
+vsn_seo_mt_hits = Aufrufe
+vsn_seo_mt_seen = Zeitraum

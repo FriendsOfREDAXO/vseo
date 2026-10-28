@@ -21,15 +21,22 @@ $crawlFields = [
     'crawl_max_sitemap_urls' => [100, 500000],
     'crawl_gsc_days' => [7, 480],
 ];
+$moreFields = [
+    'inspect_per_day' => [0, 2000],
+    'inspect_interval_days' => [1, 90],
+    'matomo_backfill_days' => [7, 730],
+];
 
 if ('post' === rex_request_method()) {
     if (!$csrf->isValid()) {
         echo rex_view::error(rex_i18n::msg('csrf_token_invalid'));
     } else {
-        foreach ($fields + $crawlFields as $key => [$min, $max]) {
+        foreach ($fields + $crawlFields + $moreFields as $key => [$min, $max]) {
             $this->setConfig($key, max($min, min($max, rex_post($key, 'int'))));
         }
         $this->setConfig('data_state', 'all' === rex_post('data_state', 'string') ? 'all' : 'final');
+        $this->setConfig('matomo_404_source', 'url' === rex_post('matomo_404_source', 'string') ? 'url' : 'title');
+        $this->setConfig('matomo_404_pattern', mb_substr(trim(rex_post('matomo_404_pattern', 'string')), 0, 200));
         echo rex_view::success($this->i18n('settings_saved'));
     }
 }
@@ -48,10 +55,22 @@ $number = function (string $key, int $min, int $max): string {
 foreach ($fields as $key => [$min, $max]) {
     $body .= $number($key, $min, $max);
 }
+foreach (['inspect_per_day', 'inspect_interval_days'] as $key) {
+    $body .= $number($key, ...$moreFields[$key]);
+}
 $body .= '</fieldset><fieldset><legend>' . $this->i18n('crawler') . '</legend>';
 foreach ($crawlFields as $key => [$min, $max]) {
     $body .= $number($key, $min, $max);
 }
+$body .= '</fieldset><fieldset><legend>Matomo</legend>';
+$body .= $number('matomo_backfill_days', ...$moreFields['matomo_backfill_days']);
+$source = (string) $this->getConfig('matomo_404_source', 'title');
+$body .= '<div class="form-group"><label for="vsn-seo-404-source">' . $this->i18n('cfg_matomo_404_source') . '</label><select class="form-control" id="vsn-seo-404-source" name="matomo_404_source">'
+    . '<option value="title"' . ('title' === $source ? ' selected' : '') . '>' . $this->i18n('cfg_matomo_404_source_title') . '</option>'
+    . '<option value="url"' . ('url' === $source ? ' selected' : '') . '>' . $this->i18n('cfg_matomo_404_source_url') . '</option></select></div>';
+$body .= '<div class="form-group"><label for="vsn-seo-404-pattern">' . $this->i18n('cfg_matomo_404_pattern') . '</label>'
+    . '<input class="form-control" id="vsn-seo-404-pattern" name="matomo_404_pattern" value="' . rex_escape((string) $this->getConfig('matomo_404_pattern', '404')) . '">'
+    . '<p class="help-block">' . $this->i18n('cfg_matomo_404_pattern_notice') . '</p></div>';
 $body .= '</fieldset>';
 
 $fragment = new rex_fragment();
@@ -65,6 +84,7 @@ echo '<form method="post" action="' . rex_url::currentBackendPage() . '">' . $fr
 $console = rex_path::backend('bin/console');
 $content = '<p>' . $this->i18n('cron_notice') . '</p><pre>php ' . rex_escape($console) . ' vsn_seo:import --budget=0' . "\n"
     . 'php ' . rex_escape($console) . ' vsn_seo:crawl' . "\n"
+    . 'php ' . rex_escape($console) . ' vsn_seo:alerts' . "\n"
     . 'php ' . rex_escape($console) . ' vsn_seo:backfill --domain=www.example.com --from=2025-01-01</pre>';
 $fragment = new rex_fragment();
 $fragment->setVar('title', $this->i18n('cron'), false);

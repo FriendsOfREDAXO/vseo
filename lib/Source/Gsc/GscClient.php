@@ -18,6 +18,7 @@ final class GscClient
 {
     public const SCOPE = 'https://www.googleapis.com/auth/webmasters.readonly';
     private const API = 'https://www.googleapis.com/webmasters/v3/';
+    private const INSPECT_API = 'https://searchconsole.googleapis.com/v1/urlInspection/index:inspect';
     private const TOKEN_URI = 'https://oauth2.googleapis.com/token';
 
     /** @var array<string, mixed> */
@@ -126,11 +127,23 @@ final class GscClient
         return $result;
     }
 
+    /**
+     * URL Inspection API (Kontingent ca. 2.000 Abfragen je Tag und Property).
+     *
+     * @return array<string, mixed> indexStatusResult
+     */
+    public function inspect(string $property, string $url): array
+    {
+        $data = $this->call('POST', self::INSPECT_API, ['inspectionUrl' => $url, 'siteUrl' => $property, 'languageCode' => 'en-US'])->json();
+        $result = $data['inspectionResult']['indexStatusResult'] ?? [];
+        return is_array($result) ? $result : [];
+    }
+
     /** @param array<string, mixed>|null $body */
     private function call(string $method, string $path, ?array $body = null, bool $retry = true): HttpResponse
     {
         $headers = ['Authorization' => 'Bearer ' . $this->accessToken()];
-        $url = self::API . $path;
+        $url = str_starts_with($path, 'https://') ? $path : self::API . $path;
         $response = null === $body
             ? Http::request($method, $url, $headers, '', 60)
             : Http::postJson($url, $body, $headers, 120);

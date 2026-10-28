@@ -5,8 +5,10 @@ declare(strict_types=1);
 use Viewsion\SeoMonitor\Backend\Page;
 use Viewsion\SeoMonitor\Crawler\Crawler;
 use Viewsion\SeoMonitor\Crawler\Issues;
+use Viewsion\SeoMonitor\Crawler\PageParser;
 use Viewsion\SeoMonitor\Model\Domain;
 use Viewsion\SeoMonitor\Model\DomainRepository;
+use Viewsion\SeoMonitor\Source\Gsc\InspectionSource;
 use Viewsion\SeoMonitor\Util\Budget;
 use Viewsion\SeoMonitor\Util\Format;
 
@@ -111,6 +113,52 @@ $fragment->setVar('title', $this->i18n('technical_title'), false);
 $fragment->setVar('body', '<div class="row"><div class="col-md-5"><h4>robots.txt</h4>' . $robotsHtml . '</div><div class="col-md-7"><h4>' . $this->i18n('crawler') . '</h4>' . $crawlHtml . '</div></div>'
     . '<h4>' . $this->i18n('sitemaps') . '</h4>' . $sitemapHtml, false);
 $fragment->setVar('buttons', $button, false);
+echo $fragment->parse('core/page/section.php');
+
+// Indexstatus der Stichprobe (URL Inspection)
+$inspectDays = max(1, (int) $this->getConfig('inspect_interval_days', 14));
+$sample = $sql->getArray(
+    'SELECT i.*, u.url FROM ' . InspectionSource::table() . ' i JOIN ' . rex::getTable('vsn_seo_url') . ' u ON u.id = i.url_id
+     WHERE i.domain_id = ? AND i.inspected_at >= ? ORDER BY i.verdict = \'PASS\', i.reason = \'top\', i.inspected_at DESC',
+    [$domain->id, date('Y-m-d H:i:s', time() - $inspectDays * 86400)],
+);
+if ($sample) {
+    $valid = array_filter($sample, static fn ($r) => null === $r['error']);
+    $indexed = count(array_filter($valid, static fn ($r) => InspectionSource::isIndexed((string) $r['verdict'])));
+    $canonicalOther = array_filter($valid, static fn ($r) => $r['google_canonical'] && $r['user_canonical'] && !PageParser::sameUrl((string) $r['google_canonical'], (string) $r['user_canonical']));
+    $history = $sql->getArray('SELECT date, sample, indexed FROM ' . rex::getTable('vsn_seo_inspect_day') . ' WHERE domain_id = ? ORDER BY date DESC LIMIT 2', [$domain->id]);
+    $share = $valid ? $indexed / count($valid) * 100 : null;
+    $prevShare = isset($history[1]) && (int) $history[1]['sample'] > 0 ? (int) $history[1]['indexed'] / (int) $history[1]['sample'] * 100 : null;
+    $inspectHtml = '<dl class="vsn-seo-kpis">'
+        . '<div class="vsn-seo-kpi is-core"><dt>' . $this->i18n('inspect_share') . '</dt><dd><span class="vsn-seo-kpi-value">' . Format::dec($share) . ' %</span>' . Format::delta($share, $prevShare) . '</dd></div>'
+        . '<div class="vsn-seo-kpi"><dt>' . $this->i18n('inspect_sample') . '</dt><dd><span class="vsn-seo-kpi-value">' . Format::int(count($valid)) . '</span></dd></div>'
+        . '<div class="vsn-seo-kpi"><dt>' . $this->i18n('inspect_not_indexed') . '</dt><dd><span class="vsn-seo-kpi-value">' . Format::int(count($valid) - $indexed) . '</span></dd></div>'
+        . '<div class="vsn-seo-kpi"><dt>' . $this->i18n('inspect_canonical_other') . '</dt><dd><span class="vsn-seo-kpi-value">' . Format::int(count($canonicalOther)) . '</span></dd></div>'
+        . '</dl>';
+    $rows = '';
+    foreach ($sample as $r) {
+        $ok = InspectionSource::isIndexed((string) $r['verdict']);
+        if ($ok && !in_array($r, $canonicalOther, true)) {
+            continue;
+        }
+        $canonical = $r['google_canonical'] && !PageParser::sameUrl((string) $r['google_canonical'], (string) $r['url'])
+            ? '<br><small class="text-muted">Google-canonical: ' . rex_escape((string) $r['google_canonical']) . '</small>' : '';
+        $rows .= '<tr><td class="vsn-seo-name">' . Page::urlLink((string) $r['url']) . $canonical . '</td>'
+            . '<td><span class="label ' . ($ok ? 'label-success' : ($r['error'] ? 'label-default' : 'label-warning')) . '">' . rex_escape($r['error'] ? $this->i18n('error') : ((string) $r['verdict'] ?: '–')) . '</span> '
+            . rex_escape((string) ($r['error'] ?: $r['coverage'])) . '</td>'
+            . '<td>' . $this->i18n('inspect_reason_' . $r['reason']) . '</td>'
+            . '<td>' . Format::date($r['last_crawl'] ? (string) $r['last_crawl'] : null) . '</td>'
+            . '<td>' . Format::date((string) $r['inspected_at']) . '</td></tr>';
+    }
+    $inspectHtml .= $rows
+        ? '<div class="table-responsive"><table class="table table-hover table-condensed vsn-seo-table"><thead><tr><th>URL</th><th>' . $this->i18n('inspect_state') . '</th><th>' . $this->i18n('inspect_reason') . '</th><th>' . $this->i18n('inspect_last_crawl') . '</th><th>' . $this->i18n('inspect_checked') . '</th></tr></thead><tbody>' . $rows . '</tbody></table></div>'
+        : rex_view::success($this->i18n('inspect_all_indexed'));
+} else {
+    $inspectHtml = '<p class="text-muted">' . ($domain->hasGsc() && (int) $this->getConfig('inspect_per_day', 50) > 0 ? $this->i18n('inspect_none') : $this->i18n('inspect_off')) . '</p>';
+}
+$fragment = new rex_fragment();
+$fragment->setVar('title', $this->i18n('inspect_title') . ' <small>' . $this->i18n('inspect_period', $inspectDays) . '</small>', false);
+$fragment->setVar('body', $inspectHtml, false);
 echo $fragment->parse('core/page/section.php');
 
 // Probleme: Übersicht je Typ
