@@ -25,6 +25,9 @@ final class Schema
         'vsn_seo_sa_day',
         'vsn_seo_sa_week',
         'vsn_seo_core_update',
+        'vsn_seo_crawl',
+        'vsn_seo_issue',
+        'vsn_seo_sitemap',
     ];
 
     public static function ensure(): void
@@ -58,6 +61,7 @@ final class Schema
             ->ensureColumn(new Col('last_import', 'datetime', true))
             ->ensureColumn(new Col('last_error', 'text', true))
             ->ensureColumn(new Col('kpi', 'text', true))
+            ->ensureColumn(new Col('crawl', 'text', true))
             ->ensureGlobalColumns()
             ->ensureIndex(new Idx('host', ['host'], Idx::UNIQUE))
             ->ensure();
@@ -130,6 +134,72 @@ final class Schema
             ->ensureColumn(new Col('date_end', 'date', true))
             ->ensureColumn(new Col('name', 'varchar(191)'))
             ->ensureIndex(new Idx('date', ['date']))
+            ->ensure();
+
+        // Crawler: letzter geprüfter Stand je URL. Herkunft als Flags, damit verschwundene URLs entfallen
+        rex_sql_table::get(rex::getTable('vsn_seo_crawl'))
+            ->ensureColumn(new Col('domain_id', 'smallint(5) unsigned'))
+            ->ensureColumn(new Col('url_id', 'int(10) unsigned'))
+            ->ensureColumn(new Col('in_sitemap', 'tinyint(1)', false, '0'))
+            ->ensureColumn(new Col('from_gsc', 'tinyint(1)', false, '0'))
+            ->ensureColumn(new Col('from_ext', 'tinyint(1)', false, '0'))
+            ->ensureColumn(new Col('first_seen', 'datetime'))
+            ->ensureColumn(new Col('checked_at', 'datetime', true))
+            ->ensureColumn(new Col('status', 'smallint(5) unsigned', true))
+            ->ensureColumn(new Col('error', 'varchar(255)', true))
+            ->ensureColumn(new Col('location', 'text', true))
+            ->ensureColumn(new Col('hops', 'tinyint(3) unsigned', false, '0'))
+            ->ensureColumn(new Col('final_status', 'smallint(5) unsigned', true))
+            ->ensureColumn(new Col('content_type', 'varchar(100)', true))
+            ->ensureColumn(new Col('canonical', 'text', true))
+            ->ensureColumn(new Col('robots', 'varchar(191)', true))
+            ->ensureColumn(new Col('noindex', 'tinyint(1)', false, '0'))
+            ->ensureColumn(new Col('blocked', 'tinyint(1)', false, '0'))
+            ->ensureColumn(new Col('indexable', 'tinyint(1)', false, '0'))
+            ->ensureColumn(new Col('title', 'varchar(500)', true))
+            ->ensureColumn(new Col('description', 'varchar(1000)', true))
+            ->ensureColumn(new Col('hreflang', 'smallint(5) unsigned', false, '0'))
+            ->ensureColumn(new Col('response_ms', 'int(10) unsigned', true))
+            ->setPrimaryKey(['domain_id', 'url_id'])
+            ->ensureIndex(new Idx('checked', ['domain_id', 'checked_at']))
+            ->ensure();
+
+        // Probleme mit Verlauf: seit wann, zuletzt gesehen, behoben am. url_id 0 = die Domain selbst
+        rex_sql_table::get(rex::getTable('vsn_seo_issue'))
+            ->ensurePrimaryIdColumn()
+            ->ensureColumn(new Col('domain_id', 'smallint(5) unsigned'))
+            ->ensureColumn(new Col('url_id', 'int(10) unsigned', false, '0'))
+            ->ensureColumn(new Col('type', 'varchar(40)'))
+            ->ensureColumn(new Col('detail', 'varchar(500)', false, ''))
+            ->ensureColumn(new Col('first_seen', 'datetime'))
+            ->ensureColumn(new Col('last_seen', 'datetime'))
+            ->ensureColumn(new Col('resolved_at', 'datetime', true))
+            ->ensureIndex(new Idx('issue', ['domain_id', 'url_id', 'type'], Idx::UNIQUE))
+            ->ensureIndex(new Idx('open', ['domain_id', 'resolved_at', 'type']))
+            ->ensure();
+
+        // Sitemaps: eigener Abruf und Angaben der Search Console
+        rex_sql_table::get(rex::getTable('vsn_seo_sitemap'))
+            ->ensurePrimaryIdColumn()
+            ->ensureColumn(new Col('domain_id', 'smallint(5) unsigned'))
+            ->ensureColumn(new Col('hash', 'binary(16)'))
+            ->ensureColumn(new Col('url', 'text'))
+            ->ensureColumn(new Col('source', 'varchar(20)', false, ''))
+            ->ensureColumn(new Col('parent_id', 'int(10) unsigned', true))
+            ->ensureColumn(new Col('checked_at', 'datetime', true))
+            ->ensureColumn(new Col('status', 'smallint(5) unsigned', true))
+            ->ensureColumn(new Col('error', 'varchar(255)', true))
+            ->ensureColumn(new Col('is_index', 'tinyint(1)', false, '0'))
+            ->ensureColumn(new Col('url_count', 'int(10) unsigned', true))
+            ->ensureColumn(new Col('gsc_checked_at', 'datetime', true))
+            ->ensureColumn(new Col('gsc_last_submitted', 'datetime', true))
+            ->ensureColumn(new Col('gsc_last_downloaded', 'datetime', true))
+            ->ensureColumn(new Col('gsc_pending', 'tinyint(1)', true))
+            ->ensureColumn(new Col('gsc_errors', 'int(10) unsigned', true))
+            ->ensureColumn(new Col('gsc_warnings', 'int(10) unsigned', true))
+            ->ensureColumn(new Col('gsc_submitted', 'int(10) unsigned', true))
+            ->ensureColumn(new Col('gsc_indexed', 'int(10) unsigned', true))
+            ->ensureIndex(new Idx('sitemap', ['domain_id', 'hash'], Idx::UNIQUE))
             ->ensure();
     }
 

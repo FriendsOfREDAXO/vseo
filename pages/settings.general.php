@@ -13,12 +13,20 @@ $fields = [
     'row_limit' => [1000, 25000],
     'retention_months' => [3, 120],
 ];
+$crawlFields = [
+    'crawl_per_run' => [1, 5000],
+    'crawl_interval_days' => [1, 90],
+    'crawl_delay_ms' => [0, 5000],
+    'crawl_timeout' => [3, 60],
+    'crawl_max_sitemap_urls' => [100, 500000],
+    'crawl_gsc_days' => [7, 480],
+];
 
 if ('post' === rex_request_method()) {
     if (!$csrf->isValid()) {
         echo rex_view::error(rex_i18n::msg('csrf_token_invalid'));
     } else {
-        foreach ($fields as $key => [$min, $max]) {
+        foreach ($fields + $crawlFields as $key => [$min, $max]) {
             $this->setConfig($key, max($min, min($max, rex_post($key, 'int'))));
         }
         $this->setConfig('data_state', 'all' === rex_post('data_state', 'string') ? 'all' : 'final');
@@ -32,10 +40,17 @@ $body .= '<div class="form-group"><label>' . $this->i18n('cfg_data_state') . '</
     . '<option value="final"' . ('final' === $this->getConfig('data_state') ? ' selected' : '') . '>' . $this->i18n('cfg_data_state_final') . '</option>'
     . '<option value="all"' . ('all' === $this->getConfig('data_state') ? ' selected' : '') . '>' . $this->i18n('cfg_data_state_all') . '</option>'
     . '</select></div>';
-foreach ($fields as $key => [$min, $max]) {
-    $body .= '<div class="form-group"><label for="vsn-seo-' . $key . '">' . $this->i18n('cfg_' . $key) . '</label>'
+$number = function (string $key, int $min, int $max): string {
+    return '<div class="form-group"><label for="vsn-seo-' . $key . '">' . $this->i18n('cfg_' . $key) . '</label>'
         . '<input class="form-control" type="number" id="vsn-seo-' . $key . '" name="' . $key . '" min="' . $min . '" max="' . $max . '" value="' . (int) $this->getConfig($key) . '">'
         . '<p class="help-block">' . $this->i18n('cfg_' . $key . '_notice') . '</p></div>';
+};
+foreach ($fields as $key => [$min, $max]) {
+    $body .= $number($key, $min, $max);
+}
+$body .= '</fieldset><fieldset><legend>' . $this->i18n('crawler') . '</legend>';
+foreach ($crawlFields as $key => [$min, $max]) {
+    $body .= $number($key, $min, $max);
 }
 $body .= '</fieldset>';
 
@@ -49,6 +64,7 @@ echo '<form method="post" action="' . rex_url::currentBackendPage() . '">' . $fr
 // Hinweis zu Cronjob und Konsole
 $console = rex_path::backend('bin/console');
 $content = '<p>' . $this->i18n('cron_notice') . '</p><pre>php ' . rex_escape($console) . ' vsn_seo:import --budget=0' . "\n"
+    . 'php ' . rex_escape($console) . ' vsn_seo:crawl' . "\n"
     . 'php ' . rex_escape($console) . ' vsn_seo:backfill --domain=www.example.com --from=2025-01-01</pre>';
 $fragment = new rex_fragment();
 $fragment->setVar('title', $this->i18n('cron'), false);

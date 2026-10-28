@@ -85,7 +85,7 @@ final class DomainRepository
     public static function delete(int $id): void
     {
         $sql = rex_sql::factory();
-        foreach (['vsn_seo_sa', 'vsn_seo_sa_day', 'vsn_seo_sa_week'] as $table) {
+        foreach (['vsn_seo_sa', 'vsn_seo_sa_day', 'vsn_seo_sa_week', 'vsn_seo_crawl', 'vsn_seo_issue', 'vsn_seo_sitemap'] as $table) {
             $sql->setQuery('DELETE FROM ' . rex::getTable($table) . ' WHERE domain_id = ?', [$id]);
         }
         $sql->setQuery('DELETE FROM ' . self::table() . ' WHERE id = ?', [$id]);

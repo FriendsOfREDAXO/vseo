@@ -81,3 +81,26 @@ body.rex-theme-dark .rex-page-main {
 .vsn-seo-chart .u-legend { color: inherit; font-size: 12px; }
 .vsn-seo-chart .u-legend .u-marker { border-radius: 2px; }
 .vsn-seo-table td, .vsn-seo-table th { font-variant-numeric: tabular-nums; }
+
+/* Vergleich, verlorene URLs, Technik */
+.vsn-seo-period, .vsn-seo-filter { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 12px; }
+.vsn-seo-period span { color: var(--vsn-seo-muted); }
+.vsn-seo-filter label { font-weight: normal; margin: 0 8px 0 0; }
+.vsn-seo-filter input[type=number] { width: 80px; }
+.vsn-seo-table .vsn-seo-name { max-width: 520px; word-break: break-all; }
+.vsn-seo-table .vsn-seo-subhead th { font-weight: normal; font-size: 11px; color: var(--vsn-seo-muted); padding-top: 0; }
+.vsn-seo-url { color: inherit; }
+.vsn-seo-target { color: var(--vsn-seo-muted); word-break: break-all; }
+.vsn-seo-diff { font-variant-numeric: tabular-nums; }
+.vsn-seo-diff.is-up { color: var(--vsn-seo-up); }
+.vsn-seo-diff.is-down { color: var(--vsn-seo-down); }
+.vsn-seo-kpi.is-bad .vsn-seo-kpi-value { color: var(--vsn-seo-down); }
+.vsn-seo-status-sum .label { display: inline-block; margin: 2px 2px 0 0; }
+.vsn-seo-child td:first-child { padding-left: 24px; }
+.vsn-seo-issue-types { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 12px; }
+.vsn-seo-sev { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--vsn-seo-c3); }
+.vsn-seo-sev.vsn-seo-sev-2 { background: #e0a800; }
+.vsn-seo-sev.vsn-seo-sev-3 { background: var(--vsn-seo-down); }
+.btn.vsn-seo-sev-3 { border-left: 3px solid var(--vsn-seo-down); }
+.btn.vsn-seo-sev-2 { border-left: 3px solid #e0a800; }
+.vsn-seo-resolved { opacity: .6; }

@@ -96,6 +96,36 @@ final class GscClient
         return $response->json()['rows'] ?? [];
     }
 
+    /**
+     * Eingereichte Sitemaps mit Status, Fehlern und Zahl der eingereichten bzw. indexierten URLs.
+     *
+     * @return list<array{path: string, lastSubmitted: string|null, lastDownloaded: string|null, isPending: bool, isSitemapsIndex: bool, errors: int, warnings: int, submitted: int|null, indexed: int|null}>
+     */
+    public function sitemaps(string $property): array
+    {
+        $data = $this->call('GET', 'sites/' . rawurlencode($property) . '/sitemaps')->json();
+        $result = [];
+        foreach ($data['sitemap'] ?? [] as $s) {
+            $submitted = $indexed = null;
+            foreach ($s['contents'] ?? [] as $c) {
+                $submitted = ($submitted ?? 0) + (int) ($c['submitted'] ?? 0);
+                $indexed = ($indexed ?? 0) + (int) ($c['indexed'] ?? 0);
+            }
+            $result[] = [
+                'path' => (string) $s['path'],
+                'lastSubmitted' => isset($s['lastSubmitted']) ? (string) $s['lastSubmitted'] : null,
+                'lastDownloaded' => isset($s['lastDownloaded']) ? (string) $s['lastDownloaded'] : null,
+                'isPending' => (bool) ($s['isPending'] ?? false),
+                'isSitemapsIndex' => (bool) ($s['isSitemapsIndex'] ?? false),
+                'errors' => (int) ($s['errors'] ?? 0),
+                'warnings' => (int) ($s['warnings'] ?? 0),
+                'submitted' => $submitted,
+                'indexed' => $indexed,
+            ];
+        }
+        return $result;
+    }
+
     /** @param array<string, mixed>|null $body */
     private function call(string $method, string $path, ?array $body = null, bool $retry = true): HttpResponse
     {

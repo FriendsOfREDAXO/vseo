@@ -31,6 +31,8 @@ final class Domain
     public ?string $lastError = null;
     /** @var array<string, mixed> */
     public array $kpi = [];
+    /** @var array<string, mixed> Stand des Crawlers (robots.txt, letzte Läufe) */
+    public array $crawl = [];
 
     /** @param array<string, mixed> $row */
     public static function fromRow(array $row): self
@@ -54,6 +56,8 @@ final class Domain
         $d->lastError = $row['last_error'] ? (string) $row['last_error'] : null;
         $kpi = $row['kpi'] ? json_decode((string) $row['kpi'], true) : null;
         $d->kpi = is_array($kpi) ? $kpi : [];
+        $crawl = !empty($row['crawl']) ? json_decode((string) $row['crawl'], true) : null;
+        $d->crawl = is_array($crawl) ? $crawl : [];
         return $d;
     }
 
@@ -65,6 +69,22 @@ final class Domain
     public function hasGsc(): bool
     {
         return null !== $this->gscAccountId && '' !== $this->gscProperty;
+    }
+
+    /** Start-URL der Website: Schema aus einer URL-Präfix-Property, sonst https */
+    public function baseUrl(): string
+    {
+        $scheme = str_starts_with($this->gscProperty, 'http://') ? 'http' : 'https';
+        return $scheme . '://' . $this->host . '/';
+    }
+
+    /** Gehört die URL zu dieser Domain (gleicher Host ohne www oder Subdomain davon)? */
+    public function ownsUrl(string $url): bool
+    {
+        $host = strtolower((string) parse_url($url, PHP_URL_HOST));
+        $bare = (string) preg_replace('/^www\./', '', strtolower($this->host));
+        $host = (string) preg_replace('/^www\./', '', $host);
+        return '' !== $host && ($host === $bare || str_ends_with($host, '.' . $bare));
     }
 
     public function backfillDone(): bool

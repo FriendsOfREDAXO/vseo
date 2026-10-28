@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Viewsion\SeoMonitor\Cronjob\CrawlCronjob;
 use Viewsion\SeoMonitor\Cronjob\ImportCronjob;
 use Viewsion\SeoMonitor\Model\DomainRepository;
 
@@ -9,6 +10,7 @@ use Viewsion\SeoMonitor\Model\DomainRepository;
 
 if (rex_addon::get('cronjob')->isAvailable()) {
     rex_cronjob_manager::registerType(ImportCronjob::class);
+    rex_cronjob_manager::registerType(CrawlCronjob::class);
 }
 
 if (!rex::isBackend()) {

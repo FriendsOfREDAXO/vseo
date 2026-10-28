@@ -12,6 +12,12 @@
 4. Im Backend unter *SEO Monitor → Einstellungen → Zugänge* den JSON-Schlüssel hinterlegen.
 5. Unter *Domains* die Vorschläge übernehmen oder Domains anlegen.
 6. Cronjob „SEO Monitor: Import“ anlegen (während des Backfills stündlich) oder `php redaxo/bin/console vsn_seo:import`.
+7. Cronjob „SEO Monitor: Crawler“ anlegen (z. B. stündlich) oder `php redaxo/bin/console vsn_seo:crawl`. Er lädt einmal am Tag robots.txt und Sitemaps und prüft je Lauf eine begrenzte Zahl URLs.
+
+## Erweitern
+
+- `VSN_SEO_URL_SOURCE`: weitere URLs für den Crawler liefern, z. B. Seiten eines Shops außerhalb der REDAXO-Struktur. Subject ist eine Liste von URLs, Parameter `domain`.
+- `VSN_SEO_DATA_SOURCES`: weitere Datenquellen (`DataSourceInterface`) anhängen.
 
 ## License
 

@@ -1,5 +1,5 @@
 package: vsn_seo
-version: '0.1.0'
+version: '0.2.0'
 author: VIEWSION
 supportpage: https://github.com/viewsion/vsn_seo
 
@@ -16,6 +16,12 @@ page:
             subpages:
                 history:
                     title: translate:vsn_seo_history
+                compare:
+                    title: translate:vsn_seo_compare
+                lost:
+                    title: translate:vsn_seo_lost
+                technical:
+                    title: translate:vsn_seo_technical
         settings:
             title: translate:vsn_seo_settings
             perm: vsn_seo[settings]
@@ -33,6 +39,7 @@ console_commands:
     vsn_seo:import: Viewsion\SeoMonitor\Command\ImportCommand
     vsn_seo:backfill: Viewsion\SeoMonitor\Command\BackfillCommand
     vsn_seo:aggregate: Viewsion\SeoMonitor\Command\AggregateCommand
+    vsn_seo:crawl: Viewsion\SeoMonitor\Command\CrawlCommand
 
 default_config:
     data_state: final
@@ -41,12 +48,18 @@ default_config:
     run_budget: 45
     row_limit: 25000
     retention_months: 25
+    crawl_per_run: 200
+    crawl_interval_days: 7
+    crawl_delay_ms: 250
+    crawl_timeout: 15
+    crawl_max_sitemap_urls: 50000
+    crawl_gsc_days: 90
 
 requires:
     redaxo: '^5.16.0'
     php:
         version: '>=8.1'
-        extensions: [openssl, sodium, json]
+        extensions: [openssl, sodium, json, dom, xmlreader]
 
 installer_ignore:
     - .DS_Store
