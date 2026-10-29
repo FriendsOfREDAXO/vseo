@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.0-beta1 – unveröffentlicht
+## 1.0.0-alpha1 – unveröffentlicht (frühe Testphase, Tabellen und Einstellungen können sich noch ändern)
 
 - Veröffentlicht unter [FriendsOfREDAXO/vseo](https://github.com/FriendsOfREDAXO/vseo), PHP-Namespace `FriendsOfRedaxo\VSeo` (vorher `Viewsion\SeoMonitor`)
 - Umbenannt in **vSEO** (Paketname `vseo`, vorher `vsn_seo`): Tabellen `rex_vseo_*`, Rechte `vseo[…]`, Befehle `vseo:…`, Extension Points `VSEO_…`, Umgebungsvariable `VSEO_KEY`
