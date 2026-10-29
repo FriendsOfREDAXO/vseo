@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Viewsion\SeoMonitor\Command;
+namespace FriendsOfRedaxo\VSeo\Command;
 
 use rex_console_command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Viewsion\SeoMonitor\Import\Runner;
-use Viewsion\SeoMonitor\Model\DomainRepository;
-use Viewsion\SeoMonitor\Source\Gsc\SearchAnalyticsSource;
-use Viewsion\SeoMonitor\Stats\Aggregator;
-use Viewsion\SeoMonitor\Util\Budget;
-use Viewsion\SeoMonitor\Util\Lock;
+use FriendsOfRedaxo\VSeo\Import\Runner;
+use FriendsOfRedaxo\VSeo\Model\DomainRepository;
+use FriendsOfRedaxo\VSeo\Source\Gsc\SearchAnalyticsSource;
+use FriendsOfRedaxo\VSeo\Stats\Aggregator;
+use FriendsOfRedaxo\VSeo\Util\Budget;
+use FriendsOfRedaxo\VSeo\Util\Lock;
 
 /**
  * Lädt einen festen Zeitraum der Search Console neu, unabhängig vom Backfill-Stand.

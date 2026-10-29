@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Viewsion\SeoMonitor\Source\Rank;
+namespace FriendsOfRedaxo\VSeo\Source\Rank;
 
-use Viewsion\SeoMonitor\Model\Domain;
+use FriendsOfRedaxo\VSeo\Model\Domain;
 
 /**
  * Schnittstelle für externe SERP-Dienste (z. B. DataForSEO): Positionen einer festen Keyword-Liste

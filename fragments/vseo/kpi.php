@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Viewsion\SeoMonitor\Util\Format;
+use FriendsOfRedaxo\VSeo\Util\Format;
 
 /**
  * Kennzahlen 28 Tage gegen Vorzeitraum.

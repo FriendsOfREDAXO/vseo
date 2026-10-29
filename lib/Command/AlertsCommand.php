@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Viewsion\SeoMonitor\Command;
+namespace FriendsOfRedaxo\VSeo\Command;
 
 use rex_console_command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Viewsion\SeoMonitor\Alert\Mailer;
-use Viewsion\SeoMonitor\Alert\Rules;
+use FriendsOfRedaxo\VSeo\Alert\Mailer;
+use FriendsOfRedaxo\VSeo\Alert\Rules;
 
 final class AlertsCommand extends rex_console_command
 {

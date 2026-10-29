@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Viewsion\SeoMonitor\Command;
+namespace FriendsOfRedaxo\VSeo\Command;
 
 use rex_console_command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Viewsion\SeoMonitor\Model\DomainRepository;
-use Viewsion\SeoMonitor\Stats\Aggregator;
+use FriendsOfRedaxo\VSeo\Model\DomainRepository;
+use FriendsOfRedaxo\VSeo\Stats\Aggregator;
 
 final class AggregateCommand extends rex_console_command
 {

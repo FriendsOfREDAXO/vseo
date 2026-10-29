@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Viewsion\SeoMonitor\Backend;
+namespace FriendsOfRedaxo\VSeo\Backend;
 
 use rex;
 use rex_i18n;
 use rex_request;
 use rex_url;
-use Viewsion\SeoMonitor\Model\Domain;
-use Viewsion\SeoMonitor\Model\DomainRepository;
-use Viewsion\SeoMonitor\Stats\Period;
-use Viewsion\SeoMonitor\Util\Format;
+use FriendsOfRedaxo\VSeo\Model\Domain;
+use FriendsOfRedaxo\VSeo\Model\DomainRepository;
+use FriendsOfRedaxo\VSeo\Stats\Period;
+use FriendsOfRedaxo\VSeo\Util\Format;
 
 final class Page
 {

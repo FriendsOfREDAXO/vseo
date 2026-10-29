@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-use Viewsion\SeoMonitor\Model\Account;
-use Viewsion\SeoMonitor\Model\AccountRepository;
-use Viewsion\SeoMonitor\Model\DomainRepository;
-use Viewsion\SeoMonitor\Model\PropertyMatcher;
-use Viewsion\SeoMonitor\Source\Gsc\GscClient;
-use Viewsion\SeoMonitor\Source\Matomo\MatomoClient;
-use Viewsion\SeoMonitor\Util\Format;
+use FriendsOfRedaxo\VSeo\Model\Account;
+use FriendsOfRedaxo\VSeo\Model\AccountRepository;
+use FriendsOfRedaxo\VSeo\Model\DomainRepository;
+use FriendsOfRedaxo\VSeo\Model\PropertyMatcher;
+use FriendsOfRedaxo\VSeo\Source\Gsc\GscClient;
+use FriendsOfRedaxo\VSeo\Source\Matomo\MatomoClient;
+use FriendsOfRedaxo\VSeo\Util\Format;
 
 /** @var rex_addon $this */
 

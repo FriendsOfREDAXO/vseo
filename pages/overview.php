@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use Viewsion\SeoMonitor\Alert\AlertRepository;
-use Viewsion\SeoMonitor\Backend\Page;
-use Viewsion\SeoMonitor\Model\DomainRepository;
-use Viewsion\SeoMonitor\Stats\Series;
-use Viewsion\SeoMonitor\Util\Format;
+use FriendsOfRedaxo\VSeo\Alert\AlertRepository;
+use FriendsOfRedaxo\VSeo\Backend\Page;
+use FriendsOfRedaxo\VSeo\Model\DomainRepository;
+use FriendsOfRedaxo\VSeo\Stats\Series;
+use FriendsOfRedaxo\VSeo\Util\Format;
 
 /** @var rex_addon $this */
 

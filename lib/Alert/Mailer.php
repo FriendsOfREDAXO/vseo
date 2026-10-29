@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Viewsion\SeoMonitor\Alert;
+namespace FriendsOfRedaxo\VSeo\Alert;
 
 use rex;
 use rex_addon;
@@ -11,12 +11,12 @@ use rex_mailer;
 use rex_path;
 use rex_sql;
 use Throwable;
-use Viewsion\SeoMonitor\Crawler\Issues;
-use Viewsion\SeoMonitor\Model\Domain;
-use Viewsion\SeoMonitor\Model\DomainRepository;
-use Viewsion\SeoMonitor\Stats\Series;
-use Viewsion\SeoMonitor\Util\Format;
-use Viewsion\SeoMonitor\Util\Log;
+use FriendsOfRedaxo\VSeo\Crawler\Issues;
+use FriendsOfRedaxo\VSeo\Model\Domain;
+use FriendsOfRedaxo\VSeo\Model\DomainRepository;
+use FriendsOfRedaxo\VSeo\Stats\Series;
+use FriendsOfRedaxo\VSeo\Util\Format;
+use FriendsOfRedaxo\VSeo\Util\Log;
 
 /**
  * Versand über rex_mailer (AddOn phpmailer): sofort bei Regeln mit „sofort mailen“,

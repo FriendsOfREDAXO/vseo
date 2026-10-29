@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Viewsion\SeoMonitor\Command;
+namespace FriendsOfRedaxo\VSeo\Command;
 
 use rex_console_command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Viewsion\SeoMonitor\Import\Runner;
-use Viewsion\SeoMonitor\Util\Budget;
+use FriendsOfRedaxo\VSeo\Import\Runner;
+use FriendsOfRedaxo\VSeo\Util\Budget;
 
 final class ImportCommand extends rex_console_command
 {

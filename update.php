@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 /** @var rex_addon $this */
 
-if (!class_exists(\Viewsion\SeoMonitor\Install\Schema::class)) {
+if (!class_exists(\FriendsOfRedaxo\VSeo\Install\Schema::class)) {
     require __DIR__ . '/lib/Install/Schema.php';
 }
 
-\Viewsion\SeoMonitor\Install\Schema::ensure();
+\FriendsOfRedaxo\VSeo\Install\Schema::ensure();

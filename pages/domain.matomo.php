@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use Viewsion\SeoMonitor\Backend\Page;
-use Viewsion\SeoMonitor\Model\Domain;
-use Viewsion\SeoMonitor\Stats\Aggregator;
-use Viewsion\SeoMonitor\Stats\Compare;
-use Viewsion\SeoMonitor\Stats\Period;
-use Viewsion\SeoMonitor\Util\Format;
+use FriendsOfRedaxo\VSeo\Backend\Page;
+use FriendsOfRedaxo\VSeo\Model\Domain;
+use FriendsOfRedaxo\VSeo\Stats\Aggregator;
+use FriendsOfRedaxo\VSeo\Stats\Compare;
+use FriendsOfRedaxo\VSeo\Stats\Period;
+use FriendsOfRedaxo\VSeo\Util\Format;
 
 /**
  * Matomo: Besuche aus Suchmaschinen, Einstiegsseiten aus der Suche mit Umsatz, 404-Verlauf.

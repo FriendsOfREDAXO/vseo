@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-use Viewsion\SeoMonitor\Backend\Page;
-use Viewsion\SeoMonitor\Crawler\Crawler;
-use Viewsion\SeoMonitor\Crawler\Issues;
-use Viewsion\SeoMonitor\Crawler\PageParser;
-use Viewsion\SeoMonitor\Model\Domain;
-use Viewsion\SeoMonitor\Model\DomainRepository;
-use Viewsion\SeoMonitor\Source\Gsc\InspectionSource;
-use Viewsion\SeoMonitor\Util\Budget;
-use Viewsion\SeoMonitor\Util\Format;
+use FriendsOfRedaxo\VSeo\Backend\Page;
+use FriendsOfRedaxo\VSeo\Crawler\Crawler;
+use FriendsOfRedaxo\VSeo\Crawler\Issues;
+use FriendsOfRedaxo\VSeo\Crawler\PageParser;
+use FriendsOfRedaxo\VSeo\Model\Domain;
+use FriendsOfRedaxo\VSeo\Model\DomainRepository;
+use FriendsOfRedaxo\VSeo\Source\Gsc\InspectionSource;
+use FriendsOfRedaxo\VSeo\Util\Budget;
+use FriendsOfRedaxo\VSeo\Util\Format;
 
 /**
  * Technik: robots.txt, Sitemaps, Stand des Crawlers und Problemliste mit Verlauf.

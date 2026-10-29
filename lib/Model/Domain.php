@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Viewsion\SeoMonitor\Model;
+namespace FriendsOfRedaxo\VSeo\Model;
 
 use rex_addon;
 use rex_user;

@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Viewsion\SeoMonitor\Import;
+namespace FriendsOfRedaxo\VSeo\Import;
 
 use Throwable;
-use Viewsion\SeoMonitor\Model\Domain;
-use Viewsion\SeoMonitor\Model\DomainRepository;
-use Viewsion\SeoMonitor\Source\DataSources;
-use Viewsion\SeoMonitor\Stats\Cleanup;
-use Viewsion\SeoMonitor\Util\Budget;
-use Viewsion\SeoMonitor\Util\Lock;
-use Viewsion\SeoMonitor\Util\Log;
+use FriendsOfRedaxo\VSeo\Model\Domain;
+use FriendsOfRedaxo\VSeo\Model\DomainRepository;
+use FriendsOfRedaxo\VSeo\Source\DataSources;
+use FriendsOfRedaxo\VSeo\Stats\Cleanup;
+use FriendsOfRedaxo\VSeo\Util\Budget;
+use FriendsOfRedaxo\VSeo\Util\Lock;
+use FriendsOfRedaxo\VSeo\Util\Log;
 
 /**
  * Führt die Importe aller Datenquellen aus, mit Sperre gegen parallele Läufe.

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Viewsion\SeoMonitor\Crawler;
+namespace FriendsOfRedaxo\VSeo\Crawler;
 
 use rex;
 use rex_addon;
@@ -10,14 +10,14 @@ use rex_extension;
 use rex_extension_point;
 use rex_sql;
 use Throwable;
-use Viewsion\SeoMonitor\Model\AccountRepository;
-use Viewsion\SeoMonitor\Model\Dictionary;
-use Viewsion\SeoMonitor\Model\Domain;
-use Viewsion\SeoMonitor\Model\DomainRepository;
-use Viewsion\SeoMonitor\Source\Gsc\GscClient;
-use Viewsion\SeoMonitor\Util\Budget;
-use Viewsion\SeoMonitor\Util\Lock;
-use Viewsion\SeoMonitor\Util\Log;
+use FriendsOfRedaxo\VSeo\Model\AccountRepository;
+use FriendsOfRedaxo\VSeo\Model\Dictionary;
+use FriendsOfRedaxo\VSeo\Model\Domain;
+use FriendsOfRedaxo\VSeo\Model\DomainRepository;
+use FriendsOfRedaxo\VSeo\Source\Gsc\GscClient;
+use FriendsOfRedaxo\VSeo\Util\Budget;
+use FriendsOfRedaxo\VSeo\Util\Lock;
+use FriendsOfRedaxo\VSeo\Util\Log;
 
 /**
  * Eigener Crawler, in Etappen:

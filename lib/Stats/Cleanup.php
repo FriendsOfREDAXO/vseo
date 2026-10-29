@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Viewsion\SeoMonitor\Stats;
+namespace FriendsOfRedaxo\VSeo\Stats;
 
 use rex;
 use rex_addon;

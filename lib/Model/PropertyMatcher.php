@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Viewsion\SeoMonitor\Model;
+namespace FriendsOfRedaxo\VSeo\Model;
 
 use rex_addon;
 use rex_yrewrite;
 use Throwable;
-use Viewsion\SeoMonitor\Source\Gsc\GscClient;
+use FriendsOfRedaxo\VSeo\Source\Gsc\GscClient;
 
 /**
  * Schlägt Domains vor: YRewrite-Domains mit passender Search-Console-Property

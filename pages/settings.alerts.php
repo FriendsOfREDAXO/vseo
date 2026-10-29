@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Viewsion\SeoMonitor\Alert\Mailer;
-use Viewsion\SeoMonitor\Alert\Rules;
+use FriendsOfRedaxo\VSeo\Alert\Mailer;
+use FriendsOfRedaxo\VSeo\Alert\Rules;
 
 /**
  * Warnregeln (aktiv, Schwelle, sofort mailen), Empfänger und Wochenzusammenfassung.

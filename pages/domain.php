@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Viewsion\SeoMonitor\Backend\Page;
-use Viewsion\SeoMonitor\Model\DomainRepository;
+use FriendsOfRedaxo\VSeo\Backend\Page;
+use FriendsOfRedaxo\VSeo\Model\DomainRepository;
 
 /** @var rex_addon $this */
 

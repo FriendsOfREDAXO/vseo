@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Viewsion\SeoMonitor\Stats;
+namespace FriendsOfRedaxo\VSeo\Stats;
 
 use rex_request;
-use Viewsion\SeoMonitor\Model\Domain;
+use FriendsOfRedaxo\VSeo\Model\Domain;
 
 /**
  * Zwei Zeiträume für Vergleiche. Standard: die letzten 28 Tage mit Daten gegen die 28 Tage davor.

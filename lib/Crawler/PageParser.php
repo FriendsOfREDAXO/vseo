@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Viewsion\SeoMonitor\Crawler;
+namespace FriendsOfRedaxo\VSeo\Crawler;
 
 use DOMDocument;
 use DOMElement;

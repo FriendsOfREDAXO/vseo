@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Viewsion\SeoMonitor\Alert;
+namespace FriendsOfRedaxo\VSeo\Alert;
 
 use rex;
 use rex_addon;
@@ -10,12 +10,12 @@ use rex_extension;
 use rex_extension_point;
 use rex_i18n;
 use rex_sql;
-use Viewsion\SeoMonitor\Crawler\Issues;
-use Viewsion\SeoMonitor\Model\Domain;
-use Viewsion\SeoMonitor\Model\DomainRepository;
-use Viewsion\SeoMonitor\Stats\Series;
-use Viewsion\SeoMonitor\Util\Format;
-use Viewsion\SeoMonitor\Util\Lock;
+use FriendsOfRedaxo\VSeo\Crawler\Issues;
+use FriendsOfRedaxo\VSeo\Model\Domain;
+use FriendsOfRedaxo\VSeo\Model\DomainRepository;
+use FriendsOfRedaxo\VSeo\Stats\Series;
+use FriendsOfRedaxo\VSeo\Util\Format;
+use FriendsOfRedaxo\VSeo\Util\Lock;
 
 /**
  * Warnregeln mit einstellbaren Schwellen. Wochenregeln vergleichen die letzte vollständige Woche

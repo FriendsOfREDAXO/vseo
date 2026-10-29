@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-use Viewsion\SeoMonitor\Backend\Page;
-use Viewsion\SeoMonitor\Crawler\Crawler;
-use Viewsion\SeoMonitor\Model\Domain;
-use Viewsion\SeoMonitor\Stats\Compare;
-use Viewsion\SeoMonitor\Stats\Period;
-use Viewsion\SeoMonitor\Util\Budget;
-use Viewsion\SeoMonitor\Util\Format;
+use FriendsOfRedaxo\VSeo\Backend\Page;
+use FriendsOfRedaxo\VSeo\Crawler\Crawler;
+use FriendsOfRedaxo\VSeo\Model\Domain;
+use FriendsOfRedaxo\VSeo\Stats\Compare;
+use FriendsOfRedaxo\VSeo\Stats\Period;
+use FriendsOfRedaxo\VSeo\Util\Budget;
+use FriendsOfRedaxo\VSeo\Util\Format;
 
 /**
  * Verlorene URLs: im Vorzeitraum mit Impressionen, jetzt (fast) keine. Daneben der Statuscode aus dem Crawler.

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Viewsion\SeoMonitor\Source;
+namespace FriendsOfRedaxo\VSeo\Source;
 
-use Viewsion\SeoMonitor\Model\Domain;
-use Viewsion\SeoMonitor\Util\Budget;
+use FriendsOfRedaxo\VSeo\Model\Domain;
+use FriendsOfRedaxo\VSeo\Util\Budget;
 
 /**
  * Eine Datenquelle, die je Domain importiert (Search Console, Matomo, später Bing Webmaster Tools …).

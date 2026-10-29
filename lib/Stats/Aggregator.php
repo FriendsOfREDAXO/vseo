@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Viewsion\SeoMonitor\Stats;
+namespace FriendsOfRedaxo\VSeo\Stats;
 
 use rex;
 use rex_sql;
-use Viewsion\SeoMonitor\Model\DomainRepository;
+use FriendsOfRedaxo\VSeo\Model\DomainRepository;
 
 /**
  * Pflegt Tages- und Wochensummen sowie die Kennzahlen für die Übersicht (28 Tage gegen Vorzeitraum).

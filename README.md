@@ -132,7 +132,7 @@ Zum Beispiel Seiten eines Shops außerhalb der REDAXO-Struktur:
 
 ```php
 rex_extension::register('VSEO_URL_SOURCE', static function (rex_extension_point $ep) {
-    /** @var \Viewsion\SeoMonitor\Model\Domain $domain */
+    /** @var \FriendsOfRedaxo\VSeo\Model\Domain $domain */
     $domain = $ep->getParam('domain');
     $urls = $ep->getSubject();
     foreach (my_shop_product_urls($domain->host) as $url) {
@@ -161,11 +161,11 @@ rex_extension::register('VSEO_ALERT', static function (rex_extension_point $ep) 
 
 ### Weitere Datenquellen (`VSEO_DATA_SOURCES`)
 
-Eine Klasse, die `Viewsion\SeoMonitor\Source\DataSourceInterface` implementiert, an die Liste anhängen; der Import ruft sie je Domain mit Zeitbudget auf.
+Eine Klasse, die `FriendsOfRedaxo\VSeo\Source\DataSourceInterface` implementiert, an die Liste anhängen; der Import ruft sie je Domain mit Zeitbudget auf.
 
 ### Rank-Tracking (`VSEO_RANK_TRACKERS`)
 
-Vorgesehen für SERP-Dienste wie DataForSEO: eine feste Keyword-Liste je Domain wöchentlich samt Wettbewerbern abfragen. Version 1 enthält nur die Schnittstelle `Viewsion\SeoMonitor\Source\Rank\RankTrackerInterface`, das Ergebnisobjekt `RankResult` und die Tabellen `vseo_rank_keyword` und `vseo_rank`; eine Implementierung liefert ein eigenes AddOn über den Extension Point.
+Vorgesehen für SERP-Dienste wie DataForSEO: eine feste Keyword-Liste je Domain wöchentlich samt Wettbewerbern abfragen. Version 1 enthält nur die Schnittstelle `FriendsOfRedaxo\VSeo\Source\Rank\RankTrackerInterface`, das Ergebnisobjekt `RankResult` und die Tabellen `vseo_rank_keyword` und `vseo_rank`; eine Implementierung liefert ein eigenes AddOn über den Extension Point.
 
 ## Häufige Fragen
 
@@ -195,6 +195,9 @@ vSEO tracks your own websites' visibility in Google from within the REDAXO backe
 
 Console commands, permissions and extension points (`VSEO_URL_SOURCE`, `VSEO_ALERT`, `VSEO_DATA_SOURCES`, `VSEO_RANK_TRACKERS`) are described above.
 
-## Lizenz
+## Autor und Lizenz
+
+**Friends Of REDAXO** – entwickelt von Matthias Weiss, [VIEWSION.net](https://github.com/VIEWSION).
+Fehler und Ideen gern als [Issue](https://github.com/FriendsOfREDAXO/vseo/issues).
 
 MIT, siehe [LICENSE](LICENSE). Enthält [uPlot](https://github.com/leeoniya/uPlot) (MIT).

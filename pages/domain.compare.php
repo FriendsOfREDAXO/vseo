@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use Viewsion\SeoMonitor\Backend\Page;
-use Viewsion\SeoMonitor\Model\Domain;
-use Viewsion\SeoMonitor\Source\Gsc\SearchAnalyticsSource;
-use Viewsion\SeoMonitor\Stats\Compare;
-use Viewsion\SeoMonitor\Stats\Period;
-use Viewsion\SeoMonitor\Util\Format;
+use FriendsOfRedaxo\VSeo\Backend\Page;
+use FriendsOfRedaxo\VSeo\Model\Domain;
+use FriendsOfRedaxo\VSeo\Source\Gsc\SearchAnalyticsSource;
+use FriendsOfRedaxo\VSeo\Stats\Compare;
+use FriendsOfRedaxo\VSeo\Stats\Period;
+use FriendsOfRedaxo\VSeo\Util\Format;
 
 /**
  * Gewinner und Verlierer zwischen zwei Zeiträumen, je Suchbegriff oder URL.

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Viewsion\SeoMonitor\Crawler;
+namespace FriendsOfRedaxo\VSeo\Crawler;
 
 use rex_addon;
 use rex_socket;
 use rex_socket_exception;
 use Throwable;
-use Viewsion\SeoMonitor\Util\Http;
-use Viewsion\SeoMonitor\Util\Log;
+use FriendsOfRedaxo\VSeo\Util\Http;
+use FriendsOfRedaxo\VSeo\Util\Log;
 
 /**
  * Ruft eine URL ohne Weiterleitungen ab. Statuscodes sind hier Ergebnis, kein Fehler:

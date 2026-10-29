@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Viewsion\SeoMonitor\Source\Matomo;
+namespace FriendsOfRedaxo\VSeo\Source\Matomo;
 
 use rex_config;
 use RuntimeException;
-use Viewsion\SeoMonitor\Model\Account;
-use Viewsion\SeoMonitor\Util\Http;
+use FriendsOfRedaxo\VSeo\Model\Account;
+use FriendsOfRedaxo\VSeo\Util\Http;
 
 /**
  * Schlanker Client für die Matomo Reporting API. Unabhängig vom matomo-AddOn:

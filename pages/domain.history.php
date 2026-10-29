@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use Viewsion\SeoMonitor\Backend\Page;
-use Viewsion\SeoMonitor\Model\Domain;
-use Viewsion\SeoMonitor\Stats\Series;
-use Viewsion\SeoMonitor\Util\Format;
+use FriendsOfRedaxo\VSeo\Backend\Page;
+use FriendsOfRedaxo\VSeo\Model\Domain;
+use FriendsOfRedaxo\VSeo\Stats\Series;
+use FriendsOfRedaxo\VSeo\Util\Format;
 
 /**
  * @var rex_addon $this

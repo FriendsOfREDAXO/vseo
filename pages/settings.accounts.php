@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use Viewsion\SeoMonitor\Model\Account;
-use Viewsion\SeoMonitor\Model\AccountRepository;
-use Viewsion\SeoMonitor\Source\Gsc\GscClient;
-use Viewsion\SeoMonitor\Source\Matomo\MatomoClient;
+use FriendsOfRedaxo\VSeo\Model\Account;
+use FriendsOfRedaxo\VSeo\Model\AccountRepository;
+use FriendsOfRedaxo\VSeo\Source\Gsc\GscClient;
+use FriendsOfRedaxo\VSeo\Source\Matomo\MatomoClient;
 
 /** @var rex_addon $this */
 

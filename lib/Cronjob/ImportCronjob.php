@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Viewsion\SeoMonitor\Cronjob;
+namespace FriendsOfRedaxo\VSeo\Cronjob;
 
 use rex_addon;
 use rex_cronjob;
 use rex_i18n;
-use Viewsion\SeoMonitor\Import\Runner;
-use Viewsion\SeoMonitor\Util\Budget;
+use FriendsOfRedaxo\VSeo\Import\Runner;
+use FriendsOfRedaxo\VSeo\Util\Budget;
 
 /**
  * Cronjob-Typ für den Import. Läuft in Etappen: das Zeitbudget begrenzt jeden Lauf,

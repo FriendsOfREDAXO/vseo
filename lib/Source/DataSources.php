@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Viewsion\SeoMonitor\Source;
+namespace FriendsOfRedaxo\VSeo\Source;
 
 use rex_extension;
 use rex_extension_point;
-use Viewsion\SeoMonitor\Source\Gsc\InspectionSource;
-use Viewsion\SeoMonitor\Source\Gsc\SearchAnalyticsSource;
-use Viewsion\SeoMonitor\Source\Matomo\MatomoSource;
+use FriendsOfRedaxo\VSeo\Source\Gsc\InspectionSource;
+use FriendsOfRedaxo\VSeo\Source\Gsc\SearchAnalyticsSource;
+use FriendsOfRedaxo\VSeo\Source\Matomo\MatomoSource;
 
 final class DataSources
 {

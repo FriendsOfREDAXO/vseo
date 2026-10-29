@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Viewsion\SeoMonitor\Model;
+namespace FriendsOfRedaxo\VSeo\Model;
 
-use Viewsion\SeoMonitor\Util\Crypto;
+use FriendsOfRedaxo\VSeo\Util\Crypto;
 
 /**
  * Ein Zugang zu einer Datenquelle. Die Zugangsdaten bleiben verschlüsselt, bis sie gebraucht werden.

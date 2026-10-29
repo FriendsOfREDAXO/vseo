@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Viewsion\SeoMonitor\Cronjob;
+namespace FriendsOfRedaxo\VSeo\Cronjob;
 
 use rex_addon;
 use rex_cronjob;
 use rex_i18n;
-use Viewsion\SeoMonitor\Crawler\Crawler;
-use Viewsion\SeoMonitor\Util\Budget;
+use FriendsOfRedaxo\VSeo\Crawler\Crawler;
+use FriendsOfRedaxo\VSeo\Util\Budget;
 
 /**
  * Cronjob-Typ für den Crawler. Jeder Lauf prüft je Domain eine begrenzte Zahl URLs;

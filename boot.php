@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use Viewsion\SeoMonitor\Cronjob\AlertCronjob;
-use Viewsion\SeoMonitor\Cronjob\CrawlCronjob;
-use Viewsion\SeoMonitor\Cronjob\ImportCronjob;
-use Viewsion\SeoMonitor\Model\DomainRepository;
+use FriendsOfRedaxo\VSeo\Cronjob\AlertCronjob;
+use FriendsOfRedaxo\VSeo\Cronjob\CrawlCronjob;
+use FriendsOfRedaxo\VSeo\Cronjob\ImportCronjob;
+use FriendsOfRedaxo\VSeo\Model\DomainRepository;
 
 /** @var rex_addon $this */
 
@@ -33,7 +33,7 @@ try {
 // Widget für das AddOn „dashboard“, nur wenn es installiert ist
 if (rex_addon::get('dashboard')->isAvailable() && class_exists(\FriendsOfRedaxo\Dashboard\Dashboard::class) && rex::getUser()?->hasPerm('vseo[]')) {
     \FriendsOfRedaxo\Dashboard\Dashboard::addItem(
-        \Viewsion\SeoMonitor\Dashboard\OverviewItem::factory('vseo-overview', rex_i18n::msg('vseo_title'))->setColumns(2),
+        \FriendsOfRedaxo\VSeo\Dashboard\OverviewItem::factory('vseo-overview', rex_i18n::msg('vseo_title'))->setColumns(2),
     );
     rex_view::addCssFile($this->getAssetsUrl('vseo.css') . '?v=' . (int) @filemtime($this->getAssetsPath('vseo.css')));
 }

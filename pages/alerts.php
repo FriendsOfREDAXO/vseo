@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use Viewsion\SeoMonitor\Alert\AlertRepository;
-use Viewsion\SeoMonitor\Alert\Rules;
-use Viewsion\SeoMonitor\Backend\Page;
-use Viewsion\SeoMonitor\Model\DomainRepository;
+use FriendsOfRedaxo\VSeo\Alert\AlertRepository;
+use FriendsOfRedaxo\VSeo\Alert\Rules;
+use FriendsOfRedaxo\VSeo\Backend\Page;
+use FriendsOfRedaxo\VSeo\Model\DomainRepository;
 
 /**
  * Verlauf der Warnungen aller sichtbaren Domains, mit „gesehen“ markierbar.

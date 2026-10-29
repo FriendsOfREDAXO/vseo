@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Viewsion\SeoMonitor\Command;
+namespace FriendsOfRedaxo\VSeo\Command;
 
-use Viewsion\SeoMonitor\Model\DomainRepository;
+use FriendsOfRedaxo\VSeo\Model\DomainRepository;
 
 final class DomainOption
 {

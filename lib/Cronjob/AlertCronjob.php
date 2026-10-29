@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Viewsion\SeoMonitor\Cronjob;
+namespace FriendsOfRedaxo\VSeo\Cronjob;
 
 use rex_cronjob;
 use rex_i18n;
-use Viewsion\SeoMonitor\Alert\Rules;
+use FriendsOfRedaxo\VSeo\Alert\Rules;
 
 /**
  * Cronjob-Typ für die Warnregeln: neue Warnungen anlegen, sofortige Mails und die Wochenzusammenfassung senden.

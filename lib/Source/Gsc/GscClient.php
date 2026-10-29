@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Viewsion\SeoMonitor\Source\Gsc;
+namespace FriendsOfRedaxo\VSeo\Source\Gsc;
 
 use rex_config;
 use RuntimeException;
-use Viewsion\SeoMonitor\Model\Account;
-use Viewsion\SeoMonitor\Util\Http;
-use Viewsion\SeoMonitor\Util\HttpResponse;
+use FriendsOfRedaxo\VSeo\Model\Account;
+use FriendsOfRedaxo\VSeo\Util\Http;
+use FriendsOfRedaxo\VSeo\Util\HttpResponse;
 
 /**
  * Search Console API mit Dienstkonto. Das JWT wird mit openssl_sign (RS256) signiert

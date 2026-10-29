@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Viewsion\SeoMonitor\Source\Rank;
+namespace FriendsOfRedaxo\VSeo\Source\Rank;
 
 /**
  * Ein Ergebnis des Rank-Trackings: Position eines Hosts für ein Keyword an einem Tag.

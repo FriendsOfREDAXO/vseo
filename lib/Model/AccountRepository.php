@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Viewsion\SeoMonitor\Model;
+namespace FriendsOfRedaxo\VSeo\Model;
 
 use rex;
 use rex_sql;
-use Viewsion\SeoMonitor\Util\Crypto;
+use FriendsOfRedaxo\VSeo\Util\Crypto;
 
 final class AccountRepository
 {

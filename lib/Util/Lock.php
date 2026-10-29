@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Viewsion\SeoMonitor\Util;
+namespace FriendsOfRedaxo\VSeo\Util;
 
 use rex;
 use rex_sql;

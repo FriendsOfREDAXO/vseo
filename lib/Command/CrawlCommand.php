@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Viewsion\SeoMonitor\Command;
+namespace FriendsOfRedaxo\VSeo\Command;
 
 use rex_console_command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Viewsion\SeoMonitor\Crawler\Crawler;
-use Viewsion\SeoMonitor\Util\Budget;
+use FriendsOfRedaxo\VSeo\Crawler\Crawler;
+use FriendsOfRedaxo\VSeo\Util\Budget;
 
 final class CrawlCommand extends rex_console_command
 {

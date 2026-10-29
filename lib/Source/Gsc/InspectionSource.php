@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Viewsion\SeoMonitor\Source\Gsc;
+namespace FriendsOfRedaxo\VSeo\Source\Gsc;
 
 use rex;
 use rex_addon;
 use rex_i18n;
 use rex_sql;
 use RuntimeException;
-use Viewsion\SeoMonitor\Model\AccountRepository;
-use Viewsion\SeoMonitor\Model\Domain;
-use Viewsion\SeoMonitor\Source\DataSourceInterface;
-use Viewsion\SeoMonitor\Stats\Compare;
-use Viewsion\SeoMonitor\Stats\Period;
-use Viewsion\SeoMonitor\Util\Budget;
+use FriendsOfRedaxo\VSeo\Model\AccountRepository;
+use FriendsOfRedaxo\VSeo\Model\Domain;
+use FriendsOfRedaxo\VSeo\Source\DataSourceInterface;
+use FriendsOfRedaxo\VSeo\Stats\Compare;
+use FriendsOfRedaxo\VSeo\Stats\Period;
+use FriendsOfRedaxo\VSeo\Util\Budget;
 
 /**
  * Tägliche Stichprobe über die URL Inspection API: zuerst URLs mit starkem Verlust,
