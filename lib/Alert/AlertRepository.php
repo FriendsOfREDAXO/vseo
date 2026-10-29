@@ -18,7 +18,7 @@ final class AlertRepository
 
     public static function table(): string
     {
-        return rex::getTable('vsn_seo_alert');
+        return rex::getTable('vseo_alert');
     }
 
     /**

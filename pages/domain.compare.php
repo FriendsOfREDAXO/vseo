@@ -65,7 +65,7 @@ foreach ([Compare::DIM_QUERY => $this->i18n('by_query'), Compare::DIM_URL => $th
 }
 $tabs .= '</div>';
 
-$hidden = '<input type="hidden" name="page" value="vsn_seo/domain/compare"><input type="hidden" name="domain_id" value="' . $domain->id . '"><input type="hidden" name="dim" value="' . $dim . '">';
+$hidden = '<input type="hidden" name="page" value="vseo/domain/compare"><input type="hidden" name="domain_id" value="' . $domain->id . '"><input type="hidden" name="dim" value="' . $dim . '">';
 foreach ($period->params() as $key => $value) {
     $hidden .= '<input type="hidden" name="' . $key . '" value="' . $value . '">';
 }
@@ -82,7 +82,7 @@ $countrySelect .= '</select>';
 $metricSelect = '<select class="form-control input-sm" name="metric">'
     . '<option value="impressions"' . ('impressions' === $metric ? ' selected' : '') . '>' . $this->i18n('sort_by', $this->i18n('kpi_impressions')) . '</option>'
     . '<option value="clicks"' . ('clicks' === $metric ? ' selected' : '') . '>' . $this->i18n('sort_by', $this->i18n('kpi_clicks')) . '</option></select>';
-$filters = '<form class="vsn-seo-filter form-inline" method="get" action="' . rex_url::backendController() . '">' . $hidden
+$filters = '<form class="vseo-filter form-inline" method="get" action="' . rex_url::backendController() . '">' . $hidden
     . $deviceSelect . ' ' . $countrySelect . ' ' . $metricSelect . ' '
     . '<input class="form-control input-sm" type="search" name="search" value="' . rex_escape($search) . '" placeholder="' . $this->i18n('search_placeholder') . '"> '
     . '<button class="btn btn-default btn-sm" type="submit">' . $this->i18n('apply') . '</button> '
@@ -92,16 +92,16 @@ $filters = '<form class="vsn-seo-filter form-inline" method="get" action="' . re
 // Zusammenfassung
 $sum = Compare::summary($rows);
 $noun = Compare::DIM_URL === $dim ? $this->i18n('kpi_urls') : $this->i18n('kpi_queries');
-$summary = '<dl class="vsn-seo-kpis">'
-    . '<div class="vsn-seo-kpi is-core"><dt>' . $noun . '</dt><dd><span class="vsn-seo-kpi-value">' . Format::int($sum['cur']) . '</span>' . Format::delta($sum['cur'], $sum['prev']) . '</dd></div>'
-    . '<div class="vsn-seo-kpi"><dt>' . $this->i18n('compare_prev_count') . '</dt><dd><span class="vsn-seo-kpi-value">' . Format::int($sum['prev']) . '</span></dd></div>'
-    . '<div class="vsn-seo-kpi"><dt>' . $this->i18n('compare_new') . '</dt><dd><span class="vsn-seo-kpi-value">' . Format::int($sum['new']) . '</span></dd></div>'
-    . '<div class="vsn-seo-kpi"><dt>' . $this->i18n('compare_gone') . '</dt><dd><span class="vsn-seo-kpi-value">' . Format::int($sum['gone']) . '</span></dd></div>'
+$summary = '<dl class="vseo-kpis">'
+    . '<div class="vseo-kpi is-core"><dt>' . $noun . '</dt><dd><span class="vseo-kpi-value">' . Format::int($sum['cur']) . '</span>' . Format::delta($sum['cur'], $sum['prev']) . '</dd></div>'
+    . '<div class="vseo-kpi"><dt>' . $this->i18n('compare_prev_count') . '</dt><dd><span class="vseo-kpi-value">' . Format::int($sum['prev']) . '</span></dd></div>'
+    . '<div class="vseo-kpi"><dt>' . $this->i18n('compare_new') . '</dt><dd><span class="vseo-kpi-value">' . Format::int($sum['new']) . '</span></dd></div>'
+    . '<div class="vseo-kpi"><dt>' . $this->i18n('compare_gone') . '</dt><dd><span class="vseo-kpi-value">' . Format::int($sum['gone']) . '</span></dd></div>'
     . '</dl>';
 
 $fragment = new rex_fragment();
 $fragment->setVar('title', $this->i18n('compare_title') . ' <small>' . $this->i18n('period_compare', Format::date($period->curFrom), Format::date($period->curTo), Format::date($period->prevFrom), Format::date($period->prevTo)) . '</small>', false);
-$fragment->setVar('body', Page::periodForm($domain, $period, 'compare', $keep) . '<div class="vsn-seo-toolbar">' . $tabs . '</div>' . $filters . $summary, false);
+$fragment->setVar('body', Page::periodForm($domain, $period, 'compare', $keep) . '<div class="vseo-toolbar">' . $tabs . '</div>' . $filters . $summary, false);
 echo $fragment->parse('core/page/section.php');
 
 // Tabellen
@@ -112,7 +112,7 @@ $crawl = Compare::DIM_URL === $dim ? Compare::crawlStatus($domain->id, array_mer
 
 $diff = static function (int $cur, int $prev): string {
     $d = $cur - $prev;
-    return '<span class="vsn-seo-diff ' . ($d > 0 ? 'is-up' : ($d < 0 ? 'is-down' : '')) . '">' . ($d > 0 ? '+' : '') . Format::int($d) . '</span>';
+    return '<span class="vseo-diff ' . ($d > 0 ? 'is-up' : ($d < 0 ? 'is-down' : '')) . '">' . ($d > 0 ? '+' : '') . Format::int($d) . '</span>';
 };
 $table = function (array $list) use ($dim, $labels, $crawl, $diff): string {
     if (!$list) {
@@ -122,7 +122,7 @@ $table = function (array $list) use ($dim, $labels, $crawl, $diff): string {
         . '<th class="text-right" colspan="3">' . $this->i18n('kpi_clicks') . '</th>'
         . '<th class="text-right" colspan="3">' . $this->i18n('kpi_impressions') . '</th>'
         . '<th class="text-right" colspan="2">' . $this->i18n('kpi_position') . '</th></tr>'
-        . '<tr class="vsn-seo-subhead"><th></th>'
+        . '<tr class="vseo-subhead"><th></th>'
         . str_repeat('<th class="text-right">' . $this->i18n('period_prev') . '</th><th class="text-right">' . $this->i18n('period_cur') . '</th><th class="text-right">Δ</th>', 2)
         . '<th class="text-right">' . $this->i18n('period_prev') . '</th><th class="text-right">' . $this->i18n('period_cur') . '</th></tr>';
     $body = '';
@@ -131,12 +131,12 @@ $table = function (array $list) use ($dim, $labels, $crawl, $diff): string {
         $name = Compare::DIM_URL === $dim
             ? Page::urlLink($label) . ' ' . Page::statusBadge($crawl[$r['id']] ?? null)
             : rex_escape($label);
-        $body .= '<tr><td class="vsn-seo-name">' . $name . '</td>'
+        $body .= '<tr><td class="vseo-name">' . $name . '</td>'
             . '<td class="text-right">' . Format::int($r['c0']) . '</td><td class="text-right">' . Format::int($r['c1']) . '</td><td class="text-right">' . $diff($r['c1'], $r['c0']) . '</td>'
             . '<td class="text-right">' . Format::int($r['i0']) . '</td><td class="text-right">' . Format::int($r['i1']) . '</td><td class="text-right">' . $diff($r['i1'], $r['i0']) . '</td>'
             . '<td class="text-right">' . Format::dec($r['p0']) . '</td><td class="text-right">' . Format::dec($r['p1']) . '</td></tr>';
     }
-    return '<div class="table-responsive"><table class="table table-hover table-condensed vsn-seo-table"><thead>' . $head . '</thead><tbody>' . $body . '</tbody></table></div>';
+    return '<div class="table-responsive"><table class="table table-hover table-condensed vseo-table"><thead>' . $head . '</thead><tbody>' . $body . '</tbody></table></div>';
 };
 
 foreach ([[$this->i18n('winners'), $winners], [$this->i18n('losers'), $losers]] as [$title, $list]) {

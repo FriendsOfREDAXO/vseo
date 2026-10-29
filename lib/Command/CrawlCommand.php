@@ -16,7 +16,7 @@ final class CrawlCommand extends rex_console_command
     protected function configure(): void
     {
         $this
-            ->setDescription('vsn_seo: check robots.txt, sitemaps and the next batch of URLs')
+            ->setDescription('vseo: check robots.txt, sitemaps and the next batch of URLs')
             ->addOption('domain', null, InputOption::VALUE_REQUIRED, 'Domain ID or host')
             ->addOption('limit', null, InputOption::VALUE_REQUIRED, 'URLs per domain (default: setting)')
             ->addOption('refresh', null, InputOption::VALUE_NONE, 'Reload robots.txt and sitemaps now')

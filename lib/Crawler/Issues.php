@@ -63,12 +63,12 @@ final class Issues
 
     public static function table(): string
     {
-        return rex::getTable('vsn_seo_issue');
+        return rex::getTable('vseo_issue');
     }
 
     public static function label(string $type): string
     {
-        $key = 'vsn_seo_issue_' . $type;
+        $key = 'vseo_issue_' . $type;
         return rex_i18n::hasMsg($key) ? rex_i18n::msg($key) : $type;
     }
 

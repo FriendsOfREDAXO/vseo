@@ -24,6 +24,6 @@ final class AlertCronjob extends rex_cronjob
 
     public function getTypeName()
     {
-        return rex_i18n::msg('vsn_seo_cronjob_alerts');
+        return rex_i18n::msg('vseo_cronjob_alerts');
     }
 }

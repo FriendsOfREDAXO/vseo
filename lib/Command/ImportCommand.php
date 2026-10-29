@@ -16,7 +16,7 @@ final class ImportCommand extends rex_console_command
     protected function configure(): void
     {
         $this
-            ->setDescription('vsn_seo: import data (recent days + next backfill step)')
+            ->setDescription('vseo: import data (recent days + next backfill step)')
             ->addOption('domain', null, InputOption::VALUE_REQUIRED, 'Domain ID or host')
             ->addOption('source', null, InputOption::VALUE_REQUIRED, 'Only this source (e.g. gsc)')
             ->addOption('budget', null, InputOption::VALUE_REQUIRED, 'Time budget in seconds (0 = unlimited)', '0');

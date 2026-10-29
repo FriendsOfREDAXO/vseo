@@ -38,7 +38,7 @@ final class SearchAnalyticsSource implements DataSourceInterface
 
     public function label(): string
     {
-        return rex_i18n::msg('vsn_seo_source_gsc');
+        return rex_i18n::msg('vseo_source_gsc');
     }
 
     public function supports(Domain $domain): bool
@@ -53,7 +53,7 @@ final class SearchAnalyticsSource implements DataSourceInterface
 
     public function import(Domain $domain, Budget $budget): array
     {
-        $addon = rex_addon::get('vsn_seo');
+        $addon = rex_addon::get('vseo');
         $today = date('Y-m-d');
         $messages = [];
         $touched = [];
@@ -161,7 +161,7 @@ final class SearchAnalyticsSource implements DataSourceInterface
         }
         if ($values) {
             rex_sql::factory()->setQuery(
-                'INSERT INTO ' . rex::getTable('vsn_seo_sa_day') . ' (domain_id, date, clicks, impressions, position_sum, imported_at)
+                'INSERT INTO ' . rex::getTable('vseo_sa_day') . ' (domain_id, date, clicks, impressions, position_sum, imported_at)
                  VALUES ' . implode(',', $values) . '
                  ON DUPLICATE KEY UPDATE clicks = VALUES(clicks), impressions = VALUES(impressions),
                     position_sum = VALUES(position_sum), imported_at = VALUES(imported_at)',
@@ -172,8 +172,8 @@ final class SearchAnalyticsSource implements DataSourceInterface
 
     private function importDay(GscClient $client, Domain $domain, string $date): void
     {
-        $rowLimit = max(1000, min(25000, (int) rex_addon::get('vsn_seo')->getConfig('row_limit', 25000)));
-        $table = rex::getTable('vsn_seo_sa');
+        $rowLimit = max(1000, min(25000, (int) rex_addon::get('vseo')->getConfig('row_limit', 25000)));
+        $table = rex::getTable('vseo_sa');
         $sql = rex_sql::factory();
         // Tag komplett ersetzen; scheitert eine Seite, bleibt der alte Stand erhalten
         $sql->transactional(function () use ($sql, $client, $domain, $date, $table, $rowLimit) {
@@ -250,7 +250,7 @@ final class SearchAnalyticsSource implements DataSourceInterface
             'endDate' => $to,
             'dimensions' => $dimensions,
             'type' => 'web',
-            'dataState' => 'all' === rex_addon::get('vsn_seo')->getConfig('data_state') ? 'all' : 'final',
+            'dataState' => 'all' === rex_addon::get('vseo')->getConfig('data_state') ? 'all' : 'final',
         ];
         if ($rowLimit > 0) {
             $body['rowLimit'] = $rowLimit;

@@ -33,7 +33,7 @@
                     var ctx = u.ctx;
                     var top = u.bbox.top;
                     var height = u.bbox.height;
-                    var color = cssVar(el, '--vsn-seo-update');
+                    var color = cssVar(el, '--vseo-update');
                     ctx.save();
                     ctx.strokeStyle = color;
                     ctx.fillStyle = color;
@@ -63,8 +63,8 @@
 
     function build(el) {
         var cfg = JSON.parse(el.getAttribute('data-chart'));
-        var axisColor = cssVar(el, '--vsn-seo-axis');
-        var grid = {stroke: cssVar(el, '--vsn-seo-grid'), width: 1};
+        var axisColor = cssVar(el, '--vseo-axis');
+        var grid = {stroke: cssVar(el, '--vseo-grid'), width: 1};
         var hasY2 = cfg.series.some(function (s) { return s.scale === 'y2'; });
         var scales = {x: {time: true}, y: {dir: cfg.invert ? -1 : 1}};
         // Beschriftung der x-Achse in der Legende kommt übersetzt aus PHP (sonst zeigt uPlot "Time")
@@ -72,7 +72,7 @@
         var data = [cfg.x];
 
         cfg.series.forEach(function (s) {
-            var color = cssVar(el, '--vsn-seo-c' + s.color);
+            var color = cssVar(el, '--vseo-c' + s.color);
             series.push({
                 label: s.label,
                 scale: s.scale || 'y',
@@ -86,12 +86,12 @@
 
         var axes = [
             {stroke: axisColor, grid: grid, ticks: grid, values: function (u, splits) { return splits.map(function (v) { return new Date(v * 1000).toLocaleDateString(locale, {month: 'short', year: '2-digit'}); }); }},
-            {stroke: cssVar(el, '--vsn-seo-c' + cfg.series[0].color), grid: grid, ticks: grid, size: 60, values: function (u, splits) { return splits.map(function (v) { return fmt(v, cfg.series[0].decimals); }); }}
+            {stroke: cssVar(el, '--vseo-c' + cfg.series[0].color), grid: grid, ticks: grid, size: 60, values: function (u, splits) { return splits.map(function (v) { return fmt(v, cfg.series[0].decimals); }); }}
         ];
         if (hasY2) {
             var s2 = cfg.series.filter(function (s) { return s.scale === 'y2'; })[0];
             scales.y2 = {};
-            axes.push({scale: 'y2', side: 1, size: 70, grid: {show: false}, stroke: cssVar(el, '--vsn-seo-c' + s2.color), values: function (u, splits) { return splits.map(function (v) { return fmt(v); }); }});
+            axes.push({scale: 'y2', side: 1, size: 70, grid: {show: false}, stroke: cssVar(el, '--vseo-c' + s2.color), values: function (u, splits) { return splits.map(function (v) { return fmt(v); }); }});
         }
 
         var opts = {
@@ -111,7 +111,7 @@
         if (typeof uPlot === 'undefined') {
             return;
         }
-        $(root).find('.vsn-seo-chart[data-chart]').each(function () {
+        $(root).find('.vseo-chart[data-chart]').each(function () {
             if (!this.dataset.built) {
                 this.dataset.built = '1';
                 build(this);
@@ -129,7 +129,7 @@
         }, 150);
     });
 
-    $(document).on('change', '[data-vsn-seo-updates]', function () {
+    $(document).on('change', '[data-vseo-updates]', function () {
         showUpdates = this.checked;
         charts.forEach(function (c) { c.plot.redraw(false); });
     });

@@ -15,7 +15,7 @@ $type = rex_request('type', 'string', Account::TYPE_GSC);
 if (!in_array($type, [Account::TYPE_GSC, Account::TYPE_MATOMO], true)) {
     $type = Account::TYPE_GSC;
 }
-$csrf = rex_csrf_token::factory('vsn_seo_accounts');
+$csrf = rex_csrf_token::factory('vseo_accounts');
 $baseUrl = rex_url::currentBackendPage();
 $account = $id ? AccountRepository::get($id) : null;
 if ($account) {
@@ -60,19 +60,19 @@ if ('post' === rex_request_method()) {
                     $credentials = GscClient::parseServiceAccount($json);
                     $info = $credentials['client_email'];
                 } elseif (!$account) {
-                    throw new RuntimeException('vsn_seo_error_no_service_account');
+                    throw new RuntimeException('vseo_error_no_service_account');
                 }
             } else {
                 $url = MatomoClient::normalizeUrl(rex_post('url', 'string'));
                 if (1 !== preg_match('~^https?://~', $url)) {
-                    throw new RuntimeException('vsn_seo_error_matomo_url');
+                    throw new RuntimeException('vseo_error_matomo_url');
                 }
                 $token = trim(rex_post('token', 'string'));
                 if ('' === $token) {
                     $token = (string) ($account?->credentials()['token'] ?? '');
                 }
                 if ('' === $token) {
-                    throw new RuntimeException('vsn_seo_error_matomo_token');
+                    throw new RuntimeException('vseo_error_matomo_token');
                 }
                 $credentials = ['url' => $url, 'token' => $token];
                 $info = $url;
@@ -82,7 +82,7 @@ if ('post' === rex_request_method()) {
             }
         } catch (RuntimeException $e) {
             // rex_i18n::msg() liefert bereits maskierten Text
-            $error = str_starts_with($e->getMessage(), 'vsn_seo_') ? rex_i18n::msg($e->getMessage()) : rex_escape($e->getMessage());
+            $error = str_starts_with($e->getMessage(), 'vseo_') ? rex_i18n::msg($e->getMessage()) : rex_escape($e->getMessage());
         }
         if ($error) {
             echo rex_view::error($error);
@@ -91,7 +91,7 @@ if ('post' === rex_request_method()) {
             $id = AccountRepository::save($account?->id, $type, $name, $info, $credentials);
             // Zwischengespeicherte Property-Liste des Zugangs verwerfen, sie gehören zu den alten Zugangsdaten
             foreach (['gsc_sites_', 'matomo_sites_'] as $prefix) {
-                rex_config::remove('vsn_seo', $prefix . $id);
+                rex_config::remove('vseo', $prefix . $id);
             }
             echo rex_view::success($this->i18n('account_saved'));
             $func = '';
@@ -106,23 +106,23 @@ if ('add' === $func || 'edit' === $func) {
         $body .= '<input type="hidden" name="id" value="' . $account->id . '">';
     }
     $body .= $csrf->getHiddenField();
-    $body .= '<div class="form-group"><label for="vsn-seo-name">' . $this->i18n('name') . '</label>'
-        . '<input class="form-control" id="vsn-seo-name" name="name" value="' . rex_escape(rex_post('name', 'string', $account->name ?? '')) . '"></div>';
+    $body .= '<div class="form-group"><label for="vseo-name">' . $this->i18n('name') . '</label>'
+        . '<input class="form-control" id="vseo-name" name="name" value="' . rex_escape(rex_post('name', 'string', $account->name ?? '')) . '"></div>';
     if ($isGsc) {
         if ($account) {
             $body .= '<p class="help-block">' . $this->i18n('account_gsc_stored', rex_escape($account->info)) . '</p>';
         }
-        $body .= '<div class="form-group"><label for="vsn-seo-json">' . $this->i18n('account_gsc_json') . '</label>'
-            . '<textarea class="form-control" id="vsn-seo-json" name="json" rows="6" autocomplete="off" spellcheck="false" placeholder="{&quot;type&quot;: &quot;service_account&quot;, …}"></textarea>'
+        $body .= '<div class="form-group"><label for="vseo-json">' . $this->i18n('account_gsc_json') . '</label>'
+            . '<textarea class="form-control" id="vseo-json" name="json" rows="6" autocomplete="off" spellcheck="false" placeholder="{&quot;type&quot;: &quot;service_account&quot;, …}"></textarea>'
             . '<p class="help-block">' . $this->i18n('account_gsc_json_notice') . '</p></div>';
-        $body .= '<div class="form-group"><label for="vsn-seo-json-file">' . $this->i18n('account_gsc_file') . '</label>'
-            . '<input type="file" id="vsn-seo-json-file" name="json_file" accept=".json,application/json"></div>';
+        $body .= '<div class="form-group"><label for="vseo-json-file">' . $this->i18n('account_gsc_file') . '</label>'
+            . '<input type="file" id="vseo-json-file" name="json_file" accept=".json,application/json"></div>';
     } else {
         $url = (string) ($account?->credentials()['url'] ?? '');
-        $body .= '<div class="form-group"><label for="vsn-seo-url">' . $this->i18n('account_matomo_url') . '</label>'
-            . '<input class="form-control" id="vsn-seo-url" name="url" type="url" placeholder="https://matomo.example.com/" value="' . rex_escape(rex_post('url', 'string', $url)) . '"></div>';
-        $body .= '<div class="form-group"><label for="vsn-seo-token">' . $this->i18n('account_matomo_token') . '</label>'
-            . '<input class="form-control" id="vsn-seo-token" name="token" type="password" autocomplete="new-password" placeholder="' . ($account ? $this->i18n('account_secret_keep') : '') . '">'
+        $body .= '<div class="form-group"><label for="vseo-url">' . $this->i18n('account_matomo_url') . '</label>'
+            . '<input class="form-control" id="vseo-url" name="url" type="url" placeholder="https://matomo.example.com/" value="' . rex_escape(rex_post('url', 'string', $url)) . '"></div>';
+        $body .= '<div class="form-group"><label for="vseo-token">' . $this->i18n('account_matomo_token') . '</label>'
+            . '<input class="form-control" id="vseo-token" name="token" type="password" autocomplete="new-password" placeholder="' . ($account ? $this->i18n('account_secret_keep') : '') . '">'
             . '<p class="help-block">' . $this->i18n('account_matomo_token_notice') . '</p></div>';
     }
     $buttons = '<button class="btn btn-save" type="submit">' . rex_i18n::msg('form_save') . '</button> '
@@ -139,7 +139,7 @@ if ('add' === $func || 'edit' === $func) {
 
 $rows = '';
 foreach (AccountRepository::all() as $acc) {
-    $post = static fn (string $f, string $label, string $class, string $confirm = '') => '<form method="post" action="' . $baseUrl . '" class="vsn-seo-inline">'
+    $post = static fn (string $f, string $label, string $class, string $confirm = '') => '<form method="post" action="' . $baseUrl . '" class="vseo-inline">'
         . $csrf->getHiddenField() . '<input type="hidden" name="func" value="' . $f . '"><input type="hidden" name="id" value="' . $acc->id . '">'
         . '<button class="btn btn-xs ' . $class . '" type="submit"' . ($confirm ? ' data-confirm="' . rex_escape($confirm) . '"' : '') . '>' . $label . '</button></form>';
     $rows .= '<tr><td>' . $this->i18n($acc->type === Account::TYPE_GSC ? 'account_gsc' : 'account_matomo') . '</td>'

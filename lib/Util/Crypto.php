@@ -10,8 +10,8 @@ use RuntimeException;
 
 /**
  * Verschlüsselt Zugangsdaten (libsodium secretbox).
- * Der Schlüssel kommt aus der Umgebungsvariable VSN_SEO_KEY (base64, 32 Byte)
- * oder wird einmalig im geschützten Datenordner redaxo/data/addons/vsn_seo/ erzeugt.
+ * Der Schlüssel kommt aus der Umgebungsvariable VSEO_KEY (base64, 32 Byte)
+ * oder wird einmalig im geschützten Datenordner redaxo/data/addons/vseo/ erzeugt.
  */
 final class Crypto
 {
@@ -49,15 +49,15 @@ final class Crypto
         if (null !== $key) {
             return $key;
         }
-        $env = getenv('VSN_SEO_KEY');
+        $env = getenv('VSEO_KEY');
         if (is_string($env) && '' !== $env) {
             $decoded = base64_decode($env, true);
             if (false === $decoded || SODIUM_CRYPTO_SECRETBOX_KEYBYTES !== strlen($decoded)) {
-                throw new RuntimeException('VSN_SEO_KEY must be 32 bytes, base64 encoded');
+                throw new RuntimeException('VSEO_KEY must be 32 bytes, base64 encoded');
             }
             return $key = $decoded;
         }
-        $file = rex_path::addonData('vsn_seo', 'secret.key');
+        $file = rex_path::addonData('vseo', 'secret.key');
         $stored = rex_file::get($file);
         if (is_string($stored) && SODIUM_CRYPTO_SECRETBOX_KEYBYTES === strlen((string) base64_decode($stored, true))) {
             return $key = (string) base64_decode($stored, true);

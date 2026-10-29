@@ -68,7 +68,7 @@ final class Domain
 
     public function perm(): string
     {
-        return 'vsn_seo[domain_' . $this->id . ']';
+        return 'vseo[domain_' . $this->id . ']';
     }
 
     public function hasGsc(): bool
@@ -104,7 +104,7 @@ final class Domain
      */
     public function alertRecipients(): array
     {
-        $list = '' !== trim($this->alertEmails) ? $this->alertEmails : (string) rex_addon::get('vsn_seo')->getConfig('alert_emails', '');
+        $list = '' !== trim($this->alertEmails) ? $this->alertEmails : (string) rex_addon::get('vseo')->getConfig('alert_emails', '');
         $result = [];
         foreach (preg_split('/[\s,;]+/', $list) ?: [] as $mail) {
             if (false !== filter_var($mail, FILTER_VALIDATE_EMAIL)) {
@@ -124,7 +124,7 @@ final class Domain
      */
     public function visibleFor(rex_user $user): bool
     {
-        if ($user->isAdmin() || $user->hasPerm('vsn_seo[all_domains]')) {
+        if ($user->isAdmin() || $user->hasPerm('vseo[all_domains]')) {
             return true;
         }
         foreach (DomainRepository::all() as $domain) {

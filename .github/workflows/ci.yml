@@ -32,7 +32,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          path: vsn_seo
+          path: vseo
       # REDAXO-Core (mit den Core-AddOns cronjob und phpmailer) und YRewrite nur für die Symbole
       - uses: actions/checkout@v4
         with:
@@ -49,5 +49,5 @@ jobs:
           coverage: none
           tools: phpstan:2
       - name: Analyse
-        working-directory: vsn_seo
+        working-directory: vseo
         run: phpstan analyse -c .github/phpstan/phpstan.neon --no-progress --memory-limit=1G

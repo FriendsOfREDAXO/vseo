@@ -12,8 +12,8 @@ use Viewsion\SeoMonitor\Util\Format;
 
 $domains = array_filter(DomainRepository::visibleFor(rex::getUser()), static fn ($d) => $d->active);
 if (!$domains) {
-    echo rex_view::info($this->i18n('overview_empty') . (rex::getUser()?->hasPerm('vsn_seo[settings]')
-        ? ' <a href="' . rex_url::backendPage('vsn_seo/settings/domains') . '">' . $this->i18n('domains') . '</a>' : ''));
+    echo rex_view::info($this->i18n('overview_empty') . (rex::getUser()?->hasPerm('vseo[settings]')
+        ? ' <a href="' . rex_url::backendPage('vseo/settings/domains') . '">' . $this->i18n('domains') . '</a>' : ''));
     return;
 }
 
@@ -39,12 +39,12 @@ foreach ($domains as $domain) {
     $fragment->setVar('kpi', $kpi, false);
     $fragment->setVar('only', ['queries', 'urls', 'clicks', 'impressions'], false);
 
-    $tiles .= '<a class="vsn-seo-tile" href="' . Page::domainUrl($domain) . '">'
-        . '<header><span class="vsn-seo-light ' . $light . '" title="' . rex_escape($lightTitle) . '"></span>'
+    $tiles .= '<a class="vseo-tile" href="' . Page::domainUrl($domain) . '">'
+        . '<header><span class="vseo-light ' . $light . '" title="' . rex_escape($lightTitle) . '"></span>'
         . '<strong>' . rex_escape($domain->name) . '</strong>'
         . ($domain->name !== $domain->host ? ' <small>' . rex_escape($domain->host) . '</small>' : '') . '</header>'
-        . $fragment->parse('vsn_seo/kpi.php')
-        . '<div class="vsn-seo-sparks">'
+        . $fragment->parse('vseo/kpi.php')
+        . '<div class="vseo-sparks">'
         . '<div class="is-core" title="' . $this->i18n('kpi_queries') . '">' . Series::sparkline(array_column($weeks, 'queries')) . '<small>' . $this->i18n('kpi_queries') . '</small></div>'
         . '<div title="' . $this->i18n('kpi_clicks') . '">' . Series::sparkline(array_column($weeks, 'clicks')) . '<small>' . $this->i18n('kpi_clicks') . '</small></div>'
         . '</div>'
@@ -54,5 +54,5 @@ foreach ($domains as $domain) {
 
 $fragment = new rex_fragment();
 $fragment->setVar('title', $this->i18n('overview_title'), false);
-$fragment->setVar('body', '<div class="vsn-seo-tiles">' . $tiles . '</div>', false);
+$fragment->setVar('body', '<div class="vseo-tiles">' . $tiles . '</div>', false);
 echo $fragment->parse('core/page/section.php');

@@ -26,6 +26,6 @@ final class Lock
     private static function name(string $name): string
     {
         // pro Installation eindeutig, MySQL erlaubt max. 64 Zeichen
-        return 'vsn_seo_' . substr(md5(rex::getProperty('db')[1]['name'] . rex::getTablePrefix()), 0, 12) . '_' . substr($name, 0, 40);
+        return 'vseo_' . substr(md5(rex::getProperty('db')[1]['name'] . rex::getTablePrefix()), 0, 12) . '_' . substr($name, 0, 40);
     }
 }

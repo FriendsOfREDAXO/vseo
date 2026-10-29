@@ -40,15 +40,15 @@ final class GscClient
     {
         $data = json_decode(trim($json), true);
         if (!is_array($data) || 'service_account' !== ($data['type'] ?? null)) {
-            throw new RuntimeException('vsn_seo_error_no_service_account');
+            throw new RuntimeException('vseo_error_no_service_account');
         }
         foreach (['client_email', 'private_key'] as $key) {
             if (!is_string($data[$key] ?? null) || '' === $data[$key]) {
-                throw new RuntimeException('vsn_seo_error_no_service_account');
+                throw new RuntimeException('vseo_error_no_service_account');
             }
         }
         if (false === openssl_pkey_get_private($data['private_key'])) {
-            throw new RuntimeException('vsn_seo_error_private_key');
+            throw new RuntimeException('vseo_error_private_key');
         }
         return [
             'client_email' => $data['client_email'],
@@ -78,12 +78,12 @@ final class GscClient
     public function listSitesCached(bool $refresh = false): array
     {
         $key = 'gsc_sites_' . $this->account->id;
-        $cached = rex_config::get('vsn_seo', $key);
+        $cached = rex_config::get('vseo', $key);
         if (!$refresh && is_array($cached) && ($cached['ts'] ?? 0) > time() - 3600) {
             return $cached['sites'];
         }
         $sites = $this->listSites();
-        rex_config::set('vsn_seo', $key, ['ts' => time(), 'sites' => $sites]);
+        rex_config::set('vseo', $key, ['ts' => time(), 'sites' => $sites]);
         return $sites;
     }
 

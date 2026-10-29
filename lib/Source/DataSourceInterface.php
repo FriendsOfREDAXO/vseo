@@ -9,7 +9,7 @@ use Viewsion\SeoMonitor\Util\Budget;
 
 /**
  * Eine Datenquelle, die je Domain importiert (Search Console, Matomo, später Bing Webmaster Tools …).
- * Weitere Quellen lassen sich über den Extension Point VSN_SEO_DATA_SOURCES ergänzen.
+ * Weitere Quellen lassen sich über den Extension Point VSEO_DATA_SOURCES ergänzen.
  */
 interface DataSourceInterface
 {

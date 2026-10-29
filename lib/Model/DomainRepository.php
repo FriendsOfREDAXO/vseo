@@ -15,7 +15,7 @@ final class DomainRepository
 
     public static function table(): string
     {
-        return rex::getTable('vsn_seo_domain');
+        return rex::getTable('vseo_domain');
     }
 
     /** @return array<int, Domain> */
@@ -85,12 +85,12 @@ final class DomainRepository
     public static function delete(int $id): void
     {
         $sql = rex_sql::factory();
-        foreach (['vsn_seo_sa', 'vsn_seo_sa_day', 'vsn_seo_sa_week', 'vsn_seo_crawl', 'vsn_seo_issue', 'vsn_seo_sitemap', 'vsn_seo_alert',
-            'vsn_seo_mt_day', 'vsn_seo_mt_engine', 'vsn_seo_mt_entry', 'vsn_seo_mt_404', 'vsn_seo_inspect', 'vsn_seo_inspect_day'] as $table) {
+        foreach (['vseo_sa', 'vseo_sa_day', 'vseo_sa_week', 'vseo_crawl', 'vseo_issue', 'vseo_sitemap', 'vseo_alert',
+            'vseo_mt_day', 'vseo_mt_engine', 'vseo_mt_entry', 'vseo_mt_404', 'vseo_inspect', 'vseo_inspect_day'] as $table) {
             $sql->setQuery('DELETE FROM ' . rex::getTable($table) . ' WHERE domain_id = ?', [$id]);
         }
-        $sql->setQuery('DELETE r FROM ' . rex::getTable('vsn_seo_rank') . ' r JOIN ' . rex::getTable('vsn_seo_rank_keyword') . ' k ON k.id = r.keyword_id WHERE k.domain_id = ?', [$id]);
-        $sql->setQuery('DELETE FROM ' . rex::getTable('vsn_seo_rank_keyword') . ' WHERE domain_id = ?', [$id]);
+        $sql->setQuery('DELETE r FROM ' . rex::getTable('vseo_rank') . ' r JOIN ' . rex::getTable('vseo_rank_keyword') . ' k ON k.id = r.keyword_id WHERE k.domain_id = ?', [$id]);
+        $sql->setQuery('DELETE FROM ' . rex::getTable('vseo_rank_keyword') . ' WHERE domain_id = ?', [$id]);
         $sql->setQuery('DELETE FROM ' . self::table() . ' WHERE id = ?', [$id]);
         self::$cache = null;
     }
@@ -99,7 +99,7 @@ final class DomainRepository
     public static function resetData(int $id): void
     {
         $sql = rex_sql::factory();
-        foreach (['vsn_seo_sa', 'vsn_seo_sa_day', 'vsn_seo_sa_week'] as $table) {
+        foreach (['vseo_sa', 'vseo_sa_day', 'vseo_sa_week'] as $table) {
             $sql->setQuery('DELETE FROM ' . rex::getTable($table) . ' WHERE domain_id = ?', [$id]);
         }
         self::patch($id, ['backfill_cursor' => null, 'forward_until' => null, 'kpi' => null, 'last_error' => null]);

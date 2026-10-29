@@ -67,12 +67,12 @@ final class MatomoClient
     public function sitesCached(bool $refresh = false): array
     {
         $key = 'matomo_sites_' . $this->account->id;
-        $cached = rex_config::get('vsn_seo', $key);
+        $cached = rex_config::get('vseo', $key);
         if (!$refresh && is_array($cached) && ($cached['ts'] ?? 0) > time() - 3600) {
             return $cached['sites'];
         }
         $sites = $this->sites();
-        rex_config::set('vsn_seo', $key, ['ts' => time(), 'sites' => $sites]);
+        rex_config::set('vseo', $key, ['ts' => time(), 'sites' => $sites]);
         return $sites;
     }
 }

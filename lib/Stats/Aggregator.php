@@ -25,11 +25,11 @@ final class Aggregator
         $row = $sql->getArray(
             'SELECT COUNT(*) AS n, COALESCE(SUM(clicks), 0) AS c, COALESCE(SUM(impressions), 0) AS i,
                     COUNT(DISTINCT query_id) AS q, COUNT(DISTINCT url_id) AS u
-             FROM ' . rex::getTable('vsn_seo_sa') . ' WHERE domain_id = ? AND date = ?',
+             FROM ' . rex::getTable('vseo_sa') . ' WHERE domain_id = ? AND date = ?',
             [$domainId, $date],
         )[0];
         $sql->setQuery(
-            'INSERT INTO ' . rex::getTable('vsn_seo_sa_day') . '
+            'INSERT INTO ' . rex::getTable('vseo_sa_day') . '
                 (domain_id, date, detail_rows, detail_clicks, detail_impressions, queries, urls, imported_at)
              VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
              ON DUPLICATE KEY UPDATE detail_rows = VALUES(detail_rows), detail_clicks = VALUES(detail_clicks),
@@ -55,10 +55,10 @@ final class Aggregator
         $t = $sql->getArray(
             'SELECT COUNT(*) AS days, COALESCE(SUM(clicks), 0) AS c, COALESCE(SUM(impressions), 0) AS i,
                     COALESCE(SUM(position_sum), 0) AS p, COALESCE(SUM(detail_rows), 0) AS dr
-             FROM ' . rex::getTable('vsn_seo_sa_day') . ' WHERE domain_id = ? AND date BETWEEN ? AND ?',
+             FROM ' . rex::getTable('vseo_sa_day') . ' WHERE domain_id = ? AND date BETWEEN ? AND ?',
             [$domainId, $week, $end],
         )[0];
-        $weekTable = rex::getTable('vsn_seo_sa_week');
+        $weekTable = rex::getTable('vseo_sa_week');
         if (0 === (int) $t['days']) {
             $sql->setQuery('DELETE FROM ' . $weekTable . ' WHERE domain_id = ? AND week = ?', [$domainId, $week]);
             return;
@@ -83,7 +83,7 @@ final class Aggregator
     public static function rebuildWeeks(int $domainId): int
     {
         $rows = rex_sql::factory()->getArray(
-            'SELECT MIN(date) AS a, MAX(date) AS b FROM ' . rex::getTable('vsn_seo_sa_day') . ' WHERE domain_id = ?',
+            'SELECT MIN(date) AS a, MAX(date) AS b FROM ' . rex::getTable('vseo_sa_day') . ' WHERE domain_id = ?',
             [$domainId],
         );
         if (!$rows[0]['a']) {
@@ -104,7 +104,7 @@ final class Aggregator
     {
         $sql = rex_sql::factory();
         $end = $sql->getArray(
-            'SELECT MAX(date) AS d FROM ' . rex::getTable('vsn_seo_sa_day') . ' WHERE domain_id = ? AND detail_rows > 0',
+            'SELECT MAX(date) AS d FROM ' . rex::getTable('vseo_sa_day') . ' WHERE domain_id = ? AND detail_rows > 0',
             [$domainId],
         )[0]['d'] ?? null;
         if (!$end) {
@@ -131,7 +131,7 @@ final class Aggregator
     {
         $t = rex_sql::factory()->getArray(
             'SELECT COUNT(*) AS days, COALESCE(SUM(clicks), 0) AS c, COALESCE(SUM(impressions), 0) AS i, COALESCE(SUM(position_sum), 0) AS p
-             FROM ' . rex::getTable('vsn_seo_sa_day') . ' WHERE domain_id = ? AND date BETWEEN ? AND ?',
+             FROM ' . rex::getTable('vseo_sa_day') . ' WHERE domain_id = ? AND date BETWEEN ? AND ?',
             [$domainId, $from, $to],
         )[0];
         $d = self::distinct($domainId, $from, $to);
@@ -152,7 +152,7 @@ final class Aggregator
     {
         $row = rex_sql::factory()->getArray(
             'SELECT COUNT(DISTINCT query_id) AS q, COUNT(DISTINCT url_id) AS u
-             FROM ' . rex::getTable('vsn_seo_sa') . ' WHERE domain_id = ? AND date BETWEEN ? AND ?',
+             FROM ' . rex::getTable('vseo_sa') . ' WHERE domain_id = ? AND date BETWEEN ? AND ?',
             [$domainId, $from, $to],
         )[0];
         return ['queries' => (int) $row['q'], 'urls' => (int) $row['u']];

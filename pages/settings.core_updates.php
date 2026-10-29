@@ -6,7 +6,7 @@ declare(strict_types=1);
 
 $func = rex_request('func', 'string');
 $id = rex_request('id', 'int');
-$table = rex::getTable('vsn_seo_core_update');
+$table = rex::getTable('vseo_core_update');
 
 if ('add' === $func || 'edit' === $func) {
     $form = rex_form::factory($table, $this->i18n('core_update'), 'id = ' . $id);
@@ -38,11 +38,11 @@ $list->setColumnFormat('date_end', 'date', 'd.m.Y');
 $list->setColumnParams('name', ['func' => 'edit', 'id' => '###id###']);
 $list->addColumn('', '<i class="rex-icon rex-icon-add"></i>', 0, ['<th class="rex-table-icon"><a href="' . $list->getUrl(['func' => 'add']) . '" title="' . rex_i18n::msg('add') . '"><i class="rex-icon rex-icon-add"></i></a></th>', '<td class="rex-table-icon">###VALUE###</td>']);
 $list->addColumn(rex_i18n::msg('delete'), rex_i18n::msg('delete'));
-$list->setColumnParams(rex_i18n::msg('delete'), ['func' => 'delete', 'id' => '###id###'] + rex_csrf_token::factory('vsn_seo_core_updates')->getUrlParams());
+$list->setColumnParams(rex_i18n::msg('delete'), ['func' => 'delete', 'id' => '###id###'] + rex_csrf_token::factory('vseo_core_updates')->getUrlParams());
 $list->addLinkAttribute(rex_i18n::msg('delete'), 'data-confirm', rex_i18n::msg('delete') . ' ?');
 
 if ('delete' === $func && $id) {
-    if (rex_csrf_token::factory('vsn_seo_core_updates')->isValid()) {
+    if (rex_csrf_token::factory('vseo_core_updates')->isValid()) {
         rex_sql::factory()->setQuery('DELETE FROM ' . $table . ' WHERE id = ?', [$id]);
         echo rex_view::success($this->i18n('deleted'));
     } else {

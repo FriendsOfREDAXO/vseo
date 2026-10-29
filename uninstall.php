@@ -9,4 +9,4 @@ if (!class_exists(\Viewsion\SeoMonitor\Install\Schema::class)) {
 }
 
 \Viewsion\SeoMonitor\Install\Schema::drop();
-rex_config::removeNamespace('vsn_seo');
+rex_config::removeNamespace('vseo');

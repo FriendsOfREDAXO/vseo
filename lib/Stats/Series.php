@@ -25,7 +25,7 @@ final class Series
             $params[] = Aggregator::weekStart(date('Y-m-d', (int) strtotime('-' . $months . ' months')));
         }
         $rows = rex_sql::factory()->getArray(
-            'SELECT week, days, clicks, impressions, position_sum, queries, urls FROM ' . rex::getTable('vsn_seo_sa_week')
+            'SELECT week, days, clicks, impressions, position_sum, queries, urls FROM ' . rex::getTable('vseo_sa_week')
             . ' WHERE ' . $where . ' ORDER BY week',
             $params,
         );
@@ -62,7 +62,7 @@ final class Series
     public static function coreUpdates(?string $from = null): array
     {
         $rows = rex_sql::factory()->getArray(
-            'SELECT date, date_end, name FROM ' . rex::getTable('vsn_seo_core_update') . ' WHERE date >= ? ORDER BY date',
+            'SELECT date, date_end, name FROM ' . rex::getTable('vseo_core_update') . ' WHERE date >= ? ORDER BY date',
             [$from ?? '1970-01-01'],
         );
         return array_map(static fn (array $r) => ['date' => (string) $r['date'], 'date_end' => $r['date_end'] ? (string) $r['date_end'] : null, 'name' => (string) $r['name']], $rows);
@@ -88,7 +88,7 @@ final class Series
             $y = round($height - 1 - ($value - $min) / $range * ($height - 2), 1);
             $points[] = $x . ',' . $y;
         }
-        return '<svg class="vsn-seo-spark" viewBox="0 0 ' . $width . ' ' . $height . '" width="' . $width . '" height="' . $height . '" aria-hidden="true">'
+        return '<svg class="vseo-spark" viewBox="0 0 ' . $width . ' ' . $height . '" width="' . $width . '" height="' . $height . '" aria-hidden="true">'
             . '<polyline fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" points="' . implode(' ', $points) . '"/></svg>';
     }
 }

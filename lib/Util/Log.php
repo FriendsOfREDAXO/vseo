@@ -10,11 +10,11 @@ final class Log
 {
     public static function error(string $message): void
     {
-        rex_logger::factory()->log('error', '[vsn_seo] ' . $message);
+        rex_logger::factory()->log('error', '[vseo] ' . $message);
     }
 
     public static function warning(string $message): void
     {
-        rex_logger::factory()->log('warning', '[vsn_seo] ' . $message);
+        rex_logger::factory()->log('warning', '[vseo] ' . $message);
     }
 }

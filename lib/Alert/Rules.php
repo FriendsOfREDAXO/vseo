@@ -21,7 +21,7 @@ use Viewsion\SeoMonitor\Util\Lock;
  * Warnregeln mit einstellbaren Schwellen. Wochenregeln vergleichen die letzte vollständige Woche
  * mit dem Durchschnitt der vier Wochen davor; jede Warnung entsteht je Woche bzw. Anlass nur einmal.
  *
- * Andere AddOns hängen über VSN_SEO_ALERT eigene Warnungen an:
+ * Andere AddOns hängen über VSEO_ALERT eigene Warnungen an:
  * Subject ist eine Liste von ['rule' => …, 'ref' => …, 'severity' => 1–3, 'message' => …], Parameter `domain`.
  * Der Schlüssel `ref` macht eine Warnung eindeutig (z. B. Datum), kritische (3) gehen sofort per Mail.
  */
@@ -51,7 +51,7 @@ final class Rules
     /** @return array<string, array{enabled: bool, threshold: float, mail: bool, severity: int}> */
     public static function config(): array
     {
-        $stored = rex_addon::get('vsn_seo')->getConfig('alert_rules', []);
+        $stored = rex_addon::get('vseo')->getConfig('alert_rules', []);
         $result = [];
         foreach (self::DEFAULTS as $rule => $default) {
             $s = is_array($stored) && isset($stored[$rule]) && is_array($stored[$rule]) ? $stored[$rule] : [];
@@ -67,7 +67,7 @@ final class Rules
 
     public static function label(string $rule): string
     {
-        $key = 'vsn_seo_rule_' . $rule;
+        $key = 'vseo_rule_' . $rule;
         return rex_i18n::hasMsg($key) ? rex_i18n::msg($key) : $rule;
     }
 
@@ -132,7 +132,7 @@ final class Rules
         if ($on('not_found_rise') && $domain->hasMatomo()) {
             $row = $sql->getArray(
                 'SELECT SUM(IF(date > ?, hits_404_search, 0)) AS cur, SUM(IF(date <= ?, hits_404_search, 0)) / 4 AS base, COUNT(*) AS days
-                 FROM ' . rex::getTable('vsn_seo_mt_day') . ' WHERE domain_id = ? AND date > ?',
+                 FROM ' . rex::getTable('vseo_mt_day') . ' WHERE domain_id = ? AND date > ?',
                 [self::daysAgo(8), self::daysAgo(8), $domain->id, self::daysAgo(36)],
             )[0];
             $cur = (float) $row['cur'];
@@ -159,7 +159,7 @@ final class Rules
         // robots.txt/Sitemap: je offenem Problem eine Warnung
         if ($on('sitemap_error')) {
             foreach ($sql->getArray(
-                'SELECT i.type, i.first_seen, i.detail, u.url FROM ' . Issues::table() . ' i LEFT JOIN ' . rex::getTable('vsn_seo_url') . ' u ON u.id = i.url_id
+                'SELECT i.type, i.first_seen, i.detail, u.url FROM ' . Issues::table() . ' i LEFT JOIN ' . rex::getTable('vseo_url') . ' u ON u.id = i.url_id
                  WHERE i.domain_id = ? AND i.resolved_at IS NULL AND i.type IN (?, ?, ?)',
                 [$domain->id, Issues::ROBOTS_UNREACHABLE, Issues::SITEMAP_UNREACHABLE, Issues::SITEMAP_GSC_ERRORS],
             ) as $i) {
@@ -172,7 +172,7 @@ final class Rules
         // Anteil indexierter URLs der Stichprobe
         if ($on('index_share_drop')) {
             $rows = $sql->getArray(
-                'SELECT date, sample, indexed FROM ' . rex::getTable('vsn_seo_inspect_day') . ' WHERE domain_id = ? AND date >= ? ORDER BY date',
+                'SELECT date, sample, indexed FROM ' . rex::getTable('vseo_inspect_day') . ' WHERE domain_id = ? AND date >= ? ORDER BY date',
                 [$domain->id, self::daysAgo(8)],
             );
             if (count($rows) >= 2) {
@@ -203,7 +203,7 @@ final class Rules
         }
 
         // Warnungen anderer AddOns
-        $external = rex_extension::registerPoint(new rex_extension_point('VSN_SEO_ALERT', self::noAlerts(), ['domain' => $domain]));
+        $external = rex_extension::registerPoint(new rex_extension_point('VSEO_ALERT', self::noAlerts(), ['domain' => $domain]));
         foreach ($external as $a) {
             $new += (int) AlertRepository::raise($domain->id, 'ext_' . $a['rule'], $a['ref'], $a['severity'], $a['message']);
         }
@@ -213,7 +213,7 @@ final class Rules
     /**
      * Text einer Warnung in der aktuellen Sprache.
      *
-     * @param array<string, mixed> $alert Zeile aus vsn_seo_alert
+     * @param array<string, mixed> $alert Zeile aus vseo_alert
      */
     public static function text(array $alert): string
     {
@@ -224,11 +224,11 @@ final class Rules
         }
         $int = static fn (mixed $v) => Format::int(is_numeric($v) ? (float) $v : null);
         return match ($rule) {
-            'queries_drop', 'urls_drop', 'clicks_drop' => rex_i18n::rawMsg('vsn_seo_alert_' . $rule, Format::date((string) $p[0]), $int($p[1]), $int($p[2]), Format::dec((float) $p[3])),
-            'not_found_rise' => rex_i18n::rawMsg('vsn_seo_alert_not_found_rise', $int($p[0]), $int($p[1])),
-            'http_errors_new', 'redirect_chain_new' => rex_i18n::rawMsg('vsn_seo_alert_' . $rule, $int($p[0])),
-            'index_share_drop' => rex_i18n::rawMsg('vsn_seo_alert_index_share_drop', Format::dec((float) $p[0]), Format::dec((float) $p[1])),
-            'data_stale' => rex_i18n::rawMsg('vsn_seo_alert_data_stale', Format::date(null !== $p[0] ? (string) $p[0] : null)) . ($p[1] ? ' ' . $p[1] : ''),
+            'queries_drop', 'urls_drop', 'clicks_drop' => rex_i18n::rawMsg('vseo_alert_' . $rule, Format::date((string) $p[0]), $int($p[1]), $int($p[2]), Format::dec((float) $p[3])),
+            'not_found_rise' => rex_i18n::rawMsg('vseo_alert_not_found_rise', $int($p[0]), $int($p[1])),
+            'http_errors_new', 'redirect_chain_new' => rex_i18n::rawMsg('vseo_alert_' . $rule, $int($p[0])),
+            'index_share_drop' => rex_i18n::rawMsg('vseo_alert_index_share_drop', Format::dec((float) $p[0]), Format::dec((float) $p[1])),
+            'data_stale' => rex_i18n::rawMsg('vseo_alert_data_stale', Format::date(null !== $p[0] ? (string) $p[0] : null)) . ($p[1] ? ' ' . $p[1] : ''),
             // sitemap_error
             default => Issues::label((string) $p[0]) . ': ' . $p[1] . ($p[2] ? ' (' . $p[2] . ')' : ''),
         };

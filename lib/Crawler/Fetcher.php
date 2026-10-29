@@ -25,14 +25,14 @@ final class Fetcher
 
     public function __construct()
     {
-        $addon = rex_addon::get('vsn_seo');
+        $addon = rex_addon::get('vseo');
         $this->timeout = max(3, (int) $addon->getConfig('crawl_timeout', 15));
         $this->delayMs = max(0, (int) $addon->getConfig('crawl_delay_ms', 250));
     }
 
     public static function userAgent(): string
     {
-        return 'Mozilla/5.0 (compatible; vsn_seo/' . rex_addon::get('vsn_seo')->getVersion() . '; REDAXO SEO Monitor)';
+        return 'Mozilla/5.0 (compatible; vSEO/' . rex_addon::get('vseo')->getVersion() . '; REDAXO)';
     }
 
     /**

@@ -46,7 +46,7 @@ final class Crawler
 
     public static function table(): string
     {
-        return rex::getTable('vsn_seo_crawl');
+        return rex::getTable('vseo_crawl');
     }
 
     /**
@@ -62,7 +62,7 @@ final class Crawler
         try {
             $domains = null !== $domainId ? array_filter([DomainRepository::get($domainId)]) : DomainRepository::all(true);
             usort($domains, static fn (Domain $a, Domain $b) => strcmp((string) ($a->crawl['run_at'] ?? ''), (string) ($b->crawl['run_at'] ?? '')));
-            $limit ??= max(1, (int) rex_addon::get('vsn_seo')->getConfig('crawl_per_run', 200));
+            $limit ??= max(1, (int) rex_addon::get('vseo')->getConfig('crawl_per_run', 200));
             foreach ($domains as $domain) {
                 if ($budget->exceeded()) {
                     $this->messages[] = 'Budget exceeded, continuing next run.';
@@ -128,7 +128,7 @@ final class Crawler
             $this->loadRobots($domain);
         }
 
-        $days = max(1, (int) rex_addon::get('vsn_seo')->getConfig('crawl_interval_days', 7));
+        $days = max(1, (int) rex_addon::get('vseo')->getConfig('crawl_interval_days', 7));
         $due = date('Y-m-d H:i:s', time() - $days * 86400 + 3600);
         $checked = 0;
         foreach ($this->rows($domain, '(c.checked_at IS NULL OR c.checked_at < ' . rex_sql::factory()->escape($due) . ')', $limit) as $row) {
@@ -194,7 +194,7 @@ final class Crawler
             $sources[$base . 'sitemap.xml'] = 'default';
         }
 
-        $maxUrls = max(100, (int) rex_addon::get('vsn_seo')->getConfig('crawl_max_sitemap_urls', 50000));
+        $maxUrls = max(100, (int) rex_addon::get('vseo')->getConfig('crawl_max_sitemap_urls', 50000));
         $locs = [];
         $complete = true;
         $seen = [];
@@ -235,7 +235,7 @@ final class Crawler
         foreach ($sitemaps as $s) {
             $urls[] = $s['path'];
             $sql->setQuery(
-                'INSERT INTO ' . rex::getTable('vsn_seo_sitemap') . ' (domain_id, hash, url, source, gsc_checked_at, gsc_last_submitted, gsc_last_downloaded,
+                'INSERT INTO ' . rex::getTable('vseo_sitemap') . ' (domain_id, hash, url, source, gsc_checked_at, gsc_last_submitted, gsc_last_downloaded,
                     gsc_pending, gsc_errors, gsc_warnings, gsc_submitted, gsc_indexed)
                  VALUES (?, UNHEX(MD5(?)), ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?)
                  ON DUPLICATE KEY UPDATE gsc_checked_at = NOW(), gsc_last_submitted = VALUES(gsc_last_submitted),
@@ -280,14 +280,14 @@ final class Crawler
 
         $sql = rex_sql::factory();
         $sql->setQuery(
-            'INSERT INTO ' . rex::getTable('vsn_seo_sitemap') . ' (domain_id, hash, url, source, parent_id, checked_at, status, error, is_index, url_count)
+            'INSERT INTO ' . rex::getTable('vseo_sitemap') . ' (domain_id, hash, url, source, parent_id, checked_at, status, error, is_index, url_count)
              VALUES (?, UNHEX(MD5(?)), ?, ?, ?, NOW(), ?, ?, ?, ?)
              ON DUPLICATE KEY UPDATE parent_id = VALUES(parent_id), checked_at = NOW(), status = VALUES(status), error = VALUES(error),
                 is_index = VALUES(is_index), url_count = VALUES(url_count),
                 source = IF(source = \'gsc\' AND VALUES(source) <> \'child\', VALUES(source), source)',
             [$domain->id, $url, $url, $source, $parentId, $res->status, $error, (int) $parsed['index'], count($parsed['locs'])],
         );
-        $id = (int) $sql->getArray('SELECT id FROM ' . rex::getTable('vsn_seo_sitemap') . ' WHERE domain_id = ? AND hash = UNHEX(MD5(?))', [$domain->id, $url])[0]['id'];
+        $id = (int) $sql->getArray('SELECT id FROM ' . rex::getTable('vseo_sitemap') . ' WHERE domain_id = ? AND hash = UNHEX(MD5(?))', [$domain->id, $url])[0]['id'];
 
         $urlId = Dictionary::ids(Dictionary::URL, [Dictionary::normalize(Dictionary::URL, $url)]);
         Issues::sync($domain->id, (int) reset($urlId), $error ? [Issues::SITEMAP_UNREACHABLE => $error] : [], [Issues::SITEMAP_UNREACHABLE]);
@@ -318,7 +318,7 @@ final class Crawler
     {
         $sql = rex_sql::factory();
         $old = [];
-        foreach ($sql->getArray('SELECT id, url FROM ' . rex::getTable('vsn_seo_sitemap') . ' WHERE domain_id = ?', [$domain->id]) as $row) {
+        foreach ($sql->getArray('SELECT id, url FROM ' . rex::getTable('vseo_sitemap') . ' WHERE domain_id = ?', [$domain->id]) as $row) {
             if (!isset($seen[(string) $row['url']])) {
                 $old[(int) $row['id']] = (string) $row['url'];
             }
@@ -326,7 +326,7 @@ final class Crawler
         if (!$old) {
             return;
         }
-        $sql->setQuery('DELETE FROM ' . rex::getTable('vsn_seo_sitemap') . ' WHERE id IN (' . implode(',', array_keys($old)) . ')');
+        $sql->setQuery('DELETE FROM ' . rex::getTable('vseo_sitemap') . ' WHERE id IN (' . implode(',', array_keys($old)) . ')');
         $ids = Dictionary::ids(Dictionary::URL, array_map(static fn ($u) => Dictionary::normalize(Dictionary::URL, $u), array_values($old)));
         Issues::resolveUrls($domain->id, array_values($ids));
     }
@@ -361,7 +361,7 @@ final class Crawler
     private static function extensionUrls(Domain $domain): array
     {
         $urls = [];
-        foreach (rex_extension::registerPoint(new rex_extension_point('VSN_SEO_URL_SOURCE', self::emptyList(), ['domain' => $domain])) as $url) {
+        foreach (rex_extension::registerPoint(new rex_extension_point('VSEO_URL_SOURCE', self::emptyList(), ['domain' => $domain])) as $url) {
             if ($domain->ownsUrl($url)) {
                 $urls[] = $url;
             }
@@ -378,12 +378,12 @@ final class Crawler
     /** URLs mit Impressionen in den letzten Tagen (Einstellung) */
     private function setGscFlag(Domain $domain): void
     {
-        $days = max(7, (int) rex_addon::get('vsn_seo')->getConfig('crawl_gsc_days', 90));
+        $days = max(7, (int) rex_addon::get('vseo')->getConfig('crawl_gsc_days', 90));
         $sql = rex_sql::factory();
         $sql->setQuery('UPDATE ' . self::table() . ' SET from_gsc = 0 WHERE domain_id = ?', [$domain->id]);
         $sql->setQuery(
             'INSERT INTO ' . self::table() . ' (domain_id, url_id, from_gsc, first_seen)
-             SELECT domain_id, url_id, 1, NOW() FROM ' . rex::getTable('vsn_seo_sa') . ' WHERE domain_id = ? AND date >= ? GROUP BY domain_id, url_id
+             SELECT domain_id, url_id, 1, NOW() FROM ' . rex::getTable('vseo_sa') . ' WHERE domain_id = ? AND date >= ? GROUP BY domain_id, url_id
              ON DUPLICATE KEY UPDATE from_gsc = 1',
             [$domain->id, date('Y-m-d', time() - $days * 86400)],
         );
@@ -410,7 +410,7 @@ final class Crawler
     {
         $rows = rex_sql::factory()->getArray(
             'SELECT c.url_id, u.url, c.in_sitemap, c.from_gsc FROM ' . self::table() . ' c
-             JOIN ' . rex::getTable('vsn_seo_url') . ' u ON u.id = c.url_id
+             JOIN ' . rex::getTable('vseo_url') . ' u ON u.id = c.url_id
              WHERE c.domain_id = ? AND ' . $where . '
              ORDER BY c.checked_at IS NOT NULL, c.checked_at, c.in_sitemap DESC LIMIT ' . $limit,
             [$domain->id],

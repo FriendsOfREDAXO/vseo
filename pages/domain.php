@@ -18,7 +18,7 @@ foreach (DomainRepository::visibleFor(rex::getUser()) as $d) {
     $options .= '<option value="' . $d->id . '"' . ($d->id === $domain->id ? ' selected' : '') . '>' . rex_escape($d->name) . '</option>';
 }
 $page = rex_be_controller::getCurrentPage();
-echo '<form class="vsn-seo-domain-select" method="get" action="' . rex_url::backendController() . '">'
+echo '<form class="vseo-domain-select" method="get" action="' . rex_url::backendController() . '">'
     . '<input type="hidden" name="page" value="' . rex_escape($page) . '">'
     . '<select class="form-control" name="domain_id" onchange="this.form.submit()" aria-label="' . $this->i18n('domain') . '">' . $options . '</select>'
     . '<noscript><button class="btn btn-default" type="submit">OK</button></noscript>'

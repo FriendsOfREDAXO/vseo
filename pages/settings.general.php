@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /** @var rex_addon $this */
 
-$csrf = rex_csrf_token::factory('vsn_seo_general');
+$csrf = rex_csrf_token::factory('vseo_general');
 $fields = [
     // key => [min, max]
     'reload_days' => [2, 14],
@@ -48,8 +48,8 @@ $body .= '<div class="form-group"><label>' . $this->i18n('cfg_data_state') . '</
     . '<option value="all"' . ('all' === $this->getConfig('data_state') ? ' selected' : '') . '>' . $this->i18n('cfg_data_state_all') . '</option>'
     . '</select></div>';
 $number = function (string $key, int $min, int $max): string {
-    return '<div class="form-group"><label for="vsn-seo-' . $key . '">' . $this->i18n('cfg_' . $key) . '</label>'
-        . '<input class="form-control" type="number" id="vsn-seo-' . $key . '" name="' . $key . '" min="' . $min . '" max="' . $max . '" value="' . (int) $this->getConfig($key) . '">'
+    return '<div class="form-group"><label for="vseo-' . $key . '">' . $this->i18n('cfg_' . $key) . '</label>'
+        . '<input class="form-control" type="number" id="vseo-' . $key . '" name="' . $key . '" min="' . $min . '" max="' . $max . '" value="' . (int) $this->getConfig($key) . '">'
         . '<p class="help-block">' . $this->i18n('cfg_' . $key . '_notice') . '</p></div>';
 };
 foreach ($fields as $key => [$min, $max]) {
@@ -65,11 +65,11 @@ foreach ($crawlFields as $key => [$min, $max]) {
 $body .= '</fieldset><fieldset><legend>Matomo</legend>';
 $body .= $number('matomo_backfill_days', ...$moreFields['matomo_backfill_days']);
 $source = (string) $this->getConfig('matomo_404_source', 'title');
-$body .= '<div class="form-group"><label for="vsn-seo-404-source">' . $this->i18n('cfg_matomo_404_source') . '</label><select class="form-control" id="vsn-seo-404-source" name="matomo_404_source">'
+$body .= '<div class="form-group"><label for="vseo-404-source">' . $this->i18n('cfg_matomo_404_source') . '</label><select class="form-control" id="vseo-404-source" name="matomo_404_source">'
     . '<option value="title"' . ('title' === $source ? ' selected' : '') . '>' . $this->i18n('cfg_matomo_404_source_title') . '</option>'
     . '<option value="url"' . ('url' === $source ? ' selected' : '') . '>' . $this->i18n('cfg_matomo_404_source_url') . '</option></select></div>';
-$body .= '<div class="form-group"><label for="vsn-seo-404-pattern">' . $this->i18n('cfg_matomo_404_pattern') . '</label>'
-    . '<input class="form-control" id="vsn-seo-404-pattern" name="matomo_404_pattern" value="' . rex_escape((string) $this->getConfig('matomo_404_pattern', '404')) . '">'
+$body .= '<div class="form-group"><label for="vseo-404-pattern">' . $this->i18n('cfg_matomo_404_pattern') . '</label>'
+    . '<input class="form-control" id="vseo-404-pattern" name="matomo_404_pattern" value="' . rex_escape((string) $this->getConfig('matomo_404_pattern', '404')) . '">'
     . '<p class="help-block">' . $this->i18n('cfg_matomo_404_pattern_notice') . '</p></div>';
 $body .= '</fieldset>';
 
@@ -82,10 +82,10 @@ echo '<form method="post" action="' . rex_url::currentBackendPage() . '">' . $fr
 
 // Hinweis zu Cronjob und Konsole
 $console = rex_path::backend('bin/console');
-$content = '<p>' . $this->i18n('cron_notice') . '</p><pre>php ' . rex_escape($console) . ' vsn_seo:import --budget=0' . "\n"
-    . 'php ' . rex_escape($console) . ' vsn_seo:crawl' . "\n"
-    . 'php ' . rex_escape($console) . ' vsn_seo:alerts' . "\n"
-    . 'php ' . rex_escape($console) . ' vsn_seo:backfill --domain=www.example.com --from=2025-01-01</pre>';
+$content = '<p>' . $this->i18n('cron_notice') . '</p><pre>php ' . rex_escape($console) . ' vseo:import --budget=0' . "\n"
+    . 'php ' . rex_escape($console) . ' vseo:crawl' . "\n"
+    . 'php ' . rex_escape($console) . ' vseo:alerts' . "\n"
+    . 'php ' . rex_escape($console) . ' vseo:backfill --domain=www.example.com --from=2025-01-01</pre>';
 $fragment = new rex_fragment();
 $fragment->setVar('title', $this->i18n('cron'), false);
 $fragment->setVar('body', $content, false);

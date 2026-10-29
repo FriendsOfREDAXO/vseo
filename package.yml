@@ -1,52 +1,52 @@
-package: vsn_seo
+package: vseo
 version: '1.0.0-beta1'
 author: VIEWSION
-supportpage: https://github.com/viewsion/vsn_seo
+supportpage: https://github.com/viewsion/vseo
 
 page:
-    title: translate:vsn_seo_title
-    perm: vsn_seo[]
+    title: translate:vseo_title
+    perm: vseo[]
     icon: rex-icon fa-line-chart
     pjax: false
     subpages:
         overview:
-            title: translate:vsn_seo_overview
+            title: translate:vseo_overview
         alerts:
-            title: translate:vsn_seo_alerts
+            title: translate:vseo_alerts
         domain:
-            title: translate:vsn_seo_domain
+            title: translate:vseo_domain
             subpages:
                 history:
-                    title: translate:vsn_seo_history
+                    title: translate:vseo_history
                 compare:
-                    title: translate:vsn_seo_compare
+                    title: translate:vseo_compare
                 lost:
-                    title: translate:vsn_seo_lost
+                    title: translate:vseo_lost
                 technical:
-                    title: translate:vsn_seo_technical
+                    title: translate:vseo_technical
                 matomo:
                     title: Matomo
         settings:
-            title: translate:vsn_seo_settings
-            perm: vsn_seo[settings]
+            title: translate:vseo_settings
+            perm: vseo[settings]
             subpages:
                 domains:
-                    title: translate:vsn_seo_domains
+                    title: translate:vseo_domains
                 accounts:
-                    title: translate:vsn_seo_accounts
+                    title: translate:vseo_accounts
                 general:
-                    title: translate:vsn_seo_general
+                    title: translate:vseo_general
                 alerts:
-                    title: translate:vsn_seo_alert_rules
+                    title: translate:vseo_alert_rules
                 core_updates:
-                    title: translate:vsn_seo_core_updates
+                    title: translate:vseo_core_updates
 
 console_commands:
-    vsn_seo:import: Viewsion\SeoMonitor\Command\ImportCommand
-    vsn_seo:backfill: Viewsion\SeoMonitor\Command\BackfillCommand
-    vsn_seo:aggregate: Viewsion\SeoMonitor\Command\AggregateCommand
-    vsn_seo:crawl: Viewsion\SeoMonitor\Command\CrawlCommand
-    vsn_seo:alerts: Viewsion\SeoMonitor\Command\AlertsCommand
+    vseo:import: Viewsion\SeoMonitor\Command\ImportCommand
+    vseo:backfill: Viewsion\SeoMonitor\Command\BackfillCommand
+    vseo:aggregate: Viewsion\SeoMonitor\Command\AggregateCommand
+    vseo:crawl: Viewsion\SeoMonitor\Command\CrawlCommand
+    vseo:alerts: Viewsion\SeoMonitor\Command\AlertsCommand
 
 default_config:
     data_state: final

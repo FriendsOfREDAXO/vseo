@@ -40,12 +40,12 @@ final class Format
     public static function delta(float|int|null $current, float|int|null $previous, bool $inverse = false): string
     {
         if (null === $current || null === $previous || 0.0 === (float) $previous) {
-            return '<span class="vsn-seo-delta">–</span>';
+            return '<span class="vseo-delta">–</span>';
         }
         $pct = ((float) $current - (float) $previous) / (float) $previous * 100;
         $good = $inverse ? $pct < 0 : $pct > 0;
         $class = abs($pct) < 0.5 ? 'is-neutral' : ($good ? 'is-up' : 'is-down');
-        return '<span class="vsn-seo-delta ' . $class . '">' . ($pct > 0 ? '+' : '') . rex_escape(self::dec($pct)) . ' %</span>';
+        return '<span class="vseo-delta ' . $class . '">' . ($pct > 0 ? '+' : '') . rex_escape(self::dec($pct)) . ' %</span>';
     }
 
     private static function de(): bool

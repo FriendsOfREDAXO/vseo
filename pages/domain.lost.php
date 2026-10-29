@@ -21,7 +21,7 @@ $period = Period::fromRequest($domain);
 $min = max(1, rex_get('min', 'int', 10));
 $share = max(0, min(50, rex_get('share', 'int', 10)));
 $keep = ['min' => $min, 'share' => $share];
-$csrf = rex_csrf_token::factory('vsn_seo_lost');
+$csrf = rex_csrf_token::factory('vseo_lost');
 
 $lost = Compare::lost(Compare::rows($domain->id, Compare::DIM_URL, $period), $min, $share / 100);
 
@@ -57,8 +57,8 @@ foreach (array_slice($ids, 0, 500) as $id) {
     ++$groups[$key];
 }
 
-$settings = '<form class="vsn-seo-filter form-inline" method="get" action="' . rex_url::backendController() . '">'
-    . '<input type="hidden" name="page" value="vsn_seo/domain/lost"><input type="hidden" name="domain_id" value="' . $domain->id . '">';
+$settings = '<form class="vseo-filter form-inline" method="get" action="' . rex_url::backendController() . '">'
+    . '<input type="hidden" name="page" value="vseo/domain/lost"><input type="hidden" name="domain_id" value="' . $domain->id . '">';
 foreach ($period->params() as $key => $value) {
     $settings .= '<input type="hidden" name="' . $key . '" value="' . $value . '">';
 }
@@ -66,11 +66,11 @@ $settings .= '<label>' . $this->i18n('lost_min') . ' <input class="form-control 
     . '<label>' . $this->i18n('lost_share') . ' <input class="form-control input-sm" type="number" name="share" min="0" max="50" value="' . $share . '"> %</label> '
     . '<button class="btn btn-default btn-sm" type="submit">' . $this->i18n('apply') . '</button></form>';
 
-$summary = '<dl class="vsn-seo-kpis">'
-    . '<div class="vsn-seo-kpi is-core"><dt>' . $this->i18n('lost_count') . '</dt><dd><span class="vsn-seo-kpi-value">' . Format::int(count($lost)) . '</span></dd></div>'
-    . '<div class="vsn-seo-kpi"><dt>' . $this->i18n('lost_clicks') . '</dt><dd><span class="vsn-seo-kpi-value">' . Format::int($lostClicks) . '</span></dd></div>'
-    . '<div class="vsn-seo-kpi"><dt>' . $this->i18n('lost_impressions') . '</dt><dd><span class="vsn-seo-kpi-value">' . Format::int($lostImpressions) . '</span></dd></div>'
-    . '<div class="vsn-seo-kpi"><dt>' . $this->i18n('lost_by_status') . '</dt><dd class="vsn-seo-status-sum">'
+$summary = '<dl class="vseo-kpis">'
+    . '<div class="vseo-kpi is-core"><dt>' . $this->i18n('lost_count') . '</dt><dd><span class="vseo-kpi-value">' . Format::int(count($lost)) . '</span></dd></div>'
+    . '<div class="vseo-kpi"><dt>' . $this->i18n('lost_clicks') . '</dt><dd><span class="vseo-kpi-value">' . Format::int($lostClicks) . '</span></dd></div>'
+    . '<div class="vseo-kpi"><dt>' . $this->i18n('lost_impressions') . '</dt><dd><span class="vseo-kpi-value">' . Format::int($lostImpressions) . '</span></dd></div>'
+    . '<div class="vseo-kpi"><dt>' . $this->i18n('lost_by_status') . '</dt><dd class="vseo-status-sum">'
     . '<span class="label label-danger">' . $groups['error'] . ' ' . $this->i18n('status_error') . '</span> '
     . '<span class="label label-warning">' . $groups['redirect'] . ' ' . $this->i18n('status_redirect') . '</span> '
     . '<span class="label label-success">' . $groups['ok'] . ' ' . $this->i18n('status_ok') . '</span> '
@@ -89,17 +89,17 @@ if (!$lost) {
 
 $rows = '';
 foreach (array_slice($lost, 0, 500) as $r) {
-    $rows .= '<tr><td class="vsn-seo-name">' . Page::urlLink($labels[$r['id']] ?? '#' . $r['id']) . '</td>'
+    $rows .= '<tr><td class="vseo-name">' . Page::urlLink($labels[$r['id']] ?? '#' . $r['id']) . '</td>'
         . '<td>' . Page::statusBadge($crawl[$r['id']] ?? null) . '</td>'
         . '<td class="text-right">' . Format::int($r['c0']) . '</td><td class="text-right">' . Format::int($r['c1']) . '</td>'
         . '<td class="text-right">' . Format::int($r['i0']) . '</td><td class="text-right">' . Format::int($r['i1']) . '</td>'
         . '<td class="text-right">' . Format::dec($r['p0']) . '</td></tr>';
 }
-$table = '<div class="table-responsive"><table class="table table-hover table-condensed vsn-seo-table"><thead>'
+$table = '<div class="table-responsive"><table class="table table-hover table-condensed vseo-table"><thead>'
     . '<tr><th>URL</th><th>' . $this->i18n('status_now') . '</th>'
     . '<th class="text-right" colspan="2">' . $this->i18n('kpi_clicks') . '</th><th class="text-right" colspan="2">' . $this->i18n('kpi_impressions') . '</th>'
     . '<th class="text-right">' . $this->i18n('kpi_position') . '</th></tr>'
-    . '<tr class="vsn-seo-subhead"><th></th><th></th>'
+    . '<tr class="vseo-subhead"><th></th><th></th>'
     . str_repeat('<th class="text-right">' . $this->i18n('period_prev') . '</th><th class="text-right">' . $this->i18n('period_cur') . '</th>', 2)
     . '<th class="text-right">' . $this->i18n('period_prev') . '</th></tr></thead><tbody>' . $rows . '</tbody></table></div>';
 

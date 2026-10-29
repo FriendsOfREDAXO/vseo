@@ -36,7 +36,7 @@ final class MatomoSource implements DataSourceInterface
 
     public function label(): string
     {
-        return rex_i18n::msg('vsn_seo_source_matomo');
+        return rex_i18n::msg('vseo_source_matomo');
     }
 
     public function supports(Domain $domain): bool
@@ -46,7 +46,7 @@ final class MatomoSource implements DataSourceInterface
 
     public function import(Domain $domain, Budget $budget): array
     {
-        $addon = rex_addon::get('vsn_seo');
+        $addon = rex_addon::get('vseo');
         $state = $domain->matomo;
         $today = date('Y-m-d');
         $yesterday = Aggregator::shift($today, -1);
@@ -137,11 +137,11 @@ final class MatomoSource implements DataSourceInterface
         $notFound = $this->notFound($client, $site, $domain);
 
         $sql->transactional(function () use ($sql, $domain, $date, $visits, $search, $engines, $entries, $notFound) {
-            foreach (['vsn_seo_mt_engine', 'vsn_seo_mt_entry', 'vsn_seo_mt_404'] as $table) {
+            foreach (['vseo_mt_engine', 'vseo_mt_entry', 'vseo_mt_404'] as $table) {
                 $sql->setQuery('DELETE FROM ' . rex::getTable($table) . ' WHERE domain_id = ? AND date = ?', [$domain->id, $date]);
             }
             $sql->setQuery(
-                'REPLACE INTO ' . rex::getTable('vsn_seo_mt_day') . ' (domain_id, date, visits, search_visits, search_conversions, search_revenue, hits_404, hits_404_search, imported_at)
+                'REPLACE INTO ' . rex::getTable('vseo_mt_day') . ' (domain_id, date, visits, search_visits, search_conversions, search_revenue, hits_404, hits_404_search, imported_at)
                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())',
                 [
                     $domain->id, $date, $visits, (int) ($search['nb_visits'] ?? 0), (int) ($search['nb_conversions'] ?? 0), round((float) ($search['revenue'] ?? 0), 2),
@@ -149,11 +149,11 @@ final class MatomoSource implements DataSourceInterface
                 ],
             );
             foreach ($engines as [$engine, $count]) {
-                $sql->setQuery('INSERT INTO ' . rex::getTable('vsn_seo_mt_engine') . ' (domain_id, date, engine, visits) VALUES (?, ?, ?, ?)
+                $sql->setQuery('INSERT INTO ' . rex::getTable('vseo_mt_engine') . ' (domain_id, date, engine, visits) VALUES (?, ?, ?, ?)
                     ON DUPLICATE KEY UPDATE visits = visits + VALUES(visits)', [$domain->id, $date, $engine, $count]);
             }
-            $this->insertUrls($sql, 'vsn_seo_mt_entry', $domain->id, $date, $entries);
-            $this->insertUrls($sql, 'vsn_seo_mt_404', $domain->id, $date, $notFound);
+            $this->insertUrls($sql, 'vseo_mt_entry', $domain->id, $date, $entries);
+            $this->insertUrls($sql, 'vseo_mt_404', $domain->id, $date, $notFound);
         });
     }
 
@@ -165,7 +165,7 @@ final class MatomoSource implements DataSourceInterface
      */
     private function notFound(MatomoClient $client, array $site, Domain $domain): array
     {
-        $addon = rex_addon::get('vsn_seo');
+        $addon = rex_addon::get('vseo');
         $pattern = trim((string) $addon->getConfig('matomo_404_pattern', '404'));
         if ('' === $pattern) {
             return [];

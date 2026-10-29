@@ -32,7 +32,7 @@ final class Dictionary
      */
     public static function ids(string $kind, array $values): array
     {
-        $table = rex::getTable('vsn_seo_' . $kind);
+        $table = rex::getTable('vseo_' . $kind);
         $result = [];
         $missing = [];
         foreach (array_unique($values) as $value) {

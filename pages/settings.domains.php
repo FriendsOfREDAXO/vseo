@@ -14,7 +14,7 @@ use Viewsion\SeoMonitor\Util\Format;
 
 $func = rex_request('func', 'string');
 $id = rex_request('id', 'int');
-$csrf = rex_csrf_token::factory('vsn_seo_domains');
+$csrf = rex_csrf_token::factory('vseo_domains');
 $baseUrl = rex_url::currentBackendPage();
 $domain = $id ? DomainRepository::get($id) : null;
 $gscAccounts = AccountRepository::all(Account::TYPE_GSC);
@@ -157,8 +157,8 @@ if ('add' === $func || 'edit' === $func) {
     }
     $body .= $field(
         $this->i18n('property'),
-        '<input class="form-control" name="gsc_property" list="vsn-seo-properties" placeholder="sc-domain:example.com" value="' . rex_escape($v('gsc_property', $domain->gscProperty ?? '')) . '">'
-        . '<datalist id="vsn-seo-properties">' . $datalist . '</datalist>',
+        '<input class="form-control" name="gsc_property" list="vseo-properties" placeholder="sc-domain:example.com" value="' . rex_escape($v('gsc_property', $domain->gscProperty ?? '')) . '">'
+        . '<datalist id="vseo-properties">' . $datalist . '</datalist>',
         $this->i18n('property_notice'),
     );
     $body .= $field(
@@ -176,8 +176,8 @@ if ('add' === $func || 'edit' === $func) {
     }
     $body .= $field(
         $this->i18n('matomo_site_id'),
-        '<input class="form-control" type="number" min="1" name="matomo_site_id" list="vsn-seo-matomo-sites" value="' . rex_escape($v('matomo_site_id', $domain->matomoSiteId ?? '')) . '">'
-        . '<datalist id="vsn-seo-matomo-sites">' . $datalist . '</datalist>',
+        '<input class="form-control" type="number" min="1" name="matomo_site_id" list="vseo-matomo-sites" value="' . rex_escape($v('matomo_site_id', $domain->matomoSiteId ?? '')) . '">'
+        . '<datalist id="vseo-matomo-sites">' . $datalist . '</datalist>',
     );
     $body .= '</fieldset>';
 
@@ -200,7 +200,7 @@ if ('add' === $func || 'edit' === $func) {
 // Liste
 $rows = '';
 foreach (DomainRepository::all() as $d) {
-    $post = static fn (string $f, string $label, string $class, string $confirm) => '<form method="post" action="' . $baseUrl . '" class="vsn-seo-inline">'
+    $post = static fn (string $f, string $label, string $class, string $confirm) => '<form method="post" action="' . $baseUrl . '" class="vseo-inline">'
         . $csrf->getHiddenField() . '<input type="hidden" name="func" value="' . $f . '"><input type="hidden" name="id" value="' . $d->id . '">'
         . '<button class="btn btn-xs ' . $class . '" type="submit" data-confirm="' . rex_escape($confirm) . '">' . $label . '</button></form>';
     if (!$d->hasGsc()) {

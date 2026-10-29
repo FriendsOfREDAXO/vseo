@@ -19,7 +19,7 @@ use Viewsion\SeoMonitor\Util\Format;
  * @var Domain $domain
  */
 
-$csrf = rex_csrf_token::factory('vsn_seo_technical');
+$csrf = rex_csrf_token::factory('vseo_technical');
 $type = rex_get('type', 'string', '');
 $type = isset(Issues::SEVERITY[$type]) ? $type : '';
 $showResolved = rex_get('resolved', 'bool', false);
@@ -53,7 +53,7 @@ if (!$robots) {
 }
 
 // Sitemaps
-$sitemaps = $sql->getArray('SELECT * FROM ' . rex::getTable('vsn_seo_sitemap') . ' WHERE domain_id = ? ORDER BY COALESCE(parent_id, id), parent_id IS NOT NULL, url', [$domain->id]);
+$sitemaps = $sql->getArray('SELECT * FROM ' . rex::getTable('vseo_sitemap') . ' WHERE domain_id = ? ORDER BY COALESCE(parent_id, id), parent_id IS NOT NULL, url', [$domain->id]);
 if ($sitemaps) {
     $rows = '';
     foreach ($sitemaps as $s) {
@@ -66,14 +66,14 @@ if ($sitemaps) {
                 . ((int) $s['gsc_warnings'] ? ' <span class="label label-warning">' . (int) $s['gsc_warnings'] . ' ' . $this->i18n('warnings') . '</span>' : '')
                 . ((int) $s['gsc_pending'] ? ' <span class="label label-default">' . $this->i18n('pending') . '</span>' : '')
             : '–';
-        $rows .= '<tr' . ($s['parent_id'] ? ' class="vsn-seo-child"' : '') . '><td class="vsn-seo-name">' . Page::urlLink((string) $s['url']) . ($s['is_index'] ? ' <span class="label label-info">Index</span>' : '') . '</td>'
+        $rows .= '<tr' . ($s['parent_id'] ? ' class="vseo-child"' : '') . '><td class="vseo-name">' . Page::urlLink((string) $s['url']) . ($s['is_index'] ? ' <span class="label label-info">Index</span>' : '') . '</td>'
             . '<td>' . $this->i18n('sitemap_source_' . $s['source']) . '</td>'
             . '<td>' . $badge . '</td>'
             . '<td class="text-right">' . Format::int(null !== $s['url_count'] ? (int) $s['url_count'] : null) . '</td>'
             . '<td class="text-right">' . $gsc . '</td>'
             . '<td>' . Format::date($s['gsc_last_downloaded'] ? (string) $s['gsc_last_downloaded'] : null) . '</td></tr>';
     }
-    $sitemapHtml = '<div class="table-responsive"><table class="table table-condensed vsn-seo-table"><thead><tr><th>Sitemap</th><th>' . $this->i18n('origin') . '</th><th>' . $this->i18n('status') . '</th>'
+    $sitemapHtml = '<div class="table-responsive"><table class="table table-condensed vseo-table"><thead><tr><th>Sitemap</th><th>' . $this->i18n('origin') . '</th><th>' . $this->i18n('status') . '</th>'
         . '<th class="text-right">' . $this->i18n('sitemap_entries') . '</th><th class="text-right">' . $this->i18n('sitemap_gsc_submitted') . '</th><th>' . $this->i18n('sitemap_gsc_downloaded') . '</th></tr></thead><tbody>' . $rows . '</tbody></table></div>';
     if (isset($state['sitemaps_complete']) && !$state['sitemaps_complete']) {
         $sitemapHtml .= rex_view::warning($this->i18n('sitemaps_incomplete'));
@@ -91,8 +91,8 @@ $c = $sql->getArray(
      FROM ' . Crawler::table() . ' WHERE domain_id = ?',
     [$domain->id],
 )[0];
-$stat = static fn (string $label, mixed $value, string $class = '') => '<div class="vsn-seo-kpi' . $class . '"><dt>' . $label . '</dt><dd><span class="vsn-seo-kpi-value">' . Format::int((int) $value) . '</span></dd></div>';
-$crawlHtml = '<dl class="vsn-seo-kpis">'
+$stat = static fn (string $label, mixed $value, string $class = '') => '<div class="vseo-kpi' . $class . '"><dt>' . $label . '</dt><dd><span class="vseo-kpi-value">' . Format::int((int) $value) . '</span></dd></div>';
+$crawlHtml = '<dl class="vseo-kpis">'
     . $stat($this->i18n('crawl_total'), $c['total'], ' is-core')
     . $stat($this->i18n('crawl_checked'), $c['checked'])
     . $stat($this->i18n('crawl_in_sitemap'), $c['sitemap'])
@@ -118,7 +118,7 @@ echo $fragment->parse('core/page/section.php');
 // Indexstatus der Stichprobe (URL Inspection)
 $inspectDays = max(1, (int) $this->getConfig('inspect_interval_days', 14));
 $sample = $sql->getArray(
-    'SELECT i.*, u.url FROM ' . InspectionSource::table() . ' i JOIN ' . rex::getTable('vsn_seo_url') . ' u ON u.id = i.url_id
+    'SELECT i.*, u.url FROM ' . InspectionSource::table() . ' i JOIN ' . rex::getTable('vseo_url') . ' u ON u.id = i.url_id
      WHERE i.domain_id = ? AND i.inspected_at >= ? ORDER BY i.verdict = \'PASS\', i.reason = \'top\', i.inspected_at DESC',
     [$domain->id, date('Y-m-d H:i:s', time() - $inspectDays * 86400)],
 );
@@ -126,14 +126,14 @@ if ($sample) {
     $valid = array_filter($sample, static fn ($r) => null === $r['error']);
     $indexed = count(array_filter($valid, static fn ($r) => InspectionSource::isIndexed((string) $r['verdict'])));
     $canonicalOther = array_filter($valid, static fn ($r) => $r['google_canonical'] && $r['user_canonical'] && !PageParser::sameUrl((string) $r['google_canonical'], (string) $r['user_canonical']));
-    $history = $sql->getArray('SELECT date, sample, indexed FROM ' . rex::getTable('vsn_seo_inspect_day') . ' WHERE domain_id = ? ORDER BY date DESC LIMIT 2', [$domain->id]);
+    $history = $sql->getArray('SELECT date, sample, indexed FROM ' . rex::getTable('vseo_inspect_day') . ' WHERE domain_id = ? ORDER BY date DESC LIMIT 2', [$domain->id]);
     $share = $valid ? $indexed / count($valid) * 100 : null;
     $prevShare = isset($history[1]) && (int) $history[1]['sample'] > 0 ? (int) $history[1]['indexed'] / (int) $history[1]['sample'] * 100 : null;
-    $inspectHtml = '<dl class="vsn-seo-kpis">'
-        . '<div class="vsn-seo-kpi is-core"><dt>' . $this->i18n('inspect_share') . '</dt><dd><span class="vsn-seo-kpi-value">' . Format::dec($share) . ' %</span>' . Format::delta($share, $prevShare) . '</dd></div>'
-        . '<div class="vsn-seo-kpi"><dt>' . $this->i18n('inspect_sample') . '</dt><dd><span class="vsn-seo-kpi-value">' . Format::int(count($valid)) . '</span></dd></div>'
-        . '<div class="vsn-seo-kpi"><dt>' . $this->i18n('inspect_not_indexed') . '</dt><dd><span class="vsn-seo-kpi-value">' . Format::int(count($valid) - $indexed) . '</span></dd></div>'
-        . '<div class="vsn-seo-kpi"><dt>' . $this->i18n('inspect_canonical_other') . '</dt><dd><span class="vsn-seo-kpi-value">' . Format::int(count($canonicalOther)) . '</span></dd></div>'
+    $inspectHtml = '<dl class="vseo-kpis">'
+        . '<div class="vseo-kpi is-core"><dt>' . $this->i18n('inspect_share') . '</dt><dd><span class="vseo-kpi-value">' . Format::dec($share) . ' %</span>' . Format::delta($share, $prevShare) . '</dd></div>'
+        . '<div class="vseo-kpi"><dt>' . $this->i18n('inspect_sample') . '</dt><dd><span class="vseo-kpi-value">' . Format::int(count($valid)) . '</span></dd></div>'
+        . '<div class="vseo-kpi"><dt>' . $this->i18n('inspect_not_indexed') . '</dt><dd><span class="vseo-kpi-value">' . Format::int(count($valid) - $indexed) . '</span></dd></div>'
+        . '<div class="vseo-kpi"><dt>' . $this->i18n('inspect_canonical_other') . '</dt><dd><span class="vseo-kpi-value">' . Format::int(count($canonicalOther)) . '</span></dd></div>'
         . '</dl>';
     $rows = '';
     foreach ($sample as $r) {
@@ -143,7 +143,7 @@ if ($sample) {
         }
         $canonical = $r['google_canonical'] && !PageParser::sameUrl((string) $r['google_canonical'], (string) $r['url'])
             ? '<br><small class="text-muted">Google-canonical: ' . rex_escape((string) $r['google_canonical']) . '</small>' : '';
-        $rows .= '<tr><td class="vsn-seo-name">' . Page::urlLink((string) $r['url']) . $canonical . '</td>'
+        $rows .= '<tr><td class="vseo-name">' . Page::urlLink((string) $r['url']) . $canonical . '</td>'
             . '<td><span class="label ' . ($ok ? 'label-success' : ($r['error'] ? 'label-default' : 'label-warning')) . '">' . rex_escape($r['error'] ? $this->i18n('error') : ((string) $r['verdict'] ?: '–')) . '</span> '
             . rex_escape((string) ($r['error'] ?: $r['coverage'])) . '</td>'
             . '<td>' . $this->i18n('inspect_reason_' . $r['reason']) . '</td>'
@@ -151,7 +151,7 @@ if ($sample) {
             . '<td>' . Format::date((string) $r['inspected_at']) . '</td></tr>';
     }
     $inspectHtml .= $rows
-        ? '<div class="table-responsive"><table class="table table-hover table-condensed vsn-seo-table"><thead><tr><th>URL</th><th>' . $this->i18n('inspect_state') . '</th><th>' . $this->i18n('inspect_reason') . '</th><th>' . $this->i18n('inspect_last_crawl') . '</th><th>' . $this->i18n('inspect_checked') . '</th></tr></thead><tbody>' . $rows . '</tbody></table></div>'
+        ? '<div class="table-responsive"><table class="table table-hover table-condensed vseo-table"><thead><tr><th>URL</th><th>' . $this->i18n('inspect_state') . '</th><th>' . $this->i18n('inspect_reason') . '</th><th>' . $this->i18n('inspect_last_crawl') . '</th><th>' . $this->i18n('inspect_checked') . '</th></tr></thead><tbody>' . $rows . '</tbody></table></div>'
         : rex_view::success($this->i18n('inspect_all_indexed'));
 } else {
     $inspectHtml = '<p class="text-muted">' . ($domain->hasGsc() && (int) $this->getConfig('inspect_per_day', 50) > 0 ? $this->i18n('inspect_none') : $this->i18n('inspect_off')) . '</p>';
@@ -166,7 +166,7 @@ $counts = Issues::openCounts($domain->id);
 $typeLinks = '<a class="btn btn-default btn-sm' . ('' === $type ? ' active' : '') . '" href="' . Page::domainUrl($domain, 'technical', $showResolved ? ['resolved' => 1] : []) . '">' . $this->i18n('all') . ' <span class="badge">' . array_sum($counts) . '</span></a> ';
 foreach ($counts as $t => $count) {
     $sev = Issues::severity($t);
-    $typeLinks .= '<a class="btn btn-default btn-sm vsn-seo-sev-' . $sev . ($t === $type ? ' active' : '') . '" href="' . Page::domainUrl($domain, 'technical', ['type' => $t] + ($showResolved ? ['resolved' => 1] : [])) . '">'
+    $typeLinks .= '<a class="btn btn-default btn-sm vseo-sev-' . $sev . ($t === $type ? ' active' : '') . '" href="' . Page::domainUrl($domain, 'technical', ['type' => $t] + ($showResolved ? ['resolved' => 1] : [])) . '">'
         . rex_escape(Issues::label($t)) . ' <span class="badge">' . Format::int($count) . '</span></a> ';
 }
 $toggle = '<a class="btn btn-link btn-sm" href="' . Page::domainUrl($domain, 'technical', ('' !== $type ? ['type' => $type] : []) + ($showResolved ? [] : ['resolved' => 1])) . '">'
@@ -183,7 +183,7 @@ if ($showResolved) {
     $params[] = date('Y-m-d H:i:s', strtotime('-30 days'));
 }
 $issues = $sql->getArray(
-    'SELECT i.*, u.url FROM ' . Issues::table() . ' i LEFT JOIN ' . rex::getTable('vsn_seo_url') . ' u ON u.id = i.url_id
+    'SELECT i.*, u.url FROM ' . Issues::table() . ' i LEFT JOIN ' . rex::getTable('vseo_url') . ' u ON u.id = i.url_id
      WHERE ' . $where . ' ORDER BY i.resolved_at IS NOT NULL, i.first_seen DESC, i.id DESC LIMIT 1000',
     $params,
 );
@@ -195,13 +195,13 @@ if ($issues) {
     foreach ($issues as $i) {
         $sev = Issues::severity((string) $i['type']);
         $resolved = null !== $i['resolved_at'];
-        $rows .= '<tr class="' . ($resolved ? 'vsn-seo-resolved' : '') . '">'
-            . '<td><span class="vsn-seo-sev vsn-seo-sev-' . $sev . '" title="' . $this->i18n('severity_' . $sev) . '"></span> ' . rex_escape(Issues::label((string) $i['type'])) . '</td>'
-            . '<td class="vsn-seo-name">' . ($i['url'] ? Page::urlLink((string) $i['url']) : rex_escape($domain->host)) . ($i['detail'] ? '<br><small class="text-muted">' . rex_escape((string) $i['detail']) . '</small>' : '') . '</td>'
+        $rows .= '<tr class="' . ($resolved ? 'vseo-resolved' : '') . '">'
+            . '<td><span class="vseo-sev vseo-sev-' . $sev . '" title="' . $this->i18n('severity_' . $sev) . '"></span> ' . rex_escape(Issues::label((string) $i['type'])) . '</td>'
+            . '<td class="vseo-name">' . ($i['url'] ? Page::urlLink((string) $i['url']) : rex_escape($domain->host)) . ($i['detail'] ? '<br><small class="text-muted">' . rex_escape((string) $i['detail']) . '</small>' : '') . '</td>'
             . '<td>' . Format::date((string) $i['first_seen']) . '</td>'
             . '<td>' . ($resolved ? '<span class="label label-success">' . $this->i18n('resolved_at', Format::date((string) $i['resolved_at'])) . '</span>' : Format::date((string) $i['last_seen'])) . '</td></tr>';
     }
-    $issueHtml = '<div class="table-responsive"><table class="table table-hover table-condensed vsn-seo-table"><thead><tr><th>' . $this->i18n('issue') . '</th><th>URL</th><th>' . $this->i18n('issue_since') . '</th><th>' . $this->i18n('issue_last_seen') . '</th></tr></thead><tbody>' . $rows . '</tbody></table></div>';
+    $issueHtml = '<div class="table-responsive"><table class="table table-hover table-condensed vseo-table"><thead><tr><th>' . $this->i18n('issue') . '</th><th>URL</th><th>' . $this->i18n('issue_since') . '</th><th>' . $this->i18n('issue_last_seen') . '</th></tr></thead><tbody>' . $rows . '</tbody></table></div>';
     if (1000 === count($issues)) {
         $issueHtml .= '<p class="help-block">' . $this->i18n('top_n', 1000) . '</p>';
     }
@@ -211,5 +211,5 @@ if ($issues) {
 
 $fragment = new rex_fragment();
 $fragment->setVar('title', $this->i18n('issues'), false);
-$fragment->setVar('body', '<div class="vsn-seo-issue-types">' . $typeLinks . $toggle . '</div>' . $issueHtml, false);
+$fragment->setVar('body', '<div class="vseo-issue-types">' . $typeLinks . $toggle . '</div>' . $issueHtml, false);
 echo $fragment->parse('core/page/section.php');

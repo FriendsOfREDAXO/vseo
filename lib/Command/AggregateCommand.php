@@ -16,7 +16,7 @@ final class AggregateCommand extends rex_console_command
     protected function configure(): void
     {
         $this
-            ->setDescription('vsn_seo: rebuild weekly sums and overview figures')
+            ->setDescription('vseo: rebuild weekly sums and overview figures')
             ->addOption('domain', null, InputOption::VALUE_REQUIRED, 'Domain ID or host');
     }
 

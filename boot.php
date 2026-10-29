@@ -19,34 +19,34 @@ if (!rex::isBackend()) {
     return;
 }
 
-rex_perm::register('vsn_seo[]');
-rex_perm::register('vsn_seo[settings]', rex_i18n::msg('vsn_seo_perm_settings'), rex_perm::OPTIONS);
-rex_perm::register('vsn_seo[all_domains]', rex_i18n::msg('vsn_seo_perm_all_domains'), rex_perm::OPTIONS);
+rex_perm::register('vseo[]');
+rex_perm::register('vseo[settings]', rex_i18n::msg('vseo_perm_settings'), rex_perm::OPTIONS);
+rex_perm::register('vseo[all_domains]', rex_i18n::msg('vseo_perm_all_domains'), rex_perm::OPTIONS);
 try {
     foreach (DomainRepository::all() as $domain) {
-        rex_perm::register($domain->perm(), rex_i18n::msg('vsn_seo_perm_domain', $domain->name), rex_perm::OPTIONS);
+        rex_perm::register($domain->perm(), rex_i18n::msg('vseo_perm_domain', $domain->name), rex_perm::OPTIONS);
     }
 } catch (rex_sql_exception) {
     // Tabellen fehlen noch (vor der Installation)
 }
 
 // Widget für das AddOn „dashboard“, nur wenn es installiert ist
-if (rex_addon::get('dashboard')->isAvailable() && class_exists(\FriendsOfRedaxo\Dashboard\Dashboard::class) && rex::getUser()?->hasPerm('vsn_seo[]')) {
+if (rex_addon::get('dashboard')->isAvailable() && class_exists(\FriendsOfRedaxo\Dashboard\Dashboard::class) && rex::getUser()?->hasPerm('vseo[]')) {
     \FriendsOfRedaxo\Dashboard\Dashboard::addItem(
-        \Viewsion\SeoMonitor\Dashboard\OverviewItem::factory('vsn-seo-overview', rex_i18n::msg('vsn_seo_title'))->setColumns(2),
+        \Viewsion\SeoMonitor\Dashboard\OverviewItem::factory('vseo-overview', rex_i18n::msg('vseo_title'))->setColumns(2),
     );
-    rex_view::addCssFile($this->getAssetsUrl('vsn_seo.css') . '?v=' . (int) @filemtime($this->getAssetsPath('vsn_seo.css')));
+    rex_view::addCssFile($this->getAssetsUrl('vseo.css') . '?v=' . (int) @filemtime($this->getAssetsPath('vseo.css')));
 }
 
-if ('vsn_seo' === rex_be_controller::getCurrentPagePart(1)) {
+if ('vseo' === rex_be_controller::getCurrentPagePart(1)) {
     $asset = function (string $file): string {
         $url = $this->getAssetsUrl($file);
-        // Zeitstempel der ausgelieferten Kopie (assets/addons/vsn_seo), nicht der Quelle: sonst landet eine veraltete Kopie unter neuer URL im Cache
+        // Zeitstempel der ausgelieferten Kopie (assets/addons/vseo), nicht der Quelle: sonst landet eine veraltete Kopie unter neuer URL im Cache
         $path = $this->getAssetsPath($file);
         return is_file($path) ? $url . '?v=' . filemtime($path) : $url;
     };
     rex_view::addCssFile($asset('vendor/uplot/uPlot.min.css'));
-    rex_view::addCssFile($asset('vsn_seo.css'));
+    rex_view::addCssFile($asset('vseo.css'));
     rex_view::addJsFile($asset('vendor/uplot/uPlot.iife.min.js'));
-    rex_view::addJsFile($asset('vsn_seo.js'));
+    rex_view::addJsFile($asset('vseo.js'));
 }

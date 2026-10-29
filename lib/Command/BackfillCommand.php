@@ -23,7 +23,7 @@ final class BackfillCommand extends rex_console_command
     protected function configure(): void
     {
         $this
-            ->setDescription('vsn_seo: (re)load Search Console data for a date range')
+            ->setDescription('vseo: (re)load Search Console data for a date range')
             ->addOption('domain', null, InputOption::VALUE_REQUIRED, 'Domain ID or host')
             ->addOption('from', null, InputOption::VALUE_REQUIRED, 'Start date YYYY-MM-DD')
             ->addOption('to', null, InputOption::VALUE_REQUIRED, 'End date YYYY-MM-DD (default: yesterday)');

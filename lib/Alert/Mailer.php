@@ -56,8 +56,8 @@ final class Mailer
             if (!$domain || !($to = $domain->alertRecipients())) {
                 continue;
             }
-            $body = '<p>' . rex_escape(rex_i18n::msg('vsn_seo_mail_intro', $domain->name)) . '</p>' . self::alertList($list) . self::link('vsn_seo/alerts');
-            $subject = rex_i18n::msg('vsn_seo_mail_subject_alert', $domain->name, count($list));
+            $body = '<p>' . rex_escape(rex_i18n::msg('vseo_mail_intro', $domain->name)) . '</p>' . self::alertList($list) . self::link('vseo/alerts');
+            $subject = rex_i18n::msg('vseo_mail_subject_alert', $domain->name, count($list));
             if ($this->send($to, $subject, $body)) {
                 AlertRepository::markMailed(array_map(static fn ($a) => (int) $a['id'], $list));
                 $messages[] = sprintf('%s: %d alert(s) mailed', $domain->name, count($list));
@@ -73,7 +73,7 @@ final class Mailer
      */
     public function sendDigestIfDue(bool $force = false): array
     {
-        $addon = rex_addon::get('vsn_seo');
+        $addon = rex_addon::get('vseo');
         $weekday = (int) $addon->getConfig('digest_weekday', 1);
         $week = date('o-\WW');
         if (!self::available() || (!$force && (0 === $weekday || (int) date('N') < $weekday || $addon->getConfig('digest_sent') === $week))) {
@@ -88,12 +88,12 @@ final class Mailer
         }
         $messages = [];
         foreach ($byRecipient as $mail => $domains) {
-            $body = '<p>' . rex_escape(rex_i18n::msg('vsn_seo_mail_digest_intro')) . '</p>';
+            $body = '<p>' . rex_escape(rex_i18n::msg('vseo_mail_digest_intro')) . '</p>';
             foreach ($domains as $domain) {
                 $body .= self::digestDomain($domain);
             }
-            $body .= self::link('vsn_seo/overview');
-            if ($this->send([$mail], rex_i18n::msg('vsn_seo_mail_subject_digest', $week), $body)) {
+            $body .= self::link('vseo/overview');
+            if ($this->send([$mail], rex_i18n::msg('vseo_mail_subject_digest', $week), $body)) {
                 $messages[] = 'Digest sent to ' . $mail;
             }
         }
@@ -130,26 +130,26 @@ final class Mailer
         $weeks = Series::completeOnly(Series::weeks($domain->id, 2));
         if (count($weeks) >= 2) {
             [$prev, $last] = array_slice($weeks, -2);
-            $html .= '<table cellpadding="4" style="border-collapse:collapse"><tr><td></td><td><b>' . rex_escape(rex_i18n::msg('vsn_seo_week')) . ' ' . Format::date($last['week']) . '</b></td><td>' . rex_escape(rex_i18n::msg('vsn_seo_mail_prev_week')) . '</td></tr>';
+            $html .= '<table cellpadding="4" style="border-collapse:collapse"><tr><td></td><td><b>' . rex_escape(rex_i18n::msg('vseo_week')) . ' ' . Format::date($last['week']) . '</b></td><td>' . rex_escape(rex_i18n::msg('vseo_mail_prev_week')) . '</td></tr>';
             foreach (['queries', 'urls', 'clicks', 'impressions'] as $key) {
                 $pct = $prev[$key] > 0 ? ($last[$key] - $prev[$key]) / $prev[$key] * 100 : null;
                 $color = null === $pct || abs($pct) < 0.5 ? '#666' : ($pct > 0 ? '#2e8540' : '#c0392b');
-                $html .= '<tr><td>' . rex_escape(rex_i18n::msg('vsn_seo_kpi_' . $key)) . '</td><td><b>' . Format::int($last[$key]) . '</b>'
+                $html .= '<tr><td>' . rex_escape(rex_i18n::msg('vseo_kpi_' . $key)) . '</td><td><b>' . Format::int($last[$key]) . '</b>'
                     . (null !== $pct ? ' <span style="color:' . $color . '">' . ($pct > 0 ? '+' : '') . Format::dec($pct) . ' %</span>' : '') . '</td><td>' . Format::int($prev[$key]) . '</td></tr>';
             }
             $html .= '</table>';
         } else {
-            $html .= '<p>' . rex_escape(rex_i18n::msg('vsn_seo_no_data')) . '</p>';
+            $html .= '<p>' . rex_escape(rex_i18n::msg('vseo_no_data')) . '</p>';
         }
         $alerts = AlertRepository::find([$domain->id], false, 20, date('Y-m-d H:i:s', time() - 7 * 86400));
-        $html .= $alerts ? self::alertList($alerts) : '<p style="color:#2e8540">' . rex_escape(rex_i18n::msg('vsn_seo_mail_no_alerts')) . '</p>';
+        $html .= $alerts ? self::alertList($alerts) : '<p style="color:#2e8540">' . rex_escape(rex_i18n::msg('vseo_mail_no_alerts')) . '</p>';
         $issues = Issues::openCounts($domain->id);
         if ($issues) {
             $parts = [];
             foreach (array_slice($issues, 0, 6, true) as $type => $count) {
                 $parts[] = rex_escape(Issues::label($type)) . ': ' . Format::int($count);
             }
-            $html .= '<p style="color:#666">' . rex_escape(rex_i18n::msg('vsn_seo_issues')) . ' – ' . implode(' · ', $parts) . '</p>';
+            $html .= '<p style="color:#666">' . rex_escape(rex_i18n::msg('vseo_issues')) . ' – ' . implode(' · ', $parts) . '</p>';
         }
         return $html;
     }
@@ -169,6 +169,6 @@ final class Mailer
     private static function link(string $page): string
     {
         $url = rtrim(rex::getServer(), '/') . '/' . basename(rex_path::backend()) . '/index.php?page=' . $page;
-        return '<p><a href="' . rex_escape($url) . '">' . rex_escape(rex_i18n::msg('vsn_seo_mail_open')) . '</a></p>';
+        return '<p><a href="' . rex_escape($url) . '">' . rex_escape(rex_i18n::msg('vseo_mail_open')) . '</a></p>';
     }
 }

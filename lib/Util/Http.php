@@ -23,7 +23,7 @@ final class Http
         try {
             $socket = rex_socket::factoryUrl($url);
             $socket->setTimeout($timeout);
-            $socket->addHeader('User-Agent', 'REDAXO vsn_seo');
+            $socket->addHeader('User-Agent', 'REDAXO vseo');
             foreach ($headers as $key => $value) {
                 $socket->addHeader($key, $value);
             }

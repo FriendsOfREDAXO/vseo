@@ -16,7 +16,7 @@ final class AlertsCommand extends rex_console_command
     protected function configure(): void
     {
         $this
-            ->setDescription('vsn_seo: check alert rules, send immediate mails and the weekly digest')
+            ->setDescription('vseo: check alert rules, send immediate mails and the weekly digest')
             ->addOption('domain', null, InputOption::VALUE_REQUIRED, 'Domain ID or host')
             ->addOption('no-mail', null, InputOption::VALUE_NONE, 'Only create alerts, send no mails')
             ->addOption('digest', null, InputOption::VALUE_NONE, 'Send the weekly digest now');

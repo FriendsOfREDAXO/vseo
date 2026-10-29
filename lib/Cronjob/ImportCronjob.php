@@ -20,7 +20,7 @@ final class ImportCronjob extends rex_cronjob
     {
         $seconds = (int) $this->getParam('budget', 0);
         if ($seconds <= 0) {
-            $seconds = (int) rex_addon::get('vsn_seo')->getConfig('run_budget', 45);
+            $seconds = (int) rex_addon::get('vseo')->getConfig('run_budget', 45);
         }
         $runner = new Runner();
         $ok = $runner->run(new Budget($seconds));
@@ -30,17 +30,17 @@ final class ImportCronjob extends rex_cronjob
 
     public function getTypeName()
     {
-        return rex_i18n::msg('vsn_seo_cronjob_import');
+        return rex_i18n::msg('vseo_cronjob_import');
     }
 
     public function getParamFields()
     {
         return [
             [
-                'label' => rex_i18n::msg('vsn_seo_cronjob_budget'),
+                'label' => rex_i18n::msg('vseo_cronjob_budget'),
                 'name' => 'budget',
                 'type' => 'text',
-                'notice' => rex_i18n::msg('vsn_seo_cronjob_budget_notice'),
+                'notice' => rex_i18n::msg('vseo_cronjob_budget_notice'),
             ],
         ];
     }

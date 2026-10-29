@@ -11,7 +11,7 @@ use Viewsion\SeoMonitor\Alert\Rules;
  * @var rex_addon $this
  */
 
-$csrf = rex_csrf_token::factory('vsn_seo_alert_settings');
+$csrf = rex_csrf_token::factory('vseo_alert_settings');
 
 if ('post' === rex_request_method()) {
     if (!$csrf->isValid()) {
@@ -54,7 +54,7 @@ foreach (Rules::config() as $rule => $c) {
     $rows .= '<tr><td><input type="checkbox" name="' . $name . '[enabled]" value="1"' . ($c['enabled'] ? ' checked' : '') . ' aria-label="' . $this->i18n('active') . '"></td>'
         . '<td><strong>' . rex_escape(Rules::label($rule)) . '</strong><br><small class="text-muted">' . $this->i18n('rule_' . $rule . '_notice') . '</small></td>'
         . '<td>' . ('sitemap_error' === $rule ? '–' : '<input class="form-control input-sm" type="number" step="any" min="0" name="' . $name . '[threshold]" value="' . rex_escape((string) (float) $c['threshold']) . '" style="width:90px">') . '</td>'
-        . '<td><span class="vsn-seo-sev vsn-seo-sev-' . $c['severity'] . '"></span> ' . $this->i18n('severity_' . $c['severity']) . '</td>'
+        . '<td><span class="vseo-sev vseo-sev-' . $c['severity'] . '"></span> ' . $this->i18n('severity_' . $c['severity']) . '</td>'
         . '<td><input type="checkbox" name="' . $name . '[mail]" value="1"' . ($c['mail'] ? ' checked' : '') . ' aria-label="' . $this->i18n('rule_mail') . '"></td></tr>';
 }
 $body = $csrf->getHiddenField()
@@ -66,11 +66,11 @@ foreach (range(0, 7) as $day) {
     $weekdays .= '<option value="' . $day . '"' . ($day === (int) $this->getConfig('digest_weekday', 1) ? ' selected' : '') . '>' . rex_escape($label) . '</option>';
 }
 $body .= '<fieldset><legend>' . $this->i18n('mail') . '</legend>'
-    . '<div class="form-group"><label for="vsn-seo-alert-emails">' . $this->i18n('alert_emails') . '</label>'
-    . '<textarea class="form-control" id="vsn-seo-alert-emails" name="alert_emails" rows="3">' . rex_escape((string) $this->getConfig('alert_emails', '')) . '</textarea>'
+    . '<div class="form-group"><label for="vseo-alert-emails">' . $this->i18n('alert_emails') . '</label>'
+    . '<textarea class="form-control" id="vseo-alert-emails" name="alert_emails" rows="3">' . rex_escape((string) $this->getConfig('alert_emails', '')) . '</textarea>'
     . '<p class="help-block">' . $this->i18n('alert_emails_global_notice') . '</p></div>'
-    . '<div class="form-group"><label for="vsn-seo-digest">' . $this->i18n('digest_weekday') . '</label>'
-    . '<select class="form-control" id="vsn-seo-digest" name="digest_weekday">' . $weekdays . '</select>'
+    . '<div class="form-group"><label for="vseo-digest">' . $this->i18n('digest_weekday') . '</label>'
+    . '<select class="form-control" id="vseo-digest" name="digest_weekday">' . $weekdays . '</select>'
     . '<p class="help-block">' . $this->i18n('digest_weekday_notice') . '</p></div></fieldset>';
 
 $buttons = '<button class="btn btn-save" type="submit">' . rex_i18n::msg('form_save') . '</button> '

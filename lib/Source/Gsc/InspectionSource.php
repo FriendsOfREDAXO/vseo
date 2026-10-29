@@ -34,17 +34,17 @@ final class InspectionSource implements DataSourceInterface
 
     public function label(): string
     {
-        return rex_i18n::msg('vsn_seo_source_inspect');
+        return rex_i18n::msg('vseo_source_inspect');
     }
 
     public function supports(Domain $domain): bool
     {
-        return $domain->hasGsc() && (int) rex_addon::get('vsn_seo')->getConfig('inspect_per_day', 50) > 0;
+        return $domain->hasGsc() && (int) rex_addon::get('vseo')->getConfig('inspect_per_day', 50) > 0;
     }
 
     public static function table(): string
     {
-        return rex::getTable('vsn_seo_inspect');
+        return rex::getTable('vseo_inspect');
     }
 
     /** In der Stichprobe als indexiert gilt, was Google mit PASS bewertet */
@@ -55,7 +55,7 @@ final class InspectionSource implements DataSourceInterface
 
     public function import(Domain $domain, Budget $budget): array
     {
-        $perDay = min(2000, (int) rex_addon::get('vsn_seo')->getConfig('inspect_per_day', 50));
+        $perDay = min(2000, (int) rex_addon::get('vseo')->getConfig('inspect_per_day', 50));
         $sql = rex_sql::factory();
         $today = date('Y-m-d');
         $done = (int) $sql->getArray(
@@ -105,7 +105,7 @@ final class InspectionSource implements DataSourceInterface
      */
     private function candidates(Domain $domain, int $limit): array
     {
-        $days = max(1, (int) rex_addon::get('vsn_seo')->getConfig('inspect_interval_days', 14));
+        $days = max(1, (int) rex_addon::get('vseo')->getConfig('inspect_interval_days', 14));
         $sql = rex_sql::factory();
         $recent = [];
         foreach ($sql->getArray(
@@ -133,14 +133,14 @@ final class InspectionSource implements DataSourceInterface
 
         // 2. neue URLs aus der Sitemap
         $add(array_map('intval', array_column($sql->getArray(
-            'SELECT url_id FROM ' . rex::getTable('vsn_seo_crawl') . ' WHERE domain_id = ? AND in_sitemap = 1 AND first_seen >= ? ORDER BY first_seen DESC LIMIT 2000',
+            'SELECT url_id FROM ' . rex::getTable('vseo_crawl') . ' WHERE domain_id = ? AND in_sitemap = 1 AND first_seen >= ? ORDER BY first_seen DESC LIMIT 2000',
             [$domain->id, date('Y-m-d H:i:s', time() - 14 * 86400)],
         ), 'url_id')), self::REASON_NEW);
 
         // 3. Top-URLs nach Klicks, dann Impressionen
         $to = Period::lastDay($domain);
         $add(array_map('intval', array_column($sql->getArray(
-            'SELECT url_id FROM ' . rex::getTable('vsn_seo_sa') . ' WHERE domain_id = ? AND date BETWEEN ? AND ?
+            'SELECT url_id FROM ' . rex::getTable('vseo_sa') . ' WHERE domain_id = ? AND date BETWEEN ? AND ?
              GROUP BY url_id ORDER BY SUM(clicks) DESC, SUM(impressions) DESC LIMIT 3000',
             [$domain->id, date('Y-m-d', (int) strtotime($to . ' -27 days')), $to],
         ), 'url_id')), self::REASON_TOP);
@@ -181,7 +181,7 @@ final class InspectionSource implements DataSourceInterface
     /** Tageswert: Stichprobe im Prüfabstand und Anteil indexierter URLs darin */
     public static function snapshot(int $domainId): void
     {
-        $days = max(1, (int) rex_addon::get('vsn_seo')->getConfig('inspect_interval_days', 14));
+        $days = max(1, (int) rex_addon::get('vseo')->getConfig('inspect_interval_days', 14));
         $sql = rex_sql::factory();
         $row = $sql->getArray(
             'SELECT COUNT(*) AS sample, SUM(verdict = \'PASS\') AS indexed, SUM(inspected_at >= ?) AS today
@@ -189,7 +189,7 @@ final class InspectionSource implements DataSourceInterface
             [date('Y-m-d') . ' 00:00:00', $domainId, date('Y-m-d H:i:s', time() - $days * 86400)],
         )[0];
         $sql->setQuery(
-            'REPLACE INTO ' . rex::getTable('vsn_seo_inspect_day') . ' (domain_id, date, inspected, sample, indexed) VALUES (?, ?, ?, ?, ?)',
+            'REPLACE INTO ' . rex::getTable('vseo_inspect_day') . ' (domain_id, date, inspected, sample, indexed) VALUES (?, ?, ?, ?, ?)',
             [$domainId, date('Y-m-d'), (int) $row['today'], (int) $row['sample'], (int) $row['indexed']],
         );
     }

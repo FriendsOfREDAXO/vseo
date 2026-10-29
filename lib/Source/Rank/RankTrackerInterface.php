@@ -10,10 +10,10 @@ use Viewsion\SeoMonitor\Model\Domain;
  * Schnittstelle für externe SERP-Dienste (z. B. DataForSEO): Positionen einer festen Keyword-Liste
  * für die eigene Domain und ihre Wettbewerber, wöchentlich abgefragt.
  *
- * Version 1 enthält nur Schnittstelle und Datenstruktur (Tabellen vsn_seo_rank_keyword und vsn_seo_rank).
- * Ein AddOn liefert seine Implementierung über den Extension Point VSN_SEO_RANK_TRACKERS:
+ * Version 1 enthält nur Schnittstelle und Datenstruktur (Tabellen vseo_rank_keyword und vseo_rank).
+ * Ein AddOn liefert seine Implementierung über den Extension Point VSEO_RANK_TRACKERS:
  *
- *     rex_extension::register('VSN_SEO_RANK_TRACKERS', static function (rex_extension_point $ep) {
+ *     rex_extension::register('VSEO_RANK_TRACKERS', static function (rex_extension_point $ep) {
  *         $trackers = $ep->getSubject();
  *         $trackers[] = new MyDataForSeoTracker();
  *         return $trackers;

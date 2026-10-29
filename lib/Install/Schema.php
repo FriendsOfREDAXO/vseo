@@ -17,32 +17,32 @@ final class Schema
 {
     /** @var list<string> */
     private const TABLES = [
-        'vsn_seo_account',
-        'vsn_seo_domain',
-        'vsn_seo_query',
-        'vsn_seo_url',
-        'vsn_seo_sa',
-        'vsn_seo_sa_day',
-        'vsn_seo_sa_week',
-        'vsn_seo_core_update',
-        'vsn_seo_crawl',
-        'vsn_seo_issue',
-        'vsn_seo_sitemap',
-        'vsn_seo_alert',
-        'vsn_seo_mt_day',
-        'vsn_seo_mt_engine',
-        'vsn_seo_mt_entry',
-        'vsn_seo_mt_404',
-        'vsn_seo_inspect',
-        'vsn_seo_inspect_day',
-        'vsn_seo_rank_keyword',
-        'vsn_seo_rank',
+        'vseo_account',
+        'vseo_domain',
+        'vseo_query',
+        'vseo_url',
+        'vseo_sa',
+        'vseo_sa_day',
+        'vseo_sa_week',
+        'vseo_core_update',
+        'vseo_crawl',
+        'vseo_issue',
+        'vseo_sitemap',
+        'vseo_alert',
+        'vseo_mt_day',
+        'vseo_mt_engine',
+        'vseo_mt_entry',
+        'vseo_mt_404',
+        'vseo_inspect',
+        'vseo_inspect_day',
+        'vseo_rank_keyword',
+        'vseo_rank',
     ];
 
     public static function ensure(): void
     {
         // Zugänge (Search Console, Matomo, …); credentials sind verschlüsselt
-        rex_sql_table::get(rex::getTable('vsn_seo_account'))
+        rex_sql_table::get(rex::getTable('vseo_account'))
             ->ensurePrimaryIdColumn()
             ->ensureColumn(new Col('type', 'varchar(20)'))
             ->ensureColumn(new Col('name', 'varchar(191)'))
@@ -52,7 +52,7 @@ final class Schema
             ->ensureIndex(new Idx('type', ['type']))
             ->ensure();
 
-        rex_sql_table::get(rex::getTable('vsn_seo_domain'))
+        rex_sql_table::get(rex::getTable('vseo_domain'))
             ->ensurePrimaryIdColumn()
             ->ensureColumn(new Col('name', 'varchar(191)'))
             ->ensureColumn(new Col('host', 'varchar(191)'))
@@ -77,14 +77,14 @@ final class Schema
             ->ensure();
 
         // Wörterbücher: Suchbegriffe und URLs werden per ID referenziert
-        rex_sql_table::get(rex::getTable('vsn_seo_query'))
+        rex_sql_table::get(rex::getTable('vseo_query'))
             ->ensurePrimaryIdColumn()
             ->ensureColumn(new Col('hash', 'binary(16)'))
             ->ensureColumn(new Col('query', 'varchar(500)'))
             ->ensureIndex(new Idx('hash', ['hash'], Idx::UNIQUE))
             ->ensure();
 
-        rex_sql_table::get(rex::getTable('vsn_seo_url'))
+        rex_sql_table::get(rex::getTable('vseo_url'))
             ->ensurePrimaryIdColumn()
             ->ensureColumn(new Col('hash', 'binary(16)'))
             ->ensureColumn(new Col('url', 'text'))
@@ -93,7 +93,7 @@ final class Schema
 
         // Search-Analytics-Detaildaten (date × query × page × device × country)
         // position_sum = Position × Impressionen, damit sich Durchschnitte über beliebige Zeiträume bilden lassen
-        rex_sql_table::get(rex::getTable('vsn_seo_sa'))
+        rex_sql_table::get(rex::getTable('vseo_sa'))
             ->ensureColumn(new Col('domain_id', 'smallint(5) unsigned'))
             ->ensureColumn(new Col('date', 'date'))
             ->ensureColumn(new Col('query_id', 'int(10) unsigned'))
@@ -110,7 +110,7 @@ final class Schema
 
         // Tagessummen: clicks/impressions/position_sum aus der Abfrage ohne query/page (vollständig),
         // detail_* und queries/urls aus den Detaildaten
-        rex_sql_table::get(rex::getTable('vsn_seo_sa_day'))
+        rex_sql_table::get(rex::getTable('vseo_sa_day'))
             ->ensureColumn(new Col('domain_id', 'smallint(5) unsigned'))
             ->ensureColumn(new Col('date', 'date'))
             ->ensureColumn(new Col('clicks', 'int(10) unsigned', false, '0'))
@@ -126,7 +126,7 @@ final class Schema
             ->ensure();
 
         // Wochensummen (Montag), queries/urls = verschiedene Suchbegriffe/URLs mit Impressionen in der Woche
-        rex_sql_table::get(rex::getTable('vsn_seo_sa_week'))
+        rex_sql_table::get(rex::getTable('vseo_sa_week'))
             ->ensureColumn(new Col('domain_id', 'smallint(5) unsigned'))
             ->ensureColumn(new Col('week', 'date'))
             ->ensureColumn(new Col('days', 'tinyint(3) unsigned', false, '0'))
@@ -138,7 +138,7 @@ final class Schema
             ->setPrimaryKey(['domain_id', 'week'])
             ->ensure();
 
-        rex_sql_table::get(rex::getTable('vsn_seo_core_update'))
+        rex_sql_table::get(rex::getTable('vseo_core_update'))
             ->ensurePrimaryIdColumn()
             ->ensureColumn(new Col('date', 'date'))
             ->ensureColumn(new Col('date_end', 'date', true))
@@ -147,7 +147,7 @@ final class Schema
             ->ensure();
 
         // Crawler: letzter geprüfter Stand je URL. Herkunft als Flags, damit verschwundene URLs entfallen
-        rex_sql_table::get(rex::getTable('vsn_seo_crawl'))
+        rex_sql_table::get(rex::getTable('vseo_crawl'))
             ->ensureColumn(new Col('domain_id', 'smallint(5) unsigned'))
             ->ensureColumn(new Col('url_id', 'int(10) unsigned'))
             ->ensureColumn(new Col('in_sitemap', 'tinyint(1)', false, '0'))
@@ -175,7 +175,7 @@ final class Schema
             ->ensure();
 
         // Probleme mit Verlauf: seit wann, zuletzt gesehen, behoben am. url_id 0 = die Domain selbst
-        rex_sql_table::get(rex::getTable('vsn_seo_issue'))
+        rex_sql_table::get(rex::getTable('vseo_issue'))
             ->ensurePrimaryIdColumn()
             ->ensureColumn(new Col('domain_id', 'smallint(5) unsigned'))
             ->ensureColumn(new Col('url_id', 'int(10) unsigned', false, '0'))
@@ -189,7 +189,7 @@ final class Schema
             ->ensure();
 
         // Sitemaps: eigener Abruf und Angaben der Search Console
-        rex_sql_table::get(rex::getTable('vsn_seo_sitemap'))
+        rex_sql_table::get(rex::getTable('vseo_sitemap'))
             ->ensurePrimaryIdColumn()
             ->ensureColumn(new Col('domain_id', 'smallint(5) unsigned'))
             ->ensureColumn(new Col('hash', 'binary(16)'))
@@ -213,7 +213,7 @@ final class Schema
             ->ensure();
 
         // Warnungen; ref verhindert, dass dieselbe Warnung (Regel + Woche/Anlass) mehrfach entsteht
-        rex_sql_table::get(rex::getTable('vsn_seo_alert'))
+        rex_sql_table::get(rex::getTable('vseo_alert'))
             ->ensurePrimaryIdColumn()
             ->ensureColumn(new Col('domain_id', 'smallint(5) unsigned'))
             ->ensureColumn(new Col('rule', 'varchar(40)'))
@@ -232,7 +232,7 @@ final class Schema
             ->ensure();
 
         // Matomo: Tageswerte, Suchmaschinen, Einstiegsseiten aus der Suche, 404-Seiten
-        rex_sql_table::get(rex::getTable('vsn_seo_mt_day'))
+        rex_sql_table::get(rex::getTable('vseo_mt_day'))
             ->ensureColumn(new Col('domain_id', 'smallint(5) unsigned'))
             ->ensureColumn(new Col('date', 'date'))
             ->ensureColumn(new Col('visits', 'int(10) unsigned', false, '0'))
@@ -245,7 +245,7 @@ final class Schema
             ->setPrimaryKey(['domain_id', 'date'])
             ->ensure();
 
-        rex_sql_table::get(rex::getTable('vsn_seo_mt_engine'))
+        rex_sql_table::get(rex::getTable('vseo_mt_engine'))
             ->ensureColumn(new Col('domain_id', 'smallint(5) unsigned'))
             ->ensureColumn(new Col('date', 'date'))
             ->ensureColumn(new Col('engine', 'varchar(64)'))
@@ -253,7 +253,7 @@ final class Schema
             ->setPrimaryKey(['domain_id', 'date', 'engine'])
             ->ensure();
 
-        rex_sql_table::get(rex::getTable('vsn_seo_mt_entry'))
+        rex_sql_table::get(rex::getTable('vseo_mt_entry'))
             ->ensureColumn(new Col('domain_id', 'smallint(5) unsigned'))
             ->ensureColumn(new Col('date', 'date'))
             ->ensureColumn(new Col('url_id', 'int(10) unsigned'))
@@ -264,7 +264,7 @@ final class Schema
             ->setPrimaryKey(['domain_id', 'date', 'url_id'])
             ->ensure();
 
-        rex_sql_table::get(rex::getTable('vsn_seo_mt_404'))
+        rex_sql_table::get(rex::getTable('vseo_mt_404'))
             ->ensureColumn(new Col('domain_id', 'smallint(5) unsigned'))
             ->ensureColumn(new Col('date', 'date'))
             ->ensureColumn(new Col('url_id', 'int(10) unsigned'))
@@ -274,7 +274,7 @@ final class Schema
             ->ensure();
 
         // URL Inspection: letzter Stand je URL der Stichprobe und Tageswerte für den Verlauf
-        rex_sql_table::get(rex::getTable('vsn_seo_inspect'))
+        rex_sql_table::get(rex::getTable('vseo_inspect'))
             ->ensureColumn(new Col('domain_id', 'smallint(5) unsigned'))
             ->ensureColumn(new Col('url_id', 'int(10) unsigned'))
             ->ensureColumn(new Col('reason', 'varchar(20)', false, ''))
@@ -293,7 +293,7 @@ final class Schema
             ->ensure();
 
         // Rank-Tracking (nur Datenstruktur, siehe Source\Rank\RankTrackerInterface)
-        rex_sql_table::get(rex::getTable('vsn_seo_rank_keyword'))
+        rex_sql_table::get(rex::getTable('vseo_rank_keyword'))
             ->ensurePrimaryIdColumn()
             ->ensureColumn(new Col('domain_id', 'smallint(5) unsigned'))
             ->ensureColumn(new Col('query_id', 'int(10) unsigned'))
@@ -304,7 +304,7 @@ final class Schema
             ->ensureIndex(new Idx('keyword', ['domain_id', 'query_id', 'country', 'device'], Idx::UNIQUE))
             ->ensure();
 
-        rex_sql_table::get(rex::getTable('vsn_seo_rank'))
+        rex_sql_table::get(rex::getTable('vseo_rank'))
             ->ensureColumn(new Col('keyword_id', 'int(10) unsigned'))
             ->ensureColumn(new Col('date', 'date'))
             ->ensureColumn(new Col('host', 'varchar(191)'))
@@ -314,7 +314,7 @@ final class Schema
             ->setPrimaryKey(['keyword_id', 'date', 'host'])
             ->ensure();
 
-        rex_sql_table::get(rex::getTable('vsn_seo_inspect_day'))
+        rex_sql_table::get(rex::getTable('vseo_inspect_day'))
             ->ensureColumn(new Col('domain_id', 'smallint(5) unsigned'))
             ->ensureColumn(new Col('date', 'date'))
             ->ensureColumn(new Col('inspected', 'int(10) unsigned', false, '0'))
@@ -329,7 +329,7 @@ final class Schema
      */
     public static function seedCoreUpdates(): void
     {
-        $table = rex::getTable('vsn_seo_core_update');
+        $table = rex::getTable('vseo_core_update');
         $sql = rex_sql::factory();
         if ((int) $sql->getArray('SELECT COUNT(*) AS c FROM ' . $table)[0]['c'] > 0) {
             return;

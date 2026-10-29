@@ -38,7 +38,7 @@ final class Compare
             $params[] = (string) $filter['country'];
         }
         if (isset($filter['search']) && '' !== trim($filter['search'])) {
-            $join = ' JOIN ' . rex::getTable('vsn_seo_' . $dim) . ' d ON d.id = s.' . $col;
+            $join = ' JOIN ' . rex::getTable('vseo_' . $dim) . ' d ON d.id = s.' . $col;
             $where .= ' AND d.`' . $dim . '` LIKE ?';
             $params[] = '%' . addcslashes(trim($filter['search']), '%_\\') . '%';
         }
@@ -50,7 +50,7 @@ final class Compare
                 SUM(IF(s.date BETWEEN ? AND ?, s.clicks, 0)) AS c0,
                 SUM(IF(s.date BETWEEN ? AND ?, s.impressions, 0)) AS i0,
                 SUM(IF(s.date BETWEEN ? AND ?, s.position_sum, 0)) AS p0
-             FROM ' . rex::getTable('vsn_seo_sa') . ' s' . $join . '
+             FROM ' . rex::getTable('vseo_sa') . ' s' . $join . '
              WHERE s.domain_id = ? AND (s.date BETWEEN ? AND ? OR s.date BETWEEN ? AND ?)' . $where . '
              GROUP BY s.' . $col,
             $params,
@@ -137,7 +137,7 @@ final class Compare
         $sql = rex_sql::factory();
         foreach (array_chunk(array_unique($ids), 1000) as $chunk) {
             foreach ($sql->getArray(
-                'SELECT id, `' . $dim . '` AS v FROM ' . rex::getTable('vsn_seo_' . $dim) . ' WHERE id IN (' . implode(',', array_map('intval', $chunk)) . ')',
+                'SELECT id, `' . $dim . '` AS v FROM ' . rex::getTable('vseo_' . $dim) . ' WHERE id IN (' . implode(',', array_map('intval', $chunk)) . ')',
             ) as $row) {
                 $result[(int) $row['id']] = (string) $row['v'];
             }
@@ -153,7 +153,7 @@ final class Compare
     public static function countries(int $domainId, Period $period, int $limit = 30): array
     {
         $rows = rex_sql::factory()->getArray(
-            'SELECT country FROM ' . rex::getTable('vsn_seo_sa') . ' WHERE domain_id = ? AND date BETWEEN ? AND ?
+            'SELECT country FROM ' . rex::getTable('vseo_sa') . ' WHERE domain_id = ? AND date BETWEEN ? AND ?
              GROUP BY country ORDER BY SUM(impressions) DESC LIMIT ' . $limit,
             [$domainId, $period->prevFrom < $period->curFrom ? $period->prevFrom : $period->curFrom, $period->curTo],
         );
@@ -173,7 +173,7 @@ final class Compare
         }
         $result = [];
         foreach (rex_sql::factory()->getArray(
-            'SELECT url_id, status, location, final_status, checked_at, noindex, error FROM ' . rex::getTable('vsn_seo_crawl')
+            'SELECT url_id, status, location, final_status, checked_at, noindex, error FROM ' . rex::getTable('vseo_crawl')
             . ' WHERE domain_id = ? AND url_id IN (' . implode(',', array_map('intval', $urlIds)) . ')',
             [$domainId],
         ) as $r) {

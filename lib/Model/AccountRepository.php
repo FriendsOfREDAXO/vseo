@@ -12,7 +12,7 @@ final class AccountRepository
 {
     public static function table(): string
     {
-        return rex::getTable('vsn_seo_account');
+        return rex::getTable('vseo_account');
     }
 
     /** @return list<Account> */

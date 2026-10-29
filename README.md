@@ -1,8 +1,8 @@
-# SEO Monitor für REDAXO (vsn_seo)
+# vSEO – SEO-Monitoring für REDAXO
 
 Überwacht die Sichtbarkeit eigener Websites in Google – direkt im REDAXO-Backend.
 
-Im Mittelpunkt steht die **Anzahl rankender Suchbegriffe und URLs**, nicht nur Klicks. Ein URL-Umbau ohne Weiterleitungen kann einen großen Teil der rankenden Suchbegriffe kosten, während Klicks und Sichtbarkeitsindizes kaum reagieren. Der SEO Monitor macht solche Fälle innerhalb einer Woche sichtbar und warnt von selbst.
+Im Mittelpunkt steht die **Anzahl rankender Suchbegriffe und URLs**, nicht nur Klicks. Ein URL-Umbau ohne Weiterleitungen kann einen großen Teil der rankenden Suchbegriffe kosten, während Klicks und Sichtbarkeitsindizes kaum reagieren. vSEO macht solche Fälle innerhalb einer Woche sichtbar und warnt von selbst.
 
 *English summary below.*
 
@@ -48,7 +48,7 @@ Für jede Property in der [Search Console](https://search.google.com/search-cons
 
 ### 4. Zugang im Backend hinterlegen
 
-*SEO Monitor → Einstellungen → Zugänge → Search-Console-Zugang hinzufügen*: Inhalt der JSON-Datei einfügen oder die Datei hochladen. Der Schlüssel wird verschlüsselt gespeichert und nie wieder angezeigt. Danach *Verbindung testen*: Es erscheint die Liste der Properties.
+*vSEO → Einstellungen → Zugänge → Search-Console-Zugang hinzufügen*: Inhalt der JSON-Datei einfügen oder die Datei hochladen. Der Schlüssel wird verschlüsselt gespeichert und nie wieder angezeigt. Danach *Verbindung testen*: Es erscheint die Liste der Properties.
 
 Die heruntergeladene JSON-Datei anschließend sicher ablegen oder löschen; sie gehört nicht auf den Webserver.
 
@@ -74,9 +74,9 @@ Im AddOn *Cronjob* anlegen:
 
 | Typ | Empfehlung |
 | --- | --- |
-| SEO Monitor: Import | stündlich, solange der Backfill läuft (bis zu 16 Monate), danach täglich |
-| SEO Monitor: Crawler | stündlich oder mehrmals täglich |
-| SEO Monitor: Warnungen | täglich nach Import und Crawler |
+| vSEO: Import | stündlich, solange der Backfill läuft (bis zu 16 Monate), danach täglich |
+| vSEO: Crawler | stündlich oder mehrmals täglich |
+| vSEO: Warnungen | täglich nach Import und Crawler |
 
 Jeder Lauf arbeitet innerhalb eines Zeitbudgets und setzt beim nächsten Mal fort; eine Sperre verhindert parallele Läufe. Der Import umfasst Search Analytics, Matomo und die URL-Inspection-Stichprobe.
 
@@ -98,19 +98,19 @@ Jeder Lauf arbeitet innerhalb eines Zeitbudgets und setzt beim nächsten Mal for
 ## Konsole
 
 ```bash
-php redaxo/bin/console vsn_seo:import [--domain=ID|host] [--source=gsc|matomo|gsc_inspect] [--budget=Sekunden]
-php redaxo/bin/console vsn_seo:backfill --domain=www.example.com --from=2025-01-01 [--to=2025-06-30]
-php redaxo/bin/console vsn_seo:aggregate [--domain=…]
-php redaxo/bin/console vsn_seo:crawl [--domain=…] [--limit=URLs] [--refresh] [--budget=Sekunden]
-php redaxo/bin/console vsn_seo:alerts [--domain=…] [--no-mail] [--digest]
+php redaxo/bin/console vseo:import [--domain=ID|host] [--source=gsc|matomo|gsc_inspect] [--budget=Sekunden]
+php redaxo/bin/console vseo:backfill --domain=www.example.com --from=2025-01-01 [--to=2025-06-30]
+php redaxo/bin/console vseo:aggregate [--domain=…]
+php redaxo/bin/console vseo:crawl [--domain=…] [--limit=URLs] [--refresh] [--budget=Sekunden]
+php redaxo/bin/console vseo:alerts [--domain=…] [--no-mail] [--digest]
 ```
 
 ## Rechte
 
-- `vsn_seo[]`: SEO Monitor ansehen
-- `vsn_seo[settings]`: Einstellungen, Zugänge, Domains, Warnregeln
-- `vsn_seo[all_domains]`: alle Domains sehen
-- `vsn_seo[domain_ID]`: nur bestimmte Domains sehen. Wer keines dieser Domain-Rechte hat, sieht alle Domains.
+- `vseo[]`: vSEO ansehen
+- `vseo[settings]`: Einstellungen, Zugänge, Domains, Warnregeln
+- `vseo[all_domains]`: alle Domains sehen
+- `vseo[domain_ID]`: nur bestimmte Domains sehen. Wer keines dieser Domain-Rechte hat, sieht alle Domains.
 
 ## Daten und Aufbewahrung
 
@@ -119,19 +119,19 @@ Suchbegriffe und URLs liegen in eigenen Wörterbuch-Tabellen und werden per ID r
 ## Datenschutz und Sicherheit
 
 - Zugangsdaten werden mit libsodium verschlüsselt in der Datenbank gespeichert, nie im Klartext angezeigt und nicht ins Log geschrieben.
-- Der Schlüssel dafür liegt in `redaxo/data/addons/vsn_seo/secret.key` (wie das ganze `data`-Verzeichnis per `.htaccess` gesperrt) oder – besser – in der Umgebungsvariablen `VSN_SEO_KEY` (32 Byte, base64). Geht der Schlüssel verloren, müssen die Zugänge neu eingetragen werden; bei einem Umzug also mitnehmen.
+- Der Schlüssel dafür liegt in `redaxo/data/addons/vseo/secret.key` (wie das ganze `data`-Verzeichnis per `.htaccess` gesperrt) oder – besser – in der Umgebungsvariablen `VSEO_KEY` (32 Byte, base64). Geht der Schlüssel verloren, müssen die Zugänge neu eingetragen werden; bei einem Umzug also mitnehmen.
 - Alle Formulare sind per CSRF-Token geschützt.
-- Externe Aufrufe laufen mit Timeout; Fehler landen im System-Log (`[vsn_seo]`).
-- Der Crawler ruft nur URLs der eingetragenen Domains auf, mit Pause zwischen den Abrufen und dem User-Agent `vsn_seo`.
+- Externe Aufrufe laufen mit Timeout; Fehler landen im System-Log (`[vseo]`).
+- Der Crawler ruft nur URLs der eingetragenen Domains auf, mit Pause zwischen den Abrufen und dem User-Agent `vSEO`.
 
 ## Erweitern
 
-### Eigene URLs für den Crawler (`VSN_SEO_URL_SOURCE`)
+### Eigene URLs für den Crawler (`VSEO_URL_SOURCE`)
 
 Zum Beispiel Seiten eines Shops außerhalb der REDAXO-Struktur:
 
 ```php
-rex_extension::register('VSN_SEO_URL_SOURCE', static function (rex_extension_point $ep) {
+rex_extension::register('VSEO_URL_SOURCE', static function (rex_extension_point $ep) {
     /** @var \Viewsion\SeoMonitor\Model\Domain $domain */
     $domain = $ep->getParam('domain');
     $urls = $ep->getSubject();
@@ -142,10 +142,10 @@ rex_extension::register('VSN_SEO_URL_SOURCE', static function (rex_extension_poi
 });
 ```
 
-### Eigene Warnungen (`VSN_SEO_ALERT`)
+### Eigene Warnungen (`VSEO_ALERT`)
 
 ```php
-rex_extension::register('VSN_SEO_ALERT', static function (rex_extension_point $ep) {
+rex_extension::register('VSEO_ALERT', static function (rex_extension_point $ep) {
     $alerts = $ep->getSubject();
     if (my_check_failed($ep->getParam('domain'))) {
         $alerts[] = [
@@ -159,13 +159,13 @@ rex_extension::register('VSN_SEO_ALERT', static function (rex_extension_point $e
 });
 ```
 
-### Weitere Datenquellen (`VSN_SEO_DATA_SOURCES`)
+### Weitere Datenquellen (`VSEO_DATA_SOURCES`)
 
 Eine Klasse, die `Viewsion\SeoMonitor\Source\DataSourceInterface` implementiert, an die Liste anhängen; der Import ruft sie je Domain mit Zeitbudget auf.
 
-### Rank-Tracking (`VSN_SEO_RANK_TRACKERS`)
+### Rank-Tracking (`VSEO_RANK_TRACKERS`)
 
-Vorgesehen für SERP-Dienste wie DataForSEO: eine feste Keyword-Liste je Domain wöchentlich samt Wettbewerbern abfragen. Version 1 enthält nur die Schnittstelle `Viewsion\SeoMonitor\Source\Rank\RankTrackerInterface`, das Ergebnisobjekt `RankResult` und die Tabellen `vsn_seo_rank_keyword` und `vsn_seo_rank`; eine Implementierung liefert ein eigenes AddOn über den Extension Point.
+Vorgesehen für SERP-Dienste wie DataForSEO: eine feste Keyword-Liste je Domain wöchentlich samt Wettbewerbern abfragen. Version 1 enthält nur die Schnittstelle `Viewsion\SeoMonitor\Source\Rank\RankTrackerInterface`, das Ergebnisobjekt `RankResult` und die Tabellen `vseo_rank_keyword` und `vseo_rank`; eine Implementierung liefert ein eigenes AddOn über den Extension Point.
 
 ## Häufige Fragen
 
@@ -179,7 +179,7 @@ Vorgesehen für SERP-Dienste wie DataForSEO: eine feste Keyword-Liste je Domain 
 
 ## English summary
 
-SEO Monitor tracks your own websites' visibility in Google from within the REDAXO backend. Its core metric is the **number of ranking queries and URLs**, which reveals URL migrations without redirects within a week, even when clicks barely move.
+vSEO tracks your own websites' visibility in Google from within the REDAXO backend. Its core metric is the **number of ranking queries and URLs**, which reveals URL migrations without redirects within a week, even when clicks barely move.
 
 **Features:** overview of all domains, weekly history with Google updates, winners/losers between two periods (CSV export), lost URLs with their current status code, technical checks (robots.txt, sitemaps, crawler issues with history, URL Inspection sample), optional Matomo data (search visits, entry pages with revenue, 404s), alerts with configurable rules and e-mail, dashboard widget.
 
@@ -187,13 +187,13 @@ SEO Monitor tracks your own websites' visibility in Google from within the REDAX
 1. Enable the *Google Search Console API* in a Google Cloud project.
 2. Create a service account and a JSON key.
 3. Add the service account's e-mail as a user to each Search Console property ("Restricted" is enough).
-4. Paste the JSON key under *Settings → Accounts* (stored encrypted; the encryption key lives in `redaxo/data/addons/vsn_seo/secret.key` or the `VSN_SEO_KEY` environment variable).
+4. Paste the JSON key under *Settings → Accounts* (stored encrypted; the encryption key lives in `redaxo/data/addons/vseo/secret.key` or the `VSEO_KEY` environment variable).
 5. Adopt the suggested domains under *Settings → Domains*.
 6. Optionally add a Matomo URL and token with view access, then pick the Matomo site per domain.
 7. Create the cronjobs *Import*, *Crawler* and *Alerts*.
 8. Set recipients and rules under *Settings → Alert rules*.
 
-Console commands, permissions and extension points (`VSN_SEO_URL_SOURCE`, `VSN_SEO_ALERT`, `VSN_SEO_DATA_SOURCES`, `VSN_SEO_RANK_TRACKERS`) are described above.
+Console commands, permissions and extension points (`VSEO_URL_SOURCE`, `VSEO_ALERT`, `VSEO_DATA_SOURCES`, `VSEO_RANK_TRACKERS`) are described above.
 
 ## Lizenz
 

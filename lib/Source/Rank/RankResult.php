@@ -6,7 +6,7 @@ namespace Viewsion\SeoMonitor\Source\Rank;
 
 /**
  * Ein Ergebnis des Rank-Trackings: Position eines Hosts für ein Keyword an einem Tag.
- * Entspricht einer Zeile in vsn_seo_rank.
+ * Entspricht einer Zeile in vseo_rank.
  */
 final class RankResult
 {
