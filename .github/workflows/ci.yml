@@ -41,7 +41,8 @@ jobs:
           path: redaxo
       - uses: actions/checkout@v4
         with:
-          repository: FriendsOfREDAXO/yrewrite
+          repository: yakamara/yrewrite
+          ref: '2.12.1'
           path: yrewrite
       - uses: shivammathur/setup-php@v2
         with:

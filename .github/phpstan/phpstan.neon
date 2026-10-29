@@ -1,5 +1,5 @@
 # PHPStan für die CI. Erwartet neben dem AddOn (vseo/) die Checkouts
-# redaxo/ (redaxo/redaxo) und yrewrite/ (FriendsOfREDAXO/yrewrite), siehe .github/workflows/ci.yml.
+# redaxo/ (redaxo/redaxo) und yrewrite/ (yakamara/yrewrite), siehe .github/workflows/ci.yml.
 parameters:
     level: 6
     phpVersion: 80100
